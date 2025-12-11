@@ -1,7 +1,7 @@
 # Laravel specific
 */vendor/
 */node_modules/
-*/.env
+# */.env - commented out to allow .env files to be tracked
 */.env.backup
 */.env.production
 */storage/logs/*
