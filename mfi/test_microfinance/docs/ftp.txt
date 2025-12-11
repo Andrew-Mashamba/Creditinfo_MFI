@@ -1,0 +1,99 @@
+INTERNAL FUNDTRANSFER INTEGRATION API DOCUMENTATION
+Confidential
+API Name Internal Fund Transfer API
+Document Owner NBC BANK
+Document Author Alex Nyerembe
+Date Version Remarks
+Oct 30, 2022 V 1.0 Api for Internal fund transfer
+Nov 01, 2022 V 1.1 New Error code added on failure response.
+May 26, 2025 V 1.2 Added extra authentication; Digital signature and x-api-key on 
+headers
+URL https://{BASE_URL}/{SERVICE_NAME}
+Method POST 
+Header Parameters
+- Content-Type: application/json 
+- Accept: application/JSON
+- Signature: ygbevwevbdywevdbywevgvwedv d
+- x-api-key: sjuwudbdbcmnabssb sdbsdbbsdbsdbsdbbsd
+Sample JSON Payload
+Detail Fund Transfer
+Request
+INTERNAL FT FT POST REQUEST:
+{
+ "header": {
+ "service": "[to be given by NBC | String -
+Mandatory]",
+ "extra": {
+ "pyrName": "[Payer Name | String -
+Mandatory]"
+ }
+ },
+ "channelId": "[valid channelId | String -
+Mandatory]",
+ "channelRef": "[channel unique reference | String -
+Mandatory]",
+ "creditAccount": "[NBC Valid Account | String -
+Mandatory]",
+ "creditCurrency": "[NBC valid currency of the account
+| String - Mandatory]",
+ "debitAccount": "[NBC Valid Account | String -
+Mandatory]",
+ "debitCurrency": "[NBC valid currency of the account
+| String - Mandatory]",
+ "amount": "[Valid amount | String - Mandatory]",
+ "narration": "[Transfer Narrations | String -
+Mandatory]"
+}
+INTERNAL FUNDTRANSFER INTEGRATION API DOCUMENTATION
+Confidential
+Success Fund transfer
+Response Payload
+{
+ "statusCode": 600,
+ "message": "SUCCESS",
+ "body": {
+ "hostReferenceCbs": "99520103000100000161",
+ "hostStatusCodeCbs": "0",
+ "hostReferenceGw": "CB2212131003324",
+ "cbsRespTime": "20221213144646"
+ }
+}
+Failure Fund Transfer
+Response Payload
+{
+ "statusCode": 700,
+ "message": "FAILED: ",
+ "body": {
+ "hostReferenceCbs": "",
+ "hostStatusCodeCbs": "57",
+ "hostReferenceGw": "CB2212131003324",
+ "cbsRespTime": ""
+ }
+}
+Response Codes: Response codes are not limited to below status codes
+Status Code Error Description 
+600 (Success) Success response
+626 Transaction Failed
+625 No Response
+630 Currency account combination does not match
+631 biller not defined 
+INTERNAL FUNDTRANSFER INTEGRATION API DOCUMENTATION
+Confidential
+API Authentication
+For external fund transfer api, NBC supports the following authentication methods:
+1. BASIC Authentication
+This authentication uses the http header AUTHORIZATION with BASIC realm encoding 
+username and password using Base64. i.e.
+NBC-Authorization: Basic Base64(username:password).
+So the third party need to provide both username and password.
+2. Digital Signature
+Digital signature will be used for messages exchange between the gatway and channel
+System. The channel system will be required to apply for digital signature from Certificate 
+Authority (CA). Digital signatures will also be used for message(s) sharing. Message(s) 
+must previously be signed by the Participant’s private key and verified using participant’s 
+Public Key. The supported signature algorithm is SHA256withRSA, the whole payload 
+should be signed, and the signature to be placed on corresponding headers.
+3. API Key
+The x-api-key header is required for all incoming requests to the API. It contains the API 
+key used by authorized channel consumers to authenticate their access. This key acts as a 
+security measure to ensure that only approved channels can interact with the API.

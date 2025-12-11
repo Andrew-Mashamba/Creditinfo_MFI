@@ -1,0 +1,198 @@
+<?php
+
+namespace App\Http\Livewire\Accounting;
+use App\Models\approvals;
+use App\Models\general_ledger;
+use App\Models\Loan_sub_products;
+use App\Models\loans_schedules;
+use App\Models\loans_summary;
+use App\Models\LoansModel;
+use App\Models\ClientsModel;
+use Carbon\Carbon;
+use App\Services\TransactionPostingService;
+use App\Models\BranchesModel;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Mediconesystems\LivewireDatatables\Column;
+use Mediconesystems\LivewireDatatables\Http\Livewire\LivewireDatatable;
+use Mediconesystems\LivewireDatatables\Action;
+use Livewire\Component;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+class ViewAccountTable extends LivewireDatatable
+{
+    public $value;
+    // public $exportable=true;
+    public $start_date;
+    public $end_date,$status,$aging,$branch;
+    public $sortByBranch;
+    public $exportStyles=false,$exportWidths=false;
+
+    protected $listeners=['changeStatus','changeAging',
+                       'changeStartDate','changeEndDate','changeBranch'];
+
+
+
+    function changeEndDate($date){
+        $this->end_date=$date;
+    }
+
+    function changeAging($aging){
+        $this->aging=$aging;
+    }
+
+
+    function changeStartDate($date){
+    $this->start_date=$date;
+    }
+
+    function changeBranch($branch){
+        $this->branch=$branch;
+        }
+
+        function changeStatus($status){
+            $this->status=$status;
+            }
+
+  public function builder(){
+
+     $query=general_ledger::query()->where('record_on_account_number',session('account_number'));
+     //->where('status','ACTIVE');
+     //->where('status','ACTIVE');
+
+    if(!empty($this->start_date)){
+        $query=$query->where('created_at','>=',$this->start_date);
+        //->where('branch_id',session()->get('sortingBranch'));
+    }
+
+    if(!empty($this->end_date)){
+       $query= $query->where('created_at','<=',$this->end_date);
+       //->where('branch_id',session()->get('sortingBranch'));
+    }
+
+
+    if(!empty($this->branch)){
+        $query= $query->where('branch_id',$this->branch);
+     }
+
+     if(!empty($this->status)){
+        $query= $query->where('loan_status',$this->status);
+     }
+
+
+     if(!empty($this->aging)){
+        $query= $query->where('principle','<=',$this->aging);
+     }
+
+    // session()->put('summAmount',$query->sum('principle') );
+     //session()->put('interest',$query->sum('interest') );
+
+   return  $query;
+}
+
+
+public function columns()
+{
+    return [
+
+        Column::index($this),
+        Column::callback('created_at', function ($date) {
+            return Carbon::parse($date)->format('Y-M-d');
+        })->label('Transaction Date')->searchable(),
+
+        column::name('sender_name')->label('sender name')->searchable(),
+
+       column::name('record_on_account_number')->label('record_on_account_number'),
+
+       column::callback('debit',function($debit){
+        return number_format($debit,2);
+       })->label('debit'),
+
+       column::callback('credit',function($credit){
+        return number_format($credit,2);
+       })->label('credit')->searchable(),
+       
+       column::callback('record_on_account_number_balance',function($record_on_account_number_balance){
+        return number_format($record_on_account_number_balance,2);
+       })->label('balance'),
+
+
+        //column::name('narration')->label('narration')->searchable() ,
+        // column::name('loan_id')->label(label: 'id'),
+
+
+        Column::callback('reference_number', function ($reference_number) {
+
+
+        $html = '
+        <button wire:click="reverseTransaction(' .$reference_number .')" class="hoverable m-2 py-2 px-4 text-sm font-medium text-center text-gray-900
+           bg-white rounded-md border border-red-300 hover:bg-red-100 focus:ring-4   text-red-500 hover:text-red-700 hover:bg-red-100
+           focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600
+           dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700 inline-flex items-center
+           dark:placeholder-gray-400 dark:text-red dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+           <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5">
+           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"></path>
+           </svg>
+           <span class="hidden text-customPurple m-2">Delete</span>
+
+           </button>
+          ';
+
+          return $html;
+        })->label('view'),
+
+
+
+    ];
+
+    // TODO: Change the autogenerated stub
+}
+
+
+function reverseTransaction($reference_number){
+
+    $transaction= new TransactionPostingService();
+
+    $outpu= $transaction->reverseTransaction($reference_number);
+
+    session()->flash('message',$outpu? :'Your action was successful!');
+}
+
+public function exportPDF()
+{
+    $accounts = DB::table('accounts')
+        ->where('account_number', session('account_number'))
+        ->get();
+
+    $transactions = $this->builder()->get();
+
+    $pdf = PDF::loadView('pdf.account-statement', [
+        'accounts' => $accounts,
+        'transactions' => $transactions
+    ]);
+
+    return response()->streamDownload(function () use ($pdf) {
+        echo $pdf->output();
+    }, 'account-statement.pdf');
+}
+
+public function buildActions()
+    {
+        return [
+
+
+
+            Action::groupBy('Export Options', function () {
+                return [
+                    Action::value('csv')->label('Export CSV')->export('loanPortifolio.csv'),
+                    Action::value('html')->label('Export HTML')->export('loanPortifolio.html'),
+                    Action::value('xlsx')->label('Export XLSX')->export('loanPortifolio.xlsx'),
+                    Action::value('pdf')->label('Export PDF')->export('account-statement.pdf'),
+                ];
+            }),
+        ];
+    }
+}

@@ -1,0 +1,56 @@
+API TEST SUMMARY REPORT
+========================
+Date: 2025-08-21
+Generated: 2025-08-21 09:51:09
+
+STATISTICS
+----------
+Total Requests: 6
+Successful Responses: 5
+Failed Responses: 1
+Avg Response Time: 8.48 ms
+Min Response Time: 4.05 ms
+Max Response Time: 15.76 ms
+
+APIs TESTED
+-----------
+• api.bank.com
+• cbpuat.intra.nbc.co.tz
+
+DETAILED RESULTS
+----------------
+
+IFT Transaction
+  URL: POST https://api.bank.com/ift-transaction
+  Response: ✅ Received
+  Status Code: 200
+  Response Time: 15.76 ms
+
+IFT Transaction
+  URL: POST https://api.bank.com/ift-transaction
+  Response: ✅ Received
+  Status Code: 200
+  Response Time: 12.62 ms
+
+IFT Transaction
+  URL: POST https://api.bank.com/ift-transaction
+  Response: ✅ Received
+  Status Code: 200
+  Response Time: 5.19 ms
+
+IFT Transaction
+  URL: POST https://api.bank.com/ift-transaction
+  Response: ✅ Received
+  Status Code: 200
+  Response Time: 4.77 ms
+
+IFT Transaction
+  URL: POST http://cbpuat.intra.nbc.co.tz:6666/api/nbc-sg/internal_ft/ift-transaction
+  Response: ❌ Failed
+  Error: cURL error 6: Could not resolve host: api.bank.com (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://api.bank.com/ift-transaction
+
+IFT Transaction
+  URL: POST http://cbpuat.intra.nbc.co.tz:6666/api/nbc-sg/internal_ft/ift-transaction
+  Response: ✅ Received
+  Status Code: 200
+  Response Time: 4.05 ms

@@ -1,0 +1,94 @@
+
+/* Define the 'spin' class with the animation */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spin {
+    animation: spin 2s linear infinite; /* Adjust the duration and timing function as desired */
+}
+[x-cloak] {
+    display: none;
+}
+
+/* Very Light Shade */
+.very-light-shade,
+.very-light-shade:hover {
+    background-color: #B4E4FC;
+    color: #333333;
+}
+
+.px-3.py-2.rounded-lg.mb-2.last\:mb-0.cursor-pointer:hover .very-light-shade {
+    background-color: #B4E4FC;
+    color: #333333;
+}
+
+
+/* Lighter Shade */
+.lighter-shade {
+    background-color: #6EC9F5;
+    color: #333333;
+}
+
+/* Light Shade */
+.light-shade {
+    background-color: #9EDFF7;
+    color: #333333;
+}
+
+/* Extra Light Shade */
+.extra-light-shade {
+    background-color: #D3F0FE;
+    color: #333333;
+}
+
+/* Darker Shade */
+.darker-shade {
+    background-color: #0F86BA;
+    color: #FFFFFF;
+}
+
+/* Dark Shade */
+.dark-shade {
+    background-color: #166B8D;
+    color: #FFFFFF;
+}
+
+/* Very Light Shade */
+.text-very-light-shade {
+    color: #B4E4FC;
+}
+
+/* Lighter Shade */
+.text-lighter-shade {
+    color: #6EC9F5;
+}
+
+/* Light Shade */
+.text-light-shade {
+    color: #9EDFF7;
+}
+
+/* Extra Light Shade */
+.text-extra-light-shade {
+    color: #D3F0FE;
+}
+
+/* Darker Shade */
+.text-darker-shade {
+    color: #0F86BA;
+}
+
+/* Dark Shade */
+.text-dark-shade {
+    color: #166B8D;
+}
+
+.border-darker-shade {
+    border-color: #0F86BA;
+}

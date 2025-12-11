@@ -1,0 +1,1995 @@
+<div class="container-fluid">
+    <div class="min-h-screen bg-gray-50 p-6">
+        <!-- Loading Overlay -->
+        @if($isLoading)
+        <div class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-4 rounded-lg shadow-lg">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p class="mt-2 text-sm text-gray-600">Loading...</p>
+            </div>
+        </div>
+        @endif
+
+        <!-- Error Messages -->
+        @if($errorMessage)
+        <div class="mb-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4" role="alert">
+            <p class="font-bold">Error</p>
+            <p>{{ $errorMessage }}</p>
+        </div>
+        @endif
+
+        <!-- Success Messages -->
+        @if($successMessage)
+        <div class="mb-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4" role="alert">
+            <p class="font-bold">Success</p>
+            <p>{{ $successMessage }}</p>
+        </div>
+        @endif
+
+        <!-- Dashboard Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Savings Management</h1>
+                <p class="text-gray-600 mt-1">Track and manage all savings accounts</p>
+            </div>
+            {{--<div class="flex gap-3 w-full sm:w-auto">
+                <button 
+                    wire:click="showIssueNewSavingsModal(1)" 
+                    wire:loading.attr="disabled"
+                    class="inline-flex items-center px-4 py-2 bg-blue-900 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-900 focus:bg-blue-900 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    <span wire:loading.remove wire:target="showIssueNewSavingsModal">New Account</span>
+                    <span wire:loading wire:target="showIssueNewSavingsModal">Processing...</span>
+                </button>
+            </div>--}}
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <!-- Total Savings -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Savings</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">TZS {{ number_format($totalSavings, 2) }}</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-green-50 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm text-gray-500">
+                    <span>Total savings balance across all accounts</span>
+                </div>
+            </div>
+
+            <!-- Active Accounts -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Active Accounts</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">{{ number_format($activeAccounts) }}</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm text-gray-500">
+                    <span class="flex items-center text-green-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="ml-1">Active savings accounts</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Inactive Accounts -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Inactive Accounts</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">{{ number_format($inactiveAccounts) }}</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-amber-50 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm text-gray-500">
+                    <span>Accounts requiring attention</span>
+                </div>
+            </div>
+
+            <!-- Savings Products -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Savings Products</p>
+                        <p class="mt-1 text-3xl font-semibold text-gray-900">{{ number_format($totalProducts) }}</p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-blue-50 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm text-gray-500">
+                    <span>Available savings products</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex flex-col lg:flex-row gap-6 w-full">
+            <!-- Sidebar Navigation -->
+            <div class="w-full max-w-xs shrink-0">
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                    <nav class="space-y-2">
+                        @if($permissions['canCreate'] ?? false)
+                        <button 
+                            wire:click="showCreateNewSavingsAccount"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==1) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showCreateNewSavingsAccount">New Account</span>
+                            <span wire:loading wire:target="showCreateNewSavingsAccount">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canDeposit'] ?? false)
+                        <button 
+                            wire:click="showReceiveSavingsModal"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==2) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showReceiveSavingsModal">Receive Savings</span>
+                            <span wire:loading wire:target="showReceiveSavingsModal">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canWithdraw'] ?? false)
+                        <button 
+                            wire:click="showWithdrawSavingsModal"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==3) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showWithdrawSavingsModal">Withdraw Savings</span>
+                            <span wire:loading wire:target="showWithdrawSavingsModal">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canWithdraw'] ?? false)
+                        <button
+                            wire:click="showPayLoanModal"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==13) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showPayLoanModal">Pay Loan</span>
+                            <span wire:loading wire:target="showPayLoanModal">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canWithdraw'] ?? false)
+                        <button
+                            wire:click="showTransferToDepositsModal"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==14) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showTransferToDepositsModal">Transfer to Deposits</span>
+                            <span wire:loading wire:target="showTransferToDepositsModal">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canView'] ?? false)
+                        <button
+                            wire:click="showSavingsFullReportPage"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==11) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showSavingsFullReportPage">Savings Full Report</span>
+                            <span wire:loading wire:target="showSavingsFullReportPage">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canExport'] ?? false)
+                        <button 
+                            wire:click="showSavingsBulkUploadPage" 
+                            wire:loading.attr="disabled"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==12) bg-blue-900  text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showSavingsBulkUploadPage">Savings Bulk Upload</span>
+                            <span wire:loading wire:target="showSavingsBulkUploadPage">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canView'] ?? false)
+                        <button
+                            wire:click="showIssueNewSavingsModal(4)"
+                            wire:loading.attr="disabled"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==4) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showIssueNewSavingsModal">Monthly Report</span>
+                            <span wire:loading wire:target="showIssueNewSavingsModal">Processing...</span>
+                        </button>
+                        @endif
+
+                        @if($permissions['canView'] ?? false)
+                        <button
+                            wire:click="showInterestOnSavingsPage"
+                            wire:loading.attr="disabled"
+                            class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium
+                            @if($selected==15) bg-blue-900 text-white rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @else text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-700 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            @endif
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span wire:loading.remove wire:target="showInterestOnSavingsPage">Interest on Savings</span>
+                            <span wire:loading wire:target="showInterestOnSavingsPage">Processing...</span>
+                        </button>
+                        @endif
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="flex-1">
+              
+                <!-- Content Area -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+                    @if ($selected==1 || $selected==2 || $selected==10)
+                        <livewire:savings.savings-overview/>
+                    @elseif($selected==4)
+                        <livewire:savings.monthly-report />
+                    @elseif($selected==15)
+                        <livewire:savings.interest-on-savings />
+                    @elseif($selected==11)
+                        <livewire:savings.savings-full-report />
+                    @elseif($selected==12)
+                        <livewire:savings.savings-bulk-upload />
+                    @elseif($selected==3)
+                        <div class="p-6 text-center text-gray-500">
+                            Awaiting sample report
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    @if($showCreateNewSavingsAccount)    
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-left sm:mt-0 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Create New Savings Account
+                            </h3>
+                            <div class="mt-2">                                
+
+                                <form wire:submit.prevent="createSavingsAccount">
+                                    <!-- Client Number -->
+                                    <div class="mb-4">
+                                        <label for="member" class="block text-sm font-medium text-gray-700">Client Number</label>
+                                        <input type="text" 
+                                    wire:model.defer="member" 
+                                    wire:keyup="validateMemberNumber"
+                                    id="member" 
+                                    maxlength="5"
+                                    placeholder="Enter 5-digit member number"
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            @error('member') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    {{-- Member Information Display --}}
+                        @if($memberDetails)
+                            <div class="mt-4 bg-gray-50 p-4 rounded-md">
+                                <h4 class="text-sm font-medium text-gray-900 mb-2">Member Information</h4>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">Name:</p>
+                                        <p class="text-sm font-medium text-gray-900">{{ $memberDetails['first_name'] }} {{ $memberDetails['last_name'] }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Member Number:</p>
+                                        <p class="text-sm font-medium text-gray-900">{{ $memberDetails['client_number'] }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Phone:</p>
+                                        <p class="text-sm font-medium text-gray-900">{{ $memberDetails['phone_number'] ?? 'N/A' }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">Email:</p>
+                                        <p class="text-sm font-medium text-gray-900">{{ $memberDetails['email'] ?? 'N/A' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Selected Member Name Display --}}
+                        @if($memberName)
+                            <div class="bg-gray-50 p-3 rounded-md">
+                                <p class="text-sm text-gray-600">Selected Member: <span class="font-medium text-gray-900">{{ $memberName }}</span></p>
+                            </div>
+                        @endif
+
+                                    <!-- Product Selection -->
+                                    <div class="mb-4">
+                                        <label for="productId" class="block text-sm font-medium text-gray-700">Product</label>
+                                        <select 
+                                            wire:model.defer="productId" 
+                                            id="productId" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            wire:loading.attr="disabled"
+                                        >
+                                            <option value="">Select a product</option>                                                                               
+                                            @foreach($availableProducts as $product)                                            
+                                                <option value="{{ $product->id }}">{{ $product->product_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Account Number -->
+                                    {{--<div class="mb-4">
+                                        <label for="accountNumber" class="block text-sm font-medium text-gray-700">Account Number</label>
+                                        <input 
+                                            type="text" 
+                                            wire:model.defer="accountNumber" 
+                                            id="accountNumber" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            wire:loading.attr="disabled"
+                                        >
+                                    </div>
+
+                                    <!-- Account Name -->
+                                    <div class="mb-4">
+                                        <label for="accountName" class="block text-sm font-medium text-gray-700">Account Name</label>
+                                        <input 
+                                            type="text" 
+                                            wire:model.defer="accountName" 
+                                            id="accountName" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            wire:loading.attr="disabled"
+                                        >
+                                    </div>
+
+                                    <!-- Initial Balance -->
+                                    <div class="mb-4">
+                                        <label for="balance" class="block text-sm font-medium text-gray-700">Initial Balance</label>
+                                        <input 
+                                            type="number" 
+                                            wire:model.defer="balance" 
+                                            id="balance" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            wire:loading.attr="disabled"
+                                        >
+                                    </div>--}}
+                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                        <button 
+                                            type="submit"                         
+                                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-900 text-base font-medium text-white hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-900 sm:ml-3 sm:w-auto sm:text-sm"
+                                            wire:loading.attr="disabled"
+                                        >
+                                            <span wire:loading.remove wire:target="createSavingsAccount">Create Account</span>
+                                            <span wire:loading wire:target="createSavingsAccount">Processing...</span>
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            wire:click="$set('showCreateNewSavingsAccount', false)"
+                                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Receive Savings Modal --}}
+    @if($showReceiveSavingsModal)
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <form wire:submit.prevent="submitReceiveSavings">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="mb-4">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900">Receive Savings</h3>
+                        </div>
+
+                        {{-- Membership Number Verification --}}
+                        <div class="mb-4">
+                            <label for="membershipNumber" class="block text-sm font-medium text-gray-700">Membership Number</label>
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <input type="text" wire:model.defer="membershipNumber" id="membershipNumber" class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-md sm:text-sm border-gray-300" placeholder="Enter membership number">
+                                <button type="button" wire:click="verifyMembership" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-900 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Verify
+                                </button>
+                            </div>
+                            @error('membershipNumber') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                        </div>
+
+                        @if($verifiedMember)
+                            {{-- Member Details --}}
+                            <div class="mb-4 p-4 bg-gray-50 rounded-md">
+                                <h4 class="text-sm font-medium text-gray-900">Member Details</h4>
+                                <p class="mt-1 text-sm text-gray-600">{{ $verifiedMember['name'] }}</p>
+                                <p class="mt-1 text-sm text-gray-600">Membership Type: {{ $verifiedMember['membership_type'] }}</p>
+                                <p class="mt-1 text-sm text-gray-600">Client Number: {{ $verifiedMember['client_number'] }}</p>
+                            </div>
+
+                            {{-- Account Selection --}}
+                            <div class="mb-4">
+                                <label for="selectedAccount" class="block text-sm font-medium text-gray-700">Select Account</label>
+                                <select wire:model.defer="selectedAccount" id="selectedAccount" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                    <option value="">Select an account</option>
+                                    @foreach($memberAccounts as $account)
+                                        <option value="{{ $account->account_number  }}">{{ $account->account_name }} ({{ $account->account_number }})</option>
+                                    @endforeach
+                                </select>
+                                @error('selectedAccount') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- Amount --}}
+                            <div class="mb-4">
+                                <label for="amount" class="block text-sm font-medium text-gray-700">Amount</label>
+                                <div class="mt-1">
+                                    <input type="number" step="0.01" wire:model.defer="amount" id="amount" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                                </div>
+                                @error('amount') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- Payment Method --}}
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700">Payment Method</label>
+                                <div class="mt-2 space-y-4 sm:space-y-0 sm:space-x-4 flex">
+                                    <div class="flex items-center">
+                                        <input name="paymentMethod" type="radio" wire:model="paymentMethod" value="cash" id="cash" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                                        <label for="cash" class="ml-3 block text-sm font-medium text-gray-700">Cash</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input name="paymentMethod" type="radio" wire:model="paymentMethod" value="bank" id="bank" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                                        <label for="bank" class="ml-3 block text-sm font-medium text-gray-700">Bank Deposit</label>
+                                    </div>
+                                </div>
+                                @error('paymentMethod') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            @if($paymentMethod === 'bank')
+                                {{-- Bank Selection --}}
+                                <div class="mb-4">
+                                    <label for="selectedBank" class="block text-sm font-medium text-gray-700">Select Bank</label>
+                                    <select wire:model.defer="selectedBank" id="selectedBank" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                        <option value="">Select a bank</option>
+                                        @foreach($bankAccounts as $bank)
+                                            <option value="{{ $bank->id }}">{{ $bank->bank_name }} - {{ $bank->account_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('selectedBank') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
+                                @if($selectedBankDetails)
+                                    {{-- Bank Account Details --}}
+                                    <div class="mb-4 p-4 bg-gray-50 rounded-md">
+                                        <h4 class="text-sm font-medium text-gray-900">Bank Account Details</h4>
+                                        <p class="mt-1 text-sm text-gray-600">Bank: {{ $selectedBankDetails->bank_name }}</p>
+                                        <p class="mt-1 text-sm text-gray-600">Account Name: {{ $selectedBankDetails->account_name }}</p>
+                                        <p class="mt-1 text-sm text-gray-600">Account Number: {{ $selectedBankDetails->account_number }}</p>
+                                        @if($selectedBankDetails->branch_name)
+                                            <p class="mt-1 text-sm text-gray-600">Branch: {{ $selectedBankDetails->branch_name }}</p>
+                                        @endif
+                                    </div>
+                                @endif
+
+                                {{-- Reference Number --}}
+                                <div class="mb-4">
+                                    <label for="referenceNumber" class="block text-sm font-medium text-gray-700">Reference Number</label>
+                                    <div class="mt-1">
+                                        <input type="text" wire:model.defer="referenceNumber" id="referenceNumber" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter reference number">
+                                    </div>
+                                    @error('referenceNumber') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                </div>
+
+                                {{-- Deposit Date and Time --}}
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="depositDate" class="block text-sm font-medium text-gray-700">Deposit Date</label>
+                                        <div class="mt-1">
+                                            <input type="date" wire:model.defer="depositDate" id="depositDate" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                        </div>
+                                        @error('depositDate') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    </div>
+                                    <div>
+                                        <label for="depositTime" class="block text-sm font-medium text-gray-700">Deposit Time</label>
+                                        <div class="mt-1">
+                                            <input type="time" wire:model.defer="depositTime" id="depositTime" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                        </div>
+                                        @error('depositTime') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Depositor Name --}}
+                            <div class="mb-4">
+                                <label for="depositorName" class="block text-sm font-medium text-gray-700">Name of Depositor</label>
+                                <div class="mt-1">
+                                    <input type="text" wire:model.defer="depositorName" id="depositorName" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter depositor name">
+                                </div>
+                                @error('depositorName') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- Narration --}}
+                            <div class="mb-4">
+                                <label for="narration" class="block text-sm font-medium text-gray-700">Narration</label>
+                                <div class="mt-1">
+                                    <textarea wire:model.defer="narration" id="narration" rows="3" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter transaction narration"></textarea>
+                                </div>
+                                @error('narration') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-900 text-base font-medium text-white hover:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                        wire:loading.attr="disabled"
+                        >
+                            <span wire:loading.remove wire:target="submitReceiveSavings">Submit</span>
+                            <span wire:loading wire:target="submitReceiveSavings">Processing...</span>                            
+                        </button>
+                        <button type="button" wire:click="$set('showReceiveSavingsModal', false)" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Withdraw Savings Modal --}}
+    @if($showWithdrawSavingsModal)
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <form wire:submit.prevent="submitWithdrawSavings">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        {{-- Modal Header --}}
+                        <div class="mb-6 pb-4 border-b-2 border-gray-200">
+                            <h3 class="text-xl leading-6 font-bold text-gray-900 flex items-center">
+                                <svg class="h-6 w-6 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6" />
+                                </svg>
+                                Withdraw Savings
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-500">Complete the form below to process a savings withdrawal</p>
+                        </div>
+
+                        {{-- SECTION 1: MEMBER VERIFICATION --}}
+                        <div class="mb-6 p-5 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-900 flex items-center justify-center text-white font-bold">1</div>
+                                <h4 class="ml-3 text-base font-semibold text-gray-900">Member Verification</h4>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="withdrawMembershipNumber" class="block text-sm font-medium text-gray-700 mb-1">Membership Number <span class="text-red-500">*</span></label>
+                                <div class="flex rounded-md shadow-sm">
+                                    <input type="text" wire:model.defer="withdrawMembershipNumber" id="withdrawMembershipNumber" class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-l-md sm:text-sm border-gray-300" placeholder="Enter membership number">
+                                    <button type="button" wire:click="verifyWithdrawMembership" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-900 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span wire:loading.remove wire:target="verifyWithdrawMembership">Verify</span>
+                                        <span wire:loading wire:target="verifyWithdrawMembership">Verifying...</span>
+                                    </button>
+                                </div>
+                                @error('withdrawMembershipNumber') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+
+                            @if($withdrawVerifiedMember)
+                                <div class="mt-4 p-4 bg-white border border-green-300 rounded-md">
+                                    <div class="flex items-center mb-2">
+                                        <svg class="h-5 w-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                        <h5 class="text-sm font-semibold text-gray-900">Member Verified</h5>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3 text-sm">
+                                        <div>
+                                            <p class="text-gray-600">Name:</p>
+                                            <p class="font-medium text-gray-900">{{ $withdrawVerifiedMember['name'] }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-600">Client Number:</p>
+                                            <p class="font-medium text-gray-900">{{ $withdrawVerifiedMember['client_number'] }}</p>
+                                        </div>
+                                        <div class="col-span-2">
+                                            <p class="text-gray-600">Membership Type:</p>
+                                            <p class="font-medium text-gray-900">{{ $withdrawVerifiedMember['membership_type'] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if($withdrawVerifiedMember)
+                            {{-- SECTION 2: ACCOUNT SELECTION --}}
+                            <div class="mb-6 p-5 bg-green-50 border-2 border-green-200 rounded-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">2</div>
+                                    <h4 class="ml-3 text-base font-semibold text-gray-900">Select Account</h4>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="withdrawSelectedAccount" class="block text-sm font-medium text-gray-700 mb-1">Savings Account <span class="text-red-500">*</span></label>
+                                    <select wire:model.live="withdrawSelectedAccount" id="withdrawSelectedAccount" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                                        <option value="">Select an account</option>
+                                        @foreach($withdrawMemberAccounts as $account)
+                                            <option value="{{ $account->account_number  }}">{{ $account->account_name }} ({{ $account->account_number }})</option>
+                                        @endforeach
+                                    </select>
+                                    @error('withdrawSelectedAccount') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+
+                                @if($withdrawSelectedAccount)
+                                    {{-- PROMINENT Balance Display --}}
+                                    <div class="mt-4 p-5 bg-blue-900 rounded-lg shadow-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-medium text-blue-100 uppercase tracking-wide">Available Balance</p>
+                                                <p class="mt-2 text-3xl font-bold text-white">
+                                                    TZS {{ number_format($withdrawSelectedAccountBalance, 2) }}
+                                                </p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <svg class="h-12 w-12 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- SECTION 3: WITHDRAWAL AMOUNT & NARRATION --}}
+                            <div class="mb-6 p-5 bg-yellow-50 border-2 border-yellow-200 rounded-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-yellow-600 flex items-center justify-center text-white font-bold">3</div>
+                                    <h4 class="ml-3 text-base font-semibold text-gray-900">Withdrawal Details</h4>
+                                </div>
+
+                                {{-- Amount --}}
+                                <div class="mb-4">
+                                    <label for="withdrawAmount" class="block text-sm font-medium text-gray-700 mb-1">Withdrawal Amount <span class="text-red-500">*</span></label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">TZS</span>
+                                        </div>
+                                        <input type="number" step="0.01" wire:model.lazy="withdrawAmount" id="withdrawAmount" class="focus:ring-yellow-500 focus:border-yellow-500 block w-full pl-12 pr-12 shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                                    </div>
+                                    @error('withdrawAmount') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+
+                                    @if($withdrawSelectedAccount && $withdrawAmount)
+                                        @if($withdrawAmount > $withdrawSelectedAccountBalance)
+                                            <div class="mt-2 flex items-center text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+                                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="text-sm font-medium">Insufficient funds! Amount exceeds available balance.</span>
+                                            </div>
+                                        @else
+                                            <div class="mt-2 flex items-center text-green-600 bg-green-50 border border-green-200 rounded-md p-2">
+                                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="text-sm font-medium">Amount validated successfully</span>
+                                            </div>
+                                        @endif
+                                    @endif
+                                </div>
+
+                                {{-- Narration (moved here - common to all methods) --}}
+                                <div class="mb-0">
+                                    <label for="withdrawNarration" class="block text-sm font-medium text-gray-700 mb-1">Narration / Purpose <span class="text-red-500">*</span></label>
+                                    <textarea wire:model.defer="withdrawNarration" id="withdrawNarration" rows="3" class="focus:ring-yellow-500 focus:border-yellow-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter transaction purpose or description"></textarea>
+                                    @error('withdrawNarration') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+                            </div>
+
+                            {{-- SECTION 4: PAYMENT METHOD & DETAILS --}}
+                            <div class="mb-6 p-5 bg-purple-50 border-2 border-purple-200 rounded-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">4</div>
+                                    <h4 class="ml-3 text-base font-semibold text-gray-900">Payment Method</h4>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Withdrawal Method <span class="text-red-500">*</span></label>
+                                    <div class="grid grid-cols-1 gap-3">
+                                        <label class="relative flex items-center p-4 cursor-pointer border-2 rounded-lg hover:bg-white transition-colors @if($withdrawPaymentMethod === 'cash') border-purple-500 bg-white @else border-gray-200 @endif">
+                                            <input name="withdrawPaymentMethod" type="radio" wire:model="withdrawPaymentMethod" value="cash" id="withdrawCash" class="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300">
+                                            <div class="ml-3 flex items-center flex-1">
+                                                <svg class="h-6 w-6 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-gray-900">Cash (From Safe)</span>
+                                                    <span class="block text-xs text-gray-500">Withdraw cash from vault - Requires OTP verification</span>
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <label class="relative flex items-center p-4 cursor-pointer border-2 rounded-lg hover:bg-white transition-colors @if($withdrawPaymentMethod === 'internal_transfer') border-purple-500 bg-white @else border-gray-200 @endif">
+                                            <input name="withdrawPaymentMethod" type="radio" wire:model="withdrawPaymentMethod" value="internal_transfer" id="withdrawInternal" class="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300">
+                                            <div class="ml-3 flex items-center flex-1">
+                                                <svg class="h-6 w-6 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                                </svg>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-gray-900">Internal Transfer (NBC to NBC)</span>
+                                                    <span class="block text-xs text-gray-500">Transfer to another NBC bank account</span>
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <label class="relative flex items-center p-4 cursor-pointer border-2 rounded-lg hover:bg-white transition-colors @if($withdrawPaymentMethod === 'tips_mno') border-purple-500 bg-white @else border-gray-200 @endif">
+                                            <input name="withdrawPaymentMethod" type="radio" wire:model="withdrawPaymentMethod" value="tips_mno" id="withdrawTipsMno" class="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300">
+                                            <div class="ml-3 flex items-center flex-1">
+                                                <svg class="h-6 w-6 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-gray-900">TIPS Transfer to Mobile Money</span>
+                                                    <span class="block text-xs text-gray-500">M-PESA, Airtel Money, Tigo Pesa, etc.</span>
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <label class="relative flex items-center p-4 cursor-pointer border-2 rounded-lg hover:bg-white transition-colors @if($withdrawPaymentMethod === 'tips_bank') border-purple-500 bg-white @else border-gray-200 @endif">
+                                            <input name="withdrawPaymentMethod" type="radio" wire:model="withdrawPaymentMethod" value="tips_bank" id="withdrawTipsBank" class="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300">
+                                            <div class="ml-3 flex items-center flex-1">
+                                                <svg class="h-6 w-6 text-gray-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
+                                                <div>
+                                                    <span class="block text-sm font-medium text-gray-900">TIPS Transfer to Other Bank</span>
+                                                    <span class="block text-xs text-gray-500">Transfer to any other bank account</span>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    @error('withdrawPaymentMethod') <span class="text-red-500 text-sm mt-2 block">{{ $message }}</span> @enderror
+                                </div>
+
+                                {{-- METHOD-SPECIFIC FIELDS --}}
+                                @if($withdrawPaymentMethod === 'internal_transfer')
+                                    <div class="mt-4 p-4 bg-white border-2 border-purple-300 rounded-lg">
+                                        <h5 class="text-sm font-semibold text-gray-900 mb-3">Internal Transfer Details</h5>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawNbcAccount" class="block text-sm font-medium text-gray-700 mb-1">Recipient NBC Account Number</label>
+                                            <input type="text" value="{{ $withdrawVerifiedMember['account_number'] ?? '' }}" id="withdrawNbcAccount" class="bg-gray-100 focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" disabled readonly>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawSourceAccount" class="block text-sm font-medium text-gray-700 mb-1">Source Bank Account <span class="text-red-500">*</span></label>
+                                            <select wire:model.defer="withdrawSourceAccount" id="withdrawSourceAccount" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                                                <option value="">Select source account</option>
+                                                @foreach($withdrawBankAccounts as $bankAccount)
+                                                    <option value="{{ $bankAccount->id }}">{{ $bankAccount->account_name }} - {{ $bankAccount->bank_name }} ({{ $bankAccount->account_number }})</option>
+                                                @endforeach
+                                            </select>
+                                            @error('withdrawSourceAccount') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawReferenceNumber_internal" class="block text-sm font-medium text-gray-700 mb-1">Reference Number</label>
+                                            <input type="text" wire:model.defer="withdrawReferenceNumber" id="withdrawReferenceNumber_internal" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter reference number">
+                                            @error('withdrawReferenceNumber') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3 mb-0">
+                                            <div>
+                                                <label for="withdrawDate_internal" class="block text-sm font-medium text-gray-700 mb-1">Transfer Date</label>
+                                                <input type="date" wire:model.defer="withdrawDate" id="withdrawDate_internal" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                @error('withdrawDate') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label for="withdrawTime_internal" class="block text-sm font-medium text-gray-700 mb-1">Transfer Time</label>
+                                                <input type="time" wire:model.defer="withdrawTime" id="withdrawTime_internal" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                @error('withdrawTime') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if($withdrawPaymentMethod === 'tips_mno')
+                                    <div class="mt-4 p-4 bg-white border-2 border-purple-300 rounded-lg">
+                                        <h5 class="text-sm font-semibold text-gray-900 mb-3">Mobile Money Transfer Details</h5>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawMnoProvider" class="block text-sm font-medium text-gray-700 mb-1">Mobile Money Provider <span class="text-red-500">*</span></label>
+                                            <select wire:model.defer="withdrawMnoProvider" id="withdrawMnoProvider" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                                                <option value="">Select provider</option>
+                                                <option value="VMCASHIN">M-PESA (Vodacom)</option>
+                                                <option value="AMCASHIN">AIRTEL MONEY</option>
+                                                <option value="TPCASHIN">TIGO PESA</option>
+                                                <option value="HPCASHIN">HALOTEL</option>
+                                                <option value="APCASHIN">AZAM PESA</option>
+                                                <option value="ZPCASHIN">EZY PESA</option>
+                                            </select>
+                                            @error('withdrawMnoProvider') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawPhoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.defer="withdrawPhoneNumber" id="withdrawPhoneNumber" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="0786123456">
+                                            @error('withdrawPhoneNumber') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawReferenceNumber_mno" class="block text-sm font-medium text-gray-700 mb-1">Reference Number</label>
+                                            <input type="text" wire:model.defer="withdrawReferenceNumber" id="withdrawReferenceNumber_mno" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter reference number">
+                                            @error('withdrawReferenceNumber') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3 mb-0">
+                                            <div>
+                                                <label for="withdrawDate_mno" class="block text-sm font-medium text-gray-700 mb-1">Transfer Date</label>
+                                                <input type="date" wire:model.defer="withdrawDate" id="withdrawDate_mno" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                @error('withdrawDate') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label for="withdrawTime_mno" class="block text-sm font-medium text-gray-700 mb-1">Transfer Time</label>
+                                                <input type="time" wire:model.defer="withdrawTime" id="withdrawTime_mno" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                @error('withdrawTime') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                @if($withdrawPaymentMethod === 'tips_bank')
+                                    <div class="mt-4 p-4 bg-white border-2 border-purple-300 rounded-lg">
+                                        <h5 class="text-sm font-semibold text-gray-900 mb-3">Bank Transfer Details</h5>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawBankCode" class="block text-sm font-medium text-gray-700 mb-1">Bank Code <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.defer="withdrawBankCode" id="withdrawBankCode" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="e.g., CORUTZTZ">
+                                            <p class="mt-1 text-xs text-gray-500">Enter the SWIFT/BIC code of the recipient bank</p>
+                                            @error('withdrawBankCode') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawBankAccountNumber" class="block text-sm font-medium text-gray-700 mb-1">Bank Account Number <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.defer="withdrawBankAccountNumber" id="withdrawBankAccountNumber" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter account number">
+                                            @error('withdrawBankAccountNumber') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawBankAccountHolderName" class="block text-sm font-medium text-gray-700 mb-1">Account Holder Name <span class="text-red-500">*</span></label>
+                                            <input type="text" wire:model.defer="withdrawBankAccountHolderName" id="withdrawBankAccountHolderName" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter account holder name">
+                                            @error('withdrawBankAccountHolderName') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="withdrawReferenceNumber_bank" class="block text-sm font-medium text-gray-700 mb-1">Reference Number</label>
+                                            <input type="text" wire:model.defer="withdrawReferenceNumber" id="withdrawReferenceNumber_bank" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Enter reference number">
+                                            @error('withdrawReferenceNumber') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3 mb-0">
+                                            <div>
+                                                <label for="withdrawDate_bank" class="block text-sm font-medium text-gray-700 mb-1">Transfer Date</label>
+                                                <input type="date" wire:model.defer="withdrawDate" id="withdrawDate_bank" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                @error('withdrawDate') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                            </div>
+                                            <div>
+                                                <label for="withdrawTime_bank" class="block text-sm font-medium text-gray-700 mb-1">Transfer Time</label>
+                                                <input type="time" wire:model.defer="withdrawTime" id="withdrawTime_bank" class="focus:ring-purple-500 focus:border-purple-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                                @error('withdrawTime') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- SECTION 5: SECURITY VERIFICATION (Required for All Withdrawals) --}}
+                            {{-- Only show if amount is valid (not exceeding balance) --}}
+                            @if(!$withdrawAmount || $withdrawAmount <= $withdrawSelectedAccountBalance)
+                            <div class="mb-6 p-5 bg-red-50 border-2 border-red-300 rounded-lg">
+                                    <div class="flex items-center mb-4">
+                                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-red-600 flex items-center justify-center text-white font-bold">5</div>
+                                        <h4 class="ml-3 text-base font-semibold text-gray-900">Security Verification (OTP Required)</h4>
+                                    </div>
+
+                                    @if(!$withdrawOtpSent)
+                                        {{-- OTP Not Sent - Show Send Button --}}
+                                        <div class="text-center py-4">
+                                            <div class="mb-4">
+                                                <svg class="h-16 w-16 mx-auto text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                </svg>
+                                            </div>
+                                            <p class="text-base text-gray-900 mb-2 font-semibold">All withdrawals require identity verification</p>
+                                            <p class="text-sm text-gray-600 mb-6">An OTP code will be sent to your registered phone and email for security</p>
+                                            <button type="button" wire:click="sendWithdrawOTP" class="inline-flex items-center justify-center py-3 px-10 border border-transparent shadow-lg text-base font-semibold rounded-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200">
+                                                <svg class="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                </svg>
+                                                <span wire:loading.remove wire:target="sendWithdrawOTP">Send OTP Code</span>
+                                                <span wire:loading wire:target="sendWithdrawOTP">Sending...</span>
+                                            </button>
+                                        </div>
+                                    @else
+                                        {{-- OTP Sent - Show Input Field --}}
+                                        <div class="space-y-4">
+                                            <div class="bg-green-50 border-2 border-green-300 rounded-md p-4">
+                                                <div class="flex items-center">
+                                                    <svg class="h-6 w-6 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <p class="text-sm text-green-800 font-semibold">OTP sent successfully! Check your phone and email.</p>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label for="withdrawOtpCode" class="block text-sm font-semibold text-gray-900 mb-2">Enter your 6-digit OTP code:</label>
+                                                <div class="flex space-x-3 items-center">
+                                                    <input
+                                                        type="text"
+                                                        wire:model.live="withdrawOtpCode"
+                                                        id="withdrawOtpCode"
+                                                        maxlength="6"
+                                                        class="focus:ring-red-500 focus:border-red-500 block w-48 shadow-lg sm:text-sm border-gray-300 rounded-md text-center text-3xl font-bold tracking-widest py-3"
+                                                        placeholder="●●●●●●"
+                                                        autocomplete="off">
+                                                    <button type="button" wire:click="sendWithdrawOTP" class="inline-flex items-center justify-center py-3 px-5 border-2 border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                        <svg class="h-5 w-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                        </svg>
+                                                        <span wire:loading.remove wire:target="sendWithdrawOTP">Resend</span>
+                                                        <span wire:loading wire:target="sendWithdrawOTP">Sending...</span>
+                                                    </button>
+                                                </div>
+                                                @error('withdrawOtpCode') <span class="text-red-500 text-sm mt-1 block font-medium">{{ $message }}</span> @enderror
+                                                <p class="text-xs text-gray-500 mt-2">💡 The code will be verified automatically as you type</p>
+                                                @if($withdrawOtpSentTime)
+                                                    <p class="text-xs text-gray-600 mt-1">Sent at {{ \Carbon\Carbon::parse($withdrawOtpSentTime)->format('H:i:s') }} • Valid for 5 minutes</p>
+                                                @endif
+                                            </div>
+
+                                            @if($withdrawOtpVerified)
+                                                <div class="bg-green-50 border-2 border-green-400 rounded-lg p-5">
+                                                    <div class="flex items-center mb-3">
+                                                        <div class="flex-shrink-0">
+                                                            <svg class="h-10 w-10 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="ml-3">
+                                                            <h3 class="text-lg font-bold text-green-900">✓ OTP Verified Successfully!</h3>
+                                                            <p class="text-sm text-green-700 mt-1">Your identity has been confirmed. You can now process the withdrawal.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="bg-white border-2 border-green-300 rounded-md p-3 flex items-center justify-center">
+                                                        <svg class="h-5 w-5 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                                        </svg>
+                                                        <p class="text-sm text-gray-800 font-semibold">
+                                                            Click the green <span class="text-green-600">"Process Withdrawal"</span> button below to complete
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        @endif
+                    </div>
+
+                    {{-- MODAL FOOTER - Action Buttons --}}
+                    <div class="bg-gray-50 px-6 py-5 border-t-2 border-gray-200 sm:flex sm:flex-row-reverse sm:items-center gap-3">
+                        {{-- Submit button - Only show when OTP is verified (required for ALL withdrawals) --}}
+                        @if($withdrawOtpVerified)
+                            <button type="submit" class="w-full inline-flex items-center justify-center rounded-lg border-2 border-transparent shadow-lg px-6 py-3 bg-green-600 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transform hover:scale-105 transition-all duration-200 sm:ml-3 sm:w-auto">
+                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                                <span wire:loading.remove wire:target="submitWithdrawSavings">Process Withdrawal</span>
+                                <span wire:loading wire:target="submitWithdrawSavings" class="flex items-center">
+                                    <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Processing...
+                                </span>
+                            </button>
+                        @elseif($withdrawPaymentMethod)
+                            {{-- Show placeholder when payment method selected but OTP not verified --}}
+                            <div class="w-full sm:w-auto px-6 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-center sm:ml-3">
+                                <p class="text-sm text-gray-500 font-medium flex items-center justify-center">
+                                    <svg class="h-5 w-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                    </svg>
+                                    Complete OTP verification in Section 5 above
+                                </p>
+                            </div>
+                        @else
+                            {{-- Show placeholder when required fields not completed --}}
+                            <div class="w-full sm:w-auto px-6 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-center sm:ml-3">
+                                <p class="text-sm text-gray-500 font-medium flex items-center justify-center">
+                                    <svg class="h-5 w-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Complete all required fields above
+                                </p>
+                            </div>
+                        @endif
+
+                        {{-- Cancel Button (always visible) --}}
+                        <button type="button" wire:click="$set('showWithdrawSavingsModal', false)" class="mt-3 w-full inline-flex items-center justify-center rounded-lg border-2 border-gray-300 shadow-md px-6 py-3 bg-white text-base font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transform hover:scale-105 transition-all duration-200 sm:mt-0 sm:w-auto">
+                            <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Pay Loan Modal --}}
+    @if($showPayLoanModal)
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+                <form wire:submit.prevent="submitPayLoan">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        {{-- Modal Header --}}
+                        <div class="mb-6 pb-4 border-b-2 border-gray-200">
+                            <h3 class="text-xl leading-6 font-bold text-gray-900 flex items-center">
+                                <svg class="h-6 w-6 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Pay Loan from Savings
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-500">Use savings account balance to repay an active loan</p>
+                        </div>
+
+                        {{-- Flash Messages --}}
+                        @if (session()->has('success'))
+                            <div class="mb-4 p-4 bg-green-50 border-l-4 border-green-400 text-green-700">
+                                <div class="flex">
+                                    <svg class="h-5 w-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>{{ session('success') }}</span>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if (session()->has('error'))
+                            <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-400 text-red-700">
+                                <div class="flex">
+                                    <svg class="h-5 w-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>{{ session('error') }}</span>
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- SECTION 1: MEMBER/LOAN VERIFICATION --}}
+                        <div class="mb-6 p-5 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                            <div class="flex items-center mb-4">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-900 flex items-center justify-center text-white font-bold">1</div>
+                                <h4 class="ml-3 text-base font-semibold text-gray-900">Loan Selection</h4>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="loanSearchType" class="block text-sm font-medium text-gray-700 mb-1">Search By</label>
+                                <select wire:model="loanSearchType" id="loanSearchType" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                                    <option value="loan_id">Loan ID</option>
+                                    <option value="member_number">Member Number</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="loanSearchValue" class="block text-sm font-medium text-gray-700 mb-1">Search Value <span class="text-red-500">*</span></label>
+                                <div class="flex rounded-md shadow-sm">
+                                    <input type="text" wire:model.defer="loanSearchValue" id="loanSearchValue" class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-l-md sm:text-sm border-gray-300" placeholder="Enter loan ID or member number">
+                                    <button type="button" wire:click="searchLoanForPayment" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white bg-blue-900 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                        <span wire:loading.remove wire:target="searchLoanForPayment">Search</span>
+                                        <span wire:loading wire:target="searchLoanForPayment">Searching...</span>
+                                    </button>
+                                </div>
+                                @error('loanSearchValue') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                            </div>
+
+                            {{-- Multiple Loans Found - Show Selection List --}}
+                            @if(!empty($foundLoans) && !$selectedLoan)
+                                <div class="mt-4 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-md">
+                                    <div class="flex items-center mb-3">
+                                        <svg class="h-5 w-5 text-yellow-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                        <h5 class="text-sm font-semibold text-yellow-900">{{ count($foundLoans) }} Active Loans Found</h5>
+                                    </div>
+                                    <p class="text-xs text-yellow-700 mb-3">Please select the loan you want to pay:</p>
+
+                                    <div class="space-y-2 max-h-64 overflow-y-auto">
+                                        @foreach($foundLoans as $loan)
+                                            <button
+                                                type="button"
+                                                wire:click="selectLoanForPayment('{{ $loan['loan_id'] }}')"
+                                                class="w-full text-left p-3 bg-white border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 rounded-md transition-all duration-200 transform hover:scale-102 shadow-sm hover:shadow-md group"
+                                            >
+                                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                                    <div>
+                                                        <p class="text-gray-500 text-xs">Loan ID</p>
+                                                        <p class="font-semibold text-gray-900 group-hover:text-blue-700">{{ $loan['loan_id'] }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-gray-500 text-xs">Status</p>
+                                                        <p class="font-medium">
+                                                            <span class="px-2 py-0.5 rounded-full text-xs {{ $loan['status'] == 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                                                {{ $loan['status'] }}
+                                                            </span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-gray-500 text-xs">Principal</p>
+                                                        <p class="font-medium text-gray-900">TZS {{ number_format($loan['principal'], 2) }}</p>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-gray-500 text-xs">Outstanding</p>
+                                                        <p class="font-bold text-red-600">TZS {{ number_format($loan['outstanding'], 2) }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
+                                                    <p class="text-xs text-gray-600">{{ $loan['member_name'] }}</p>
+                                                    <svg class="h-4 w-4 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                    </svg>
+                                                </div>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Single Loan Selected --}}
+                            @if($selectedLoan)
+                                <div class="mt-4 p-4 bg-white border border-green-300 rounded-md">
+                                    <div class="flex items-center mb-2">
+                                        <svg class="h-5 w-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                        <h5 class="text-sm font-semibold text-gray-900">Loan Found</h5>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3 text-sm">
+                                        <div>
+                                            <p class="text-gray-600">Loan ID:</p>
+                                            <p class="font-medium text-gray-900">{{ $selectedLoan['loan_id'] ?? 'N/A' }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-600">Member:</p>
+                                            <p class="font-medium text-gray-900">{{ $selectedLoan['member_name'] ?? 'N/A' }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-600">Principal:</p>
+                                            <p class="font-medium text-gray-900">TZS {{ number_format($selectedLoan['principal'] ?? 0, 2) }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-600">Outstanding:</p>
+                                            <p class="font-medium text-red-600">TZS {{ number_format($selectedLoan['outstanding'] ?? 0, 2) }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if($selectedLoan)
+                            {{-- SECTION 2: SAVINGS ACCOUNT SELECTION --}}
+                            <div class="mb-6 p-5 bg-green-50 border-2 border-green-200 rounded-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">2</div>
+                                    <h4 class="ml-3 text-base font-semibold text-gray-900">Payment Source (Savings Account)</h4>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="payLoanSourceAccount" class="block text-sm font-medium text-gray-700 mb-1">Select Savings Account <span class="text-red-500">*</span></label>
+                                    <select wire:model.live="payLoanSourceAccount" id="payLoanSourceAccount" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                                        <option value="">Select savings account</option>
+                                        @foreach($memberSavingsAccounts as $account)
+                                            <option value="{{ $account['account_number'] }}">{{ $account['account_name'] }} ({{ $account['account_number'] }}) - TZS {{ number_format($account['balance'], 2) }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('payLoanSourceAccount') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+                                </div>
+
+                                @if($payLoanSourceAccount && $payLoanSourceAccountBalance > 0)
+                                    <div class="mt-4 p-5 bg-blue-900 rounded-lg shadow-lg">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <p class="text-sm font-medium text-blue-100 uppercase tracking-wide">Available Balance</p>
+                                                <p class="mt-2 text-3xl font-bold text-white">
+                                                    TZS {{ number_format($payLoanSourceAccountBalance, 2) }}
+                                                </p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <svg class="h-12 w-12 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- SECTION 3: PAYMENT AMOUNT --}}
+                            <div class="mb-6 p-5 bg-yellow-50 border-2 border-yellow-200 rounded-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-yellow-600 flex items-center justify-center text-white font-bold">3</div>
+                                    <h4 class="ml-3 text-base font-semibold text-gray-900">Payment Amount</h4>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="loanPaymentAmount" class="block text-sm font-medium text-gray-700 mb-1">Payment Amount <span class="text-red-500">*</span></label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">TZS</span>
+                                        </div>
+                                        <input type="number" step="0.01" wire:model.lazy="loanPaymentAmount" id="loanPaymentAmount" class="focus:ring-yellow-500 focus:border-yellow-500 block w-full pl-12 pr-12 shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                                    </div>
+                                    @error('loanPaymentAmount') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+
+                                    @if($payLoanSourceAccount && $loanPaymentAmount)
+                                        @if($loanPaymentAmount > $payLoanSourceAccountBalance)
+                                            <div class="mt-2 flex items-center text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+                                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="text-sm font-medium">Insufficient funds in savings account!</span>
+                                            </div>
+                                        @else
+                                            <div class="mt-2 flex items-center text-green-600 bg-green-50 border border-green-200 rounded-md p-2">
+                                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="text-sm font-medium">Amount validated successfully</span>
+                                            </div>
+                                        @endif
+                                    @endif
+                                </div>
+
+                                <div class="mb-0">
+                                    <label for="loanPaymentNarration" class="block text-sm font-medium text-gray-700 mb-1">Narration / Purpose</label>
+                                    <textarea wire:model.defer="loanPaymentNarration" id="loanPaymentNarration" rows="2" class="focus:ring-yellow-500 focus:border-yellow-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Optional payment description"></textarea>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- MODAL FOOTER --}}
+                    <div class="bg-gray-50 px-6 py-5 border-t-2 border-gray-200 sm:flex sm:flex-row-reverse sm:items-center gap-3">
+                        @if($selectedLoan && $payLoanSourceAccount && $loanPaymentAmount && (!$payLoanSourceAccountBalance || $loanPaymentAmount <= $payLoanSourceAccountBalance))
+                            <button type="submit" class="w-full inline-flex items-center justify-center rounded-lg border-2 border-transparent shadow-lg px-6 py-3 bg-green-600 text-base font-bold text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transform hover:scale-105 transition-all duration-200 sm:ml-3 sm:w-auto">
+                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                                <span wire:loading.remove wire:target="submitPayLoan">Process Payment</span>
+                                <span wire:loading wire:target="submitPayLoan">
+                                    <span class="flex items-center">
+                                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Processing...
+                                    </span>
+                                </span>
+                            </button>
+                        @else
+                            <div class="w-full sm:w-auto px-6 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-center sm:ml-3">
+                                <p class="text-sm text-gray-500 font-medium flex items-center justify-center">
+                                    <svg class="h-5 w-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Complete all required fields above
+                                </p>
+                            </div>
+                        @endif
+
+                        <button type="button" wire:click="$set('showPayLoanModal', false)" class="mt-3 w-full inline-flex items-center justify-center rounded-lg border-2 border-gray-300 shadow-md px-6 py-3 bg-white text-base font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transform hover:scale-105 transition-all duration-200 sm:mt-0 sm:w-auto">
+                            <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Transfer to Deposits Modal (Inter-Member Transfer) --}}
+    @if($showTransferToDepositsModal)
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full max-h-[90vh]">
+                <form wire:submit.prevent="submitTransferToDeposits">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[calc(90vh-8rem)]">
+                        {{-- Modal Header --}}
+                        <div class="mb-6 pb-4 border-b-2 border-gray-200">
+                            <h3 class="text-xl leading-6 font-bold text-gray-900 flex items-center">
+                                <svg class="h-6 w-6 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                </svg>
+                                Inter-Member Account Transfer
+                            </h3>
+                            <p class="mt-1 text-sm text-gray-500">Transfer funds between any member's Savings or Deposit accounts</p>
+                        </div>
+
+                        {{-- Flash Messages --}}
+                        @if (session()->has('success'))
+                            <div class="mb-4 p-4 bg-green-50 border-l-4 border-green-400 text-green-700">
+                                <div class="flex">
+                                    <svg class="h-5 w-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>{{ session('success') }}</span>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if (session()->has('error'))
+                            <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-400 text-red-700">
+                                <div class="flex">
+                                    <svg class="h-5 w-5 text-red-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>{{ session('error') }}</span>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {{-- LEFT COLUMN: SOURCE MEMBER & ACCOUNT --}}
+                            <div class="space-y-4">
+                                {{-- SECTION 1: SOURCE MEMBER --}}
+                                <div class="p-5 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                                    <div class="flex items-center mb-4">
+                                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-blue-900 flex items-center justify-center text-white font-bold">1</div>
+                                        <h4 class="ml-3 text-base font-semibold text-gray-900">Source Member</h4>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="transferSourceMemberNumber" class="block text-sm font-medium text-gray-700 mb-1">Member Number <span class="text-red-500">*</span></label>
+                                        <div class="flex rounded-md shadow-sm">
+                                            <input type="text" wire:model.defer="transferSourceMemberNumber" id="transferSourceMemberNumber" class="focus:ring-blue-500 focus:border-blue-500 flex-1 block w-full rounded-l-md sm:text-sm border-gray-300" placeholder="Enter member number">
+                                            <button type="button" wire:click="verifySourceMemberForTransfer" class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-xs font-medium rounded-r-md text-white bg-blue-900 hover:bg-blue-700">
+                                                <span wire:loading.remove wire:target="verifySourceMemberForTransfer">Verify</span>
+                                                <span wire:loading wire:target="verifySourceMemberForTransfer">...</span>
+                                            </button>
+                                        </div>
+                                        @error('transferSourceMemberNumber') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    @if($transferSourceVerifiedMember)
+                                        <div class="mt-3 p-3 bg-white border border-green-300 rounded-md">
+                                            <p class="text-xs text-gray-600">✓ Verified</p>
+                                            <p class="font-medium text-sm text-gray-900">{{ $transferSourceVerifiedMember['name'] ?? 'N/A' }}</p>
+                                            <p class="text-xs text-gray-500">{{ $transferSourceVerifiedMember['client_number'] ?? 'N/A' }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                @if($transferSourceVerifiedMember)
+                                    {{-- SECTION 2: SOURCE ACCOUNT --}}
+                                    <div class="p-5 bg-green-50 border-2 border-green-200 rounded-lg">
+                                        <div class="flex items-center mb-4">
+                                            <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">2</div>
+                                            <h4 class="ml-3 text-base font-semibold text-gray-900">Source Account</h4>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="transferSourceAccount" class="block text-sm font-medium text-gray-700 mb-1">Account <span class="text-red-500">*</span></label>
+                                            <select wire:model.live="transferSourceAccount" id="transferSourceAccount" class="mt-1 block w-full text-xs pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 rounded-md">
+                                                <option value="">Select an account</option>
+                                                @foreach($transferSourceMemberAccounts as $account)
+                                                    <option value="{{ $account['account_number'] }}">{{ $account['display_name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('transferSourceAccount') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+
+                                        @if($transferSourceAccount)
+                                            <div class="mt-3 p-3 bg-blue-900 rounded-lg">
+                                                <p class="text-xs font-medium text-blue-100 uppercase">Balance</p>
+                                                <p class="text-xl font-bold text-white">TZS {{ number_format($transferSourceAccountBalance, 2) }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+
+                            {{-- RIGHT COLUMN: DESTINATION MEMBER & ACCOUNT --}}
+                            <div class="space-y-4">
+                                {{-- SECTION 3: DESTINATION MEMBER --}}
+                                <div class="p-5 bg-purple-50 border-2 border-purple-200 rounded-lg">
+                                    <div class="flex items-center mb-4">
+                                        <div class="flex-shrink-0 h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">3</div>
+                                        <h4 class="ml-3 text-base font-semibold text-gray-900">Destination Member</h4>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="transferDestinationMemberNumber" class="block text-sm font-medium text-gray-700 mb-1">Member Number <span class="text-red-500">*</span></label>
+                                        <div class="flex rounded-md shadow-sm">
+                                            <input type="text" wire:model.defer="transferDestinationMemberNumber" id="transferDestinationMemberNumber" class="focus:ring-purple-500 focus:border-purple-500 flex-1 block w-full rounded-l-md sm:text-sm border-gray-300" placeholder="Enter member number">
+                                            <button type="button" wire:click="verifyDestinationMemberForTransfer" class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-xs font-medium rounded-r-md text-white bg-purple-600 hover:bg-purple-700">
+                                                <span wire:loading.remove wire:target="verifyDestinationMemberForTransfer">Verify</span>
+                                                <span wire:loading wire:target="verifyDestinationMemberForTransfer">...</span>
+                                            </button>
+                                        </div>
+                                        @error('transferDestinationMemberNumber') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    @if($transferDestinationVerifiedMember)
+                                        <div class="mt-3 p-3 bg-white border border-green-300 rounded-md">
+                                            <p class="text-xs text-gray-600">✓ Verified</p>
+                                            <p class="font-medium text-sm text-gray-900">{{ $transferDestinationVerifiedMember['name'] ?? 'N/A' }}</p>
+                                            <p class="text-xs text-gray-500">{{ $transferDestinationVerifiedMember['client_number'] ?? 'N/A' }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                @if($transferDestinationVerifiedMember)
+                                    {{-- SECTION 4: DESTINATION ACCOUNT --}}
+                                    <div class="p-5 bg-orange-50 border-2 border-orange-200 rounded-lg">
+                                        <div class="flex items-center mb-4">
+                                            <div class="flex-shrink-0 h-8 w-8 rounded-full bg-orange-600 flex items-center justify-center text-white font-bold">4</div>
+                                            <h4 class="ml-3 text-base font-semibold text-gray-900">Destination Account</h4>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="transferDestinationAccount" class="block text-sm font-medium text-gray-700 mb-1">Account <span class="text-red-500">*</span></label>
+                                            <select wire:model="transferDestinationAccount" id="transferDestinationAccount" class="mt-1 block w-full text-xs pl-3 pr-10 py-2 border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 rounded-md">
+                                                <option value="">Select an account</option>
+                                                @foreach($transferDestinationMemberAccounts as $account)
+                                                    <option value="{{ $account['account_number'] }}">{{ $account['display_name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('transferDestinationAccount') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($transferSourceAccount && $transferDestinationAccount)
+
+                            {{-- SECTION 5: TRANSFER AMOUNT --}}
+                            <div class="mb-6 p-5 bg-yellow-50 border-2 border-yellow-200 rounded-lg">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex-shrink-0 h-8 w-8 rounded-full bg-yellow-600 flex items-center justify-center text-white font-bold">5</div>
+                                    <h4 class="ml-3 text-base font-semibold text-gray-900">Transfer Amount</h4>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="transferAmount" class="block text-sm font-medium text-gray-700 mb-1">Amount to Transfer <span class="text-red-500">*</span></label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">TZS</span>
+                                        </div>
+                                        <input type="number" step="0.01" wire:model.lazy="transferAmount" id="transferAmount" class="focus:ring-yellow-500 focus:border-yellow-500 block w-full pl-12 pr-12 shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                                    </div>
+                                    @error('transferAmount') <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> @enderror
+
+                                    @if($transferSourceAccount && $transferAmount)
+                                        @if($transferAmount > $transferSourceAccountBalance)
+                                            <div class="mt-2 flex items-center text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+                                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="text-sm font-medium">Insufficient funds in source account!</span>
+                                            </div>
+                                        @else
+                                            <div class="mt-2 flex items-center text-green-600 bg-green-50 border border-green-200 rounded-md p-2">
+                                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="text-sm font-medium">Amount validated successfully</span>
+                                            </div>
+                                        @endif
+                                    @endif
+                                </div>
+
+                                <div class="mb-0">
+                                    <label for="transferNarration" class="block text-sm font-medium text-gray-700 mb-1">Narration / Purpose</label>
+                                    <textarea wire:model.defer="transferNarration" id="transferNarration" rows="2" class="focus:ring-yellow-500 focus:border-yellow-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Optional transfer description"></textarea>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- MODAL FOOTER --}}
+                    <div class="bg-gray-50 px-6 py-5 border-t-2 border-gray-200 sm:flex sm:flex-row-reverse sm:items-center gap-3">
+                        @if($transferSourceVerifiedMember && $transferSourceAccount && $transferDestinationVerifiedMember && $transferDestinationAccount && $transferAmount && $transferAmount <= $transferSourceAccountBalance)
+                            <button type="submit" class="w-full inline-flex items-center justify-center rounded-lg border-2 border-transparent shadow-lg px-6 py-3 bg-purple-600 text-base font-bold text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transform hover:scale-105 transition-all duration-200 sm:ml-3 sm:w-auto">
+                                <svg class="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                                <span wire:loading.remove wire:target="submitTransferToDeposits">Process Transfer</span>
+                                <span wire:loading wire:target="submitTransferToDeposits">
+                                    <span class="flex items-center">
+                                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Processing...
+                                    </span>
+                                </span>
+                            </button>
+                        @else
+                            <div class="w-full sm:w-auto px-6 py-3 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg text-center sm:ml-3">
+                                <p class="text-sm text-gray-500 font-medium flex items-center justify-center">
+                                    <svg class="h-5 w-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Complete all required fields above
+                                </p>
+                            </div>
+                        @endif
+
+                        <button type="button" wire:click="$set('showTransferToDepositsModal', false)" class="mt-3 w-full inline-flex items-center justify-center rounded-lg border-2 border-gray-300 shadow-md px-6 py-3 bg-white text-base font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transform hover:scale-105 transition-all duration-200 sm:mt-0 sm:w-auto">
+                            <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- Receipt Modal --}}
+    @if($showReceiptModal && $receiptData)
+    <div class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Transaction Receipt</h3>
+                        <p class="mt-1 text-sm text-gray-500">Your deposit has been processed successfully</p>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-md mb-4">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="font-semibold">Receipt No:</span>
+                                <p class="text-gray-600">{{ $receiptData['receipt_number'] }}</p>
+                            </div>
+                            <div>
+                                <span class="font-semibold">Date:</span>
+                                <p class="text-gray-600">{{ $receiptData['transaction_date'] }}</p>
+                            </div>
+                            <div>
+                                <span class="font-semibold">Member:</span>
+                                <p class="text-gray-600">{{ $receiptData['member_name'] }}</p>
+                            </div>
+                            <div>
+                                <span class="font-semibold">Account:</span>
+                                <p class="text-gray-600">{{ $receiptData['account_number'] }}</p>
+                            </div>
+                            <div>
+                                <span class="font-semibold">Amount:</span>
+                                <p class="text-green-600 font-bold">{{ $receiptData['currency'] }} {{ $receiptData['amount'] }}</p>
+                            </div>
+                            <div>
+                                <span class="font-semibold">Payment Method:</span>
+                                <p class="text-gray-600">{{ $receiptData['payment_method'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded-md">
+                        <p class="text-sm text-blue-800">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Your receipt has been generated. You can print it or save it for your records.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" 
+                            wire:click="printReceipt"
+                            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-900 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        <i class="fas fa-print mr-2"></i>
+                        Print Receipt
+                    </button>
+                    <button type="button" 
+                            wire:click="closeReceiptModal"
+                            class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+</div>
+
+<script nonce="{{ csp_nonce() }}">
+// Receipt printing functionality
+window.addEventListener('printReceipt', event => {
+    const receiptData = event.detail.receiptData;
+    
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank', 'width=400,height=600');
+    
+    // Generate the receipt HTML
+    const receiptHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+    <meta charset="UTF-8">
+            <title>Savings Deposit Receipt</title>
+            <style nonce="{{ csp_nonce() }}">
+                @media print {
+                    body { margin: 0; }
+                    .no-print { display: none !important; }
+                    .receipt { box-shadow: none; border: 1px solid #000; }
+                }
+                
+                body {
+                    font-family: 'Courier New', monospace;
+                    font-size: 12px;
+                    line-height: 1.2;
+                    color: #000;
+                    margin: 0;
+                    padding: 10px;
+                    background-color: #f5f5f5;
+                }
+                
+                .receipt {
+                    max-width: 300px;
+                    margin: 0 auto;
+                    background: white;
+                    padding: 15px;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                }
+                
+                .header {
+                    text-align: center;
+                    border-bottom: 2px solid #000;
+                    padding-bottom: 10px;
+                    margin-bottom: 15px;
+                }
+                
+                .header h1 {
+                    margin: 0;
+                    font-size: 16px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                }
+                
+                .header p {
+                    margin: 5px 0;
+                    font-size: 10px;
+                }
+                
+                .receipt-title {
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin: 10px 0;
+                    text-transform: uppercase;
+                }
+                
+                .receipt-number {
+                    text-align: center;
+                    font-size: 12px;
+                    margin-bottom: 15px;
+                }
+                
+                .info-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 5px;
+                    border-bottom: 1px dotted #ccc;
+                    padding-bottom: 3px;
+                }
+                
+                .info-label {
+                    font-weight: bold;
+                    min-width: 80px;
+                }
+                
+                .info-value {
+                    text-align: right;
+                    flex: 1;
+                }
+                
+                .amount-section {
+                    border-top: 2px solid #000;
+                    border-bottom: 2px solid #000;
+                    padding: 10px 0;
+                    margin: 15px 0;
+                }
+                
+                .amount-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 5px;
+                }
+                
+                .amount-label {
+                    font-weight: bold;
+                    font-size: 14px;
+                }
+                
+                .amount-value {
+                    font-weight: bold;
+                    font-size: 14px;
+                    text-align: right;
+                }
+                
+                .footer {
+                    text-align: center;
+                    margin-top: 20px;
+                    padding-top: 10px;
+                    border-top: 1px solid #000;
+                    font-size: 10px;
+                }
+                
+                .signature-line {
+                    border-top: 1px solid #000;
+                    margin-top: 30px;
+                    padding-top: 5px;
+                    text-align: center;
+                    font-size: 10px;
+                }
+                
+                .print-button {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #007bff;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+                
+                .print-button:hover {
+                    background: #0056b3;
+                }
+                
+                .close-button {
+                    position: fixed;
+                    top: 20px;
+                    left: 20px;
+                    background: #6c757d;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+                
+                .close-button:hover {
+                    background: #545b62;
+                }
+                
+                .barcode {
+                    text-align: center;
+                    margin: 10px 0;
+                    font-family: monospace;
+                    font-size: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <button class="print-button no-print" onclick="window.print()">
+                Print Receipt
+            </button>
+            
+            <button class="close-button no-print" onclick="window.close()">
+                Close
+            </button>
+            
+            <div class="receipt">
+                <div class="header">
+                    <h1>SACCOS CORE SYSTEM</h1>
+                    <p>Savings Deposit Receipt</p>
+                    <p>${receiptData.branch || 'Main Branch'}</p>
+                </div>
+                
+                <div class="receipt-title">DEPOSIT RECEIPT</div>
+                
+                <div class="receipt-number">
+                    Receipt No: ${receiptData.receipt_number}
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">${receiptData.transaction_date}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Member:</span>
+                    <span class="info-value">${receiptData.member_name}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Member No:</span>
+                    <span class="info-value">${receiptData.member_number}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Account:</span>
+                    <span class="info-value">${receiptData.account_number}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Account Name:</span>
+                    <span class="info-value">${receiptData.account_name}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Depositor:</span>
+                    <span class="info-value">${receiptData.depositor_name}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Payment Method:</span>
+                    <span class="info-value">${receiptData.payment_method}</span>
+                </div>
+                
+                ${receiptData.payment_method === 'Bank' ? `
+                <div class="info-row">
+                    <span class="info-label">Bank:</span>
+                    <span class="info-value">${receiptData.bank_name}</span>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Reference:</span>
+                    <span class="info-value">${receiptData.reference_number}</span>
+                </div>
+                ` : ''}
+                
+                <div class="info-row">
+                    <span class="info-label">Narration:</span>
+                    <span class="info-value">${receiptData.narration}</span>
+                </div>
+                
+                <div class="amount-section">
+                    <div class="amount-row">
+                        <span class="amount-label">AMOUNT DEPOSITED:</span>
+                        <span class="amount-value">${receiptData.currency} ${receiptData.amount}</span>
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Balance After:</span>
+                    <span class="info-value">${receiptData.currency} ${receiptData.balance_after}</span>
+                </div>
+                
+                <div class="barcode">
+                    *${receiptData.receipt_number}*
+                </div>
+                
+                <div class="signature-line">
+                    Processed by: ${receiptData.processed_by}
+                </div>
+                
+                <div class="footer">
+                    <p>Thank you for your deposit!</p>
+                    <p>This is a computer generated receipt</p>
+                    <p>For queries, contact your branch office</p>
+                    <p>Generated on: ${receiptData.transaction_date}</p>
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+    
+    printWindow.document.write(receiptHTML);
+    printWindow.document.close();
+    
+    // Auto-print when the window loads
+    printWindow.onload = function() {
+        printWindow.print();
+    };
+});
+</script>
+
+

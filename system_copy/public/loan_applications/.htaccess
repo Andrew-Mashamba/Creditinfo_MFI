@@ -1,0 +1,37 @@
+# Secure File Upload Directory
+# Prevents execution of PHP and other server-side scripts
+
+# Deny access to all PHP files
+<FilesMatch "\.(?i:php|php3|php4|php5|phtml|phar)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Disable PHP execution
+php_flag engine off
+
+# Prevent directory listing
+Options -Indexes
+
+# Deny access to .htaccess itself
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Force download for potentially dangerous files
+<FilesMatch "\.(?i:exe|com|bat|cmd|sh|bash|pl|py|rb|js|jar|vbs|wsf|asp|aspx|jsp|cgi)$">
+    Header set Content-Disposition attachment
+    Header set X-Content-Type-Options nosniff
+</FilesMatch>
+
+# Add security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Disable script execution
+RemoveHandler .php .phtml .php3 .php4 .php5 .phar
+RemoveType .php .phtml .php3 .php4 .php5 .phar

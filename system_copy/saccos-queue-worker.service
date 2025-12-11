@@ -1,0 +1,40 @@
+# Systemd service file for SACCOS Queue Worker
+# 
+# Installation:
+# 1. Copy this file to /etc/systemd/system/saccos-queue-worker.service
+# 2. Update the paths and user in this file
+# 3. Run: sudo systemctl daemon-reload
+# 4. Run: sudo systemctl enable saccos-queue-worker
+# 5. Run: sudo systemctl start saccos-queue-worker
+
+[Unit]
+Description=SACCOS Queue Worker for Notifications
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+
+# Update this path to your actual project directory
+WorkingDirectory=/Volumes/DATA/PROJECTS/SACCOS/SYSTEMS/SACCOS_CORE_SYSTEM
+
+# Main queue worker command
+ExecStart=/usr/bin/php artisan queue:work database --queue=notifications,default --sleep=3 --tries=3 --timeout=60 --max-jobs=1000 --max-time=3600
+
+# Reload command (for graceful restart)
+ExecReload=/bin/kill -SIGUSR2 $MAINPID
+
+# Log to systemd journal
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables (adjust as needed)
+Environment="APP_ENV=production"
+Environment="QUEUE_CONNECTION=database"
+
+[Install]
+WantedBy=multi-user.target

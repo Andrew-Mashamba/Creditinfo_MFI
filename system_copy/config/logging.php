@@ -1,0 +1,322 @@
+<?php
+
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogUdpHandler;
+use Monolog\Processor\PsrLogMessageProcessor;
+
+return [
+
+    /*
+    |----------------------------------------------------------------------
+    | Default Log Channel
+    |----------------------------------------------------------------------
+    |
+    | This option defines the default log channel used when writing
+    | messages to the logs. The name specified should match one of
+    | the channels defined in the "channels" configuration array.
+    |
+    */
+
+    'default' => 'daily',
+
+    /*
+    |----------------------------------------------------------------------
+    | Deprecations Log Channel
+    |----------------------------------------------------------------------
+    |
+    | This option controls the log channel for logging warnings
+    | regarding deprecated PHP and library features, helping you
+    | prepare for upcoming major versions of dependencies.
+    |
+    */
+
+    'deprecations' => [
+        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'daily'),
+        'trace' => false, // Set to true to include trace information
+    ],
+
+    /*
+    |----------------------------------------------------------------------
+    | Log Channels
+    |----------------------------------------------------------------------
+    |
+    | Configure the log channels for your application. Laravel uses
+    | the Monolog PHP logging library, providing various log handlers
+    | and formatters.
+    |
+    | Available Drivers: "single", "daily", "slack", "syslog",
+    |                    "errorlog", "monolog",
+    |                    "custom", "stack"
+    |
+    */
+
+    'channels' => [
+        'money_transfer' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/MoneyTransfer/').date('Y-m-d').'.log',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'payments' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/payments/payments.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'end_of_day' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/end-of-day/end-of-day.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'formatter_with' => [
+                'dateFormat' => 'Y-m-d H:i:s',
+            ],
+        ],
+
+        'reseller_api' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/reseller-api/reseller-api.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 0,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'formatter_with' => [
+                'dateFormat' => 'Y-m-d H:i:s',
+            ],
+        ],
+
+        'stack' => [
+            'driver' => 'stack',
+            'channels' => ['daily', 'luku'],
+            'ignore_exceptions' => false,
+        ],
+
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'warning' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/warning.log'),
+            'level' => 'warning',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'info' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/info.log'),
+            'level' => 'info',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'debug' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/debug.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'email' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/email.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'otp' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/otp.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+            'bubble' => true,
+        ],
+
+        'auth' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/auth.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'api' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/api.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'database' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/database.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'queue' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/queue.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+        
+        'ai_chat' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ai-chat.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+            'formatter' => Monolog\Formatter\LineFormatter::class,
+            'formatter_with' => [
+                'format' => "[%datetime%] %level_name%: %message% %context%\n",
+                'dateFormat' => 'Y-m-d H:i:s',
+                'allowInlineLineBreaks' => true,
+                'ignoreEmptyContextAndExtra' => false,
+            ],
+        ],
+
+        'budget_management' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/budget-management.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'slack' => [
+            'driver' => 'slack',
+            'url' => env('LOG_SLACK_WEBHOOK_URL'),
+            'username' => 'Laravel Log',
+            'emoji' => ':boom:',
+            'level' => env('LOG_LEVEL', 'critical'),
+            'replace_placeholders' => true,
+        ],
+
+        'papertrail' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
+            'handler_with' => [
+                'host' => env('PAPERTRAIL_URL'),
+                'port' => env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'stderr' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with' => [
+                'stream' => 'php://stderr',
+            ],
+            'processors' => [PsrLogMessageProcessor::class],
+        ],
+
+        'syslog' => [
+            'driver' => 'syslog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'facility' => LOG_USER,
+            'replace_placeholders' => true,
+        ],
+
+        'errorlog' => [
+            'driver' => 'errorlog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'replace_placeholders' => true,
+        ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
+        'emergency' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/emergency.log'),
+            'level' => 'emergency',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'account_details_external' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/account-details-external.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'luku' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/luku.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+
+        'transactions' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/transactions.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+            'permission' => 0664,
+        ],
+
+        'gepg' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/gepg/gepg.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+        
+        'ai_performance' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ai-performance.log'),
+            'level' => 'debug',
+            'days' => 7,
+            'replace_placeholders' => true,
+            'permission' => 0664,
+        ],
+    ],
+];

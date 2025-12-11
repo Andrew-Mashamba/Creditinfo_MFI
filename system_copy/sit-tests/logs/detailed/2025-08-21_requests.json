@@ -1,0 +1,152 @@
+[
+    {
+        "timestamp": "2025-08-21 07:43:24.000000",
+        "test_suite": "Bank Transaction Service",
+        "test_case": "IFT Transaction",
+        "request": {
+            "method": "POST",
+            "url": "https:\/\/api.bank.com\/ift-transaction",
+            "headers": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "body": {
+                "account_from": "1234567890",
+                "account_to": "0987654321",
+                "amount": 10000,
+                "currency": "TZS",
+                "description": "IFT Test Transaction",
+                "reference": "IFT1755762204"
+            },
+            "additional_info": {
+                "transaction_type": "IFT",
+                "test_environment": "mock"
+            }
+        }
+    },
+    {
+        "timestamp": "2025-08-21 08:05:44.000000",
+        "test_suite": "Bank Transaction Service",
+        "test_case": "IFT Transaction",
+        "request": {
+            "method": "POST",
+            "url": "https:\/\/api.bank.com\/ift-transaction",
+            "headers": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "body": {
+                "account_from": "1234567890",
+                "account_to": "0987654321",
+                "amount": 10000,
+                "currency": "TZS",
+                "description": "IFT Test Transaction",
+                "reference": "IFT1755763544"
+            },
+            "additional_info": {
+                "transaction_type": "IFT",
+                "test_environment": "mock"
+            }
+        }
+    },
+    {
+        "timestamp": "2025-08-21 08:07:38.000000",
+        "test_suite": "Bank Transaction Service",
+        "test_case": "IFT Transaction",
+        "request": {
+            "method": "POST",
+            "url": "https:\/\/api.bank.com\/ift-transaction",
+            "headers": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "body": {
+                "account_from": "1234567890",
+                "account_to": "0987654321",
+                "amount": 10000,
+                "currency": "TZS",
+                "description": "IFT Test Transaction",
+                "reference": "IFT1755763658"
+            },
+            "additional_info": {
+                "transaction_type": "IFT",
+                "test_environment": "mock"
+            }
+        }
+    },
+    {
+        "timestamp": "2025-08-21 08:11:11.000000",
+        "test_suite": "Bank Transaction Service",
+        "test_case": "IFT Transaction",
+        "request": {
+            "method": "POST",
+            "url": "https:\/\/api.bank.com\/ift-transaction",
+            "headers": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "body": {
+                "account_from": "1234567890",
+                "account_to": "0987654321",
+                "amount": 10000,
+                "currency": "TZS",
+                "description": "IFT Test Transaction",
+                "reference": "IFT1755763871"
+            },
+            "additional_info": {
+                "transaction_type": "IFT",
+                "test_environment": "mock"
+            }
+        }
+    },
+    {
+        "timestamp": "2025-08-21 09:14:32.000000",
+        "test_suite": "Bank Transaction Service",
+        "test_case": "IFT Transaction",
+        "request": {
+            "method": "POST",
+            "url": "http:\/\/cbpuat.intra.nbc.co.tz:6666\/api\/nbc-sg\/internal_ft\/ift-transaction",
+            "headers": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "body": {
+                "account_from": "1234567890",
+                "account_to": "0987654321",
+                "amount": 10000,
+                "currency": "TZS",
+                "description": "IFT Test Transaction",
+                "reference": "IFT1755767672"
+            },
+            "additional_info": {
+                "transaction_type": "IFT",
+                "test_environment": "mock"
+            }
+        }
+    },
+    {
+        "timestamp": "2025-08-21 09:14:58.000000",
+        "test_suite": "Bank Transaction Service",
+        "test_case": "IFT Transaction",
+        "request": {
+            "method": "POST",
+            "url": "http:\/\/cbpuat.intra.nbc.co.tz:6666\/api\/nbc-sg\/internal_ft\/ift-transaction",
+            "headers": {
+                "Content-Type": "application\/json",
+                "Accept": "application\/json"
+            },
+            "body": {
+                "account_from": "1234567890",
+                "account_to": "0987654321",
+                "amount": 10000,
+                "currency": "TZS",
+                "description": "IFT Test Transaction",
+                "reference": "IFT1755767698"
+            },
+            "additional_info": {
+                "transaction_type": "IFT",
+                "test_environment": "mock"
+            }
+        }
+    }
+]

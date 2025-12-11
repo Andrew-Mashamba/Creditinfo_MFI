@@ -1,0 +1,227 @@
+{
+    "date": "2025-08-11",
+    "timestamp": "2025-08-11 05:30:24",
+    "test_suites": [
+        {
+            "name": "Bank Transaction Service",
+            "timestamp": "2025-08-11 05:28:58",
+            "duration": "0.004",
+            "tests": [
+                {
+                    "name": "IFT Transaction",
+                    "status": "PASSED",
+                    "message": "IFT Transaction test passed"
+                },
+                {
+                    "name": "EFT Transaction",
+                    "status": "PASSED",
+                    "message": "EFT Transaction test passed"
+                },
+                {
+                    "name": "Mobile Transaction",
+                    "status": "PASSED",
+                    "message": "Mobile Transaction test passed"
+                },
+                {
+                    "name": "Invalid Transaction Type",
+                    "status": "PASSED",
+                    "message": "Invalid Transaction Type test passed"
+                },
+                {
+                    "name": "Connection Failure Handling",
+                    "status": "FAILED",
+                    "message": "Connection Failure test failed: Error not handled properly"
+                }
+            ],
+            "statistics": {
+                "passed": 4,
+                "failed": 1,
+                "errors": 0,
+                "warnings": 0,
+                "skipped": 0
+            },
+            "status": "FAILED"
+        },
+        {
+            "name": "GEPG Gateway",
+            "timestamp": "2025-08-11 05:28:58",
+            "duration": "0",
+            "tests": [
+                {
+                    "name": "Bill Query (Control Number Verification)",
+                    "status": "PASSED",
+                    "message": "Bill Query test passed - Control Number: 991700123456"
+                },
+                {
+                    "name": "Bill Payment Processing",
+                    "status": "PASSED",
+                    "message": "Bill Payment test passed - Reference: PAY1754890138"
+                },
+                {
+                    "name": "Prepaid Payment (Quote)",
+                    "status": "PASSED",
+                    "message": "Prepaid Payment test passed - Token: 12345678901234567890"
+                },
+                {
+                    "name": "Transaction Status Check",
+                    "status": "PASSED",
+                    "message": "Status Check test passed - Status: SUCCESS"
+                },
+                {
+                    "name": "XML Signing and Verification",
+                    "status": "PASSED",
+                    "message": "XML Signing test passed"
+                },
+                {
+                    "name": "Error Handling",
+                    "status": "PASSED",
+                    "message": "Error scenario handled: 4001 - Invalid control number"
+                }
+            ],
+            "statistics": {
+                "passed": 6,
+                "failed": 0,
+                "errors": 0,
+                "warnings": 0,
+                "skipped": 0
+            },
+            "status": "PASSED"
+        },
+        {
+            "name": "Luku Gateway",
+            "timestamp": "2025-08-11 05:28:58",
+            "duration": "0.095",
+            "tests": [
+                {
+                    "name": "Token Query",
+                    "status": "PASSED",
+                    "message": "Token Query test passed - Meter: 04123456789"
+                },
+                {
+                    "name": "Token Purchase",
+                    "status": "PASSED",
+                    "message": "Token Purchase test passed - Token: 12345-67890-12345-67890"
+                },
+                {
+                    "name": "Meter Validation",
+                    "status": "PASSED",
+                    "message": "Meter 04123456789 validation: Valid (as expected)"
+                },
+                {
+                    "name": "Transaction Status Check",
+                    "status": "ERROR",
+                    "message": "cURL error 6: Could not resolve host: nbc-gateway-uat.intra.nbc.co.tz (see https:\/\/curl.haxx.se\/libcurl\/c\/libcurl-errors.html) for https:\/\/nbc-gateway-uat.intra.nbc.co.tz\/api\/transaction\/status?transaction_id=TRX1754890138"
+                },
+                {
+                    "name": "SSL Configuration",
+                    "status": "WARNING",
+                    "message": "SSL Configuration warning - SSL verification disabled"
+                },
+                {
+                    "name": "Error Handling",
+                    "status": "PASSED",
+                    "message": "Error 400 handled: Invalid meter number"
+                }
+            ],
+            "statistics": {
+                "passed": 2,
+                "failed": 2,
+                "errors": 1,
+                "warnings": 1,
+                "skipped": 0
+            },
+            "status": "FAILED"
+        },
+        {
+            "name": "NBC SMS",
+            "timestamp": "2025-08-11 05:28:58",
+            "duration": "0.001",
+            "tests": [
+                {
+                    "name": "Single SMS Send",
+                    "status": "PASSED",
+                    "message": "Single SMS test passed - Message ID: MSG1754890138"
+                },
+                {
+                    "name": "Bulk SMS Send",
+                    "status": "PASSED",
+                    "message": "Bulk SMS test passed - Batch ID: BATCH1754890138"
+                },
+                {
+                    "name": "SMS Status Check",
+                    "status": "PASSED",
+                    "message": "SMS Status test passed - Status: DELIVERED"
+                },
+                {
+                    "name": "Rate Limiting",
+                    "status": "FAILED",
+                    "message": "Rate Limiting test failed - limit not enforced"
+                },
+                {
+                    "name": "Invalid Phone Number Handling",
+                    "status": "ERROR",
+                    "message": "A request was made, but the response sequence is empty."
+                },
+                {
+                    "name": "Long Message Handling",
+                    "status": "ERROR",
+                    "message": "A request was made, but the response sequence is empty."
+                }
+            ],
+            "statistics": {
+                "passed": 3,
+                "failed": 1,
+                "errors": 2,
+                "warnings": 0,
+                "skipped": 0
+            },
+            "status": "FAILED"
+        },
+        {
+            "name": "AI Services",
+            "timestamp": "2025-08-11 05:28:58",
+            "duration": "0",
+            "tests": [
+                {
+                    "name": "Groq API",
+                    "status": "PASSED",
+                    "message": "Groq API test passed - Model: llama3-8b-8192"
+                },
+                {
+                    "name": "OpenAI API",
+                    "status": "PASSED",
+                    "message": "OpenAI API test passed - Model: gpt-3.5-turbo"
+                },
+                {
+                    "name": "Together AI API",
+                    "status": "PASSED",
+                    "message": "Together AI API test passed - Model: meta-llama\/Llama-2-70b-chat-hf"
+                },
+                {
+                    "name": "Claude API",
+                    "status": "PASSED",
+                    "message": "Claude API test passed"
+                }
+            ],
+            "statistics": {
+                "passed": 4,
+                "failed": 0,
+                "errors": 0,
+                "warnings": 0,
+                "skipped": 0
+            },
+            "status": "PASSED"
+        }
+    ],
+    "summary": {
+        "total_suites": 5,
+        "passed_suites": 2,
+        "failed_suites": 3,
+        "total_tests": 27,
+        "passed_tests": 19,
+        "failed_tests": 4,
+        "error_tests": 3,
+        "warning_tests": 1,
+        "skipped_tests": 0
+    }
+}

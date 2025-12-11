@@ -1,0 +1,1544 @@
+NBC	STRATEGIC	GEPG	GATEWAY	API	DOCUMENT
+FOR	PROCESSING	ACCOUNTING	ENTRIES	&	GEPG	
+PAYMENTS	ON	SG-GePG
+(SG-GePG Channel	APIv2.0)	
+TECHNICAL SPECIFICATION
+November, 2022
+1 | P a g e
+Table of Contents
+Approval and Sign Off............................................................................................................................ 3
+1. PREREQUISITES................................................................................................................................ 5
+1.1.Network Connection to SG-GePG.................................................................................................... 5
+1.2.Payment System.............................................................................................................................. 5
+1.3.Digital Certificates ........................................................................................................................... 5
+1.4.Message Exchange .......................................................................................................................... 5
+1.5.Message Encoding........................................................................................................................... 5
+1.6.Special Characters ........................................................................................................................... 6
+2. MESSAGE STRUCTURE ..................................................................................................................... 6
+2.1.Request Message............................................................................................................................. 6
+2.2.Response Message .......................................................................................................................... 6
+3. PAYMENTOPTIONS.......................................................................................................................... 7
+4. PAYMENT PLAN................................................................................................................................ 8
+5. GENERAL RULES AND BUSINESS REQUIREMENTS ........................................................................... 9
+5.1.General Rules................................................................................................................................... 9
+5.2.Business Requirements ................................................................................................................... 9
+6. CONTROL NUMBER VERIFICATION AND PAYMENT POSTING......................................................... 11
+6.1.POSTPAID Payment Flow ............................................................................................................... 11
+6.2.PREPAID Payment Flow.................................................................................................................. 13
+6.3.Control Number Verification ......................................................................................................... 16
+Control number verification ................................................................................................................ 16
+6.3.1. Control Number Inquiry......................................................................................................... 16
+6.3.2. Response ............................................................................................................................... 18
+6.4.Payment Posting............................................................................................................................ 23
+6.4.1. Payment Request................................................................................................................... 23
+6.4.2. Payment Acknowledgment.................................................................................................... 29
+6.4.3. Final Response....................................................................................................................... 29
+6.4.4. Final Response Acknowledgment.......................................................................................... 33
+6.5.Quote Posting................................................................................................................................ 34
+6.5.1.1. Quote Request................................................................................................................... 34
+6.5.1.2. Quote Acknowledgment.................................................................................................... 36
+2 | P a g e
+6.5.1.3. Quote Final Response........................................................................................................ 38
+6.5.1.4. Quote Final Response Acknowledgment ........................................................................... 41
+7. OTHER CHANNELS (INCOMING TRANSFERS, MUSE, MNO)............................................................ 42
+7.1.Other Channels Inquiry.................................................................................................................. 42
+7.2.Other Channels Inquiry Acknowledgement ................................................................................... 43
+7.3.Other Channels Final Response ..................................................................................................... 44
+8. DIGITAL SIGNATURE SECURITY....................................................................................................... 47
+8.1.Overview ....................................................................................................................................... 47
+8.2.Digital Signature ............................................................................................................................ 47
+8.3.Digital Signature File Format ......................................................................................................... 49
+8.4.Signature Algorithm....................................................................................................................... 49
+8.5.Signed Final Payload Format.......................................................................................................... 49
+9. APPENDIX ...................................................................................................................................... 50
+9.1.PayerIdentity Types...................................................................................................................... 50
+9.2.Response Codes............................................................................................................................. 51
+3 | P a g e
+Document Description
+Document Name Strategic Gateway Programming Interface (API) for Channels
+Owner National Bank of Commerce Ltd, Tanzania
+Document Type SG -GePG – Payment Service Provider Integration
+Document Version Control
+Version Date Change Description
+2.0 01-11-2022 § GePG Introduction to concept of a single 
+main bill holding multiple different bills
+of same or different institutions that
+needs to be paid
+§ Revised payloads’structures.
+04-04-2023 § Added functionality for Cross Currency
+28-06-2023 § Added Deal ID for Cross Currency 
+Transactions for Internet Banking
+channel
+Approval	and	Sign	Off
+Prepared Alex Nyerembe V2.0
+Verified & Approved V2.0
+4 | P a g e
+Definitions and Abbreviations
+GePG - Government electronic Payment Gateway
+SG-GePG - NBC Strategic GePG Gateway
+HTTP - Hypertext Transfer Protocol
+HTTPS - Hypertext Transfer Protocol Secure
+MNO - Mobile Network Operator
+PSP - Payment Service Provider
+SIT - System Integration Test
+SP ` - Service Provider
+UAT - User Acceptance Test
+VPN - Virtual Private Network
+5 | P a g e
+1. PREREQUISITES
+1.1. Network Connection to SG-GePG
+Integrating partners supposed to establish secure Virtual Private Network (VPN) 
+connection to NBC Strategic Gateway (SG-GePG) data-center.
+1.2. Payment System
+Integrating institution / channel must have a working or a complete developed system that 
+is ready for integration with SG -GePG. The payment system shall be subjected to SGGePG System Integration Test (SIT) and User Acceptance Test (UAT), once passed then
+shall be allowed to migrate to SG-GePG production environment.
+1.3. Digital Certificates
+Integrating institution must share her public certificate(s) and obtain SG-GePG public 
+certificate(s) to be used in verification of all messages exchanged between payment system 
+and SG-GePG. For the algorithm and format, please refer to Digital Signature Security 
+section of this document.
+NOTE:
+Testing certificates may be provided by SG-GePG. These shall ONLY be used during 
+testing sessions.
+1.4. Message Exchange
+a. The transport protocol of this interface is XML over HTTP. The incoming messages 
+from Payment System may arise from HTTP or HTTPS.
+b. The expected HTTP method is always POST.
+c. Endpoints shall be communicated during integration process. There shall be endpoints 
+for testing environment and others for production environment.
+1.5. Message Encoding
+ Message encoding shall use utf-8
+6 | P a g e
+1.6. Special Characters
+Xml body content should ensure all the special characters are escaped.
+Character Description Escaped by
+& Ampersand &amp;
+< Less-than &lt;
+> Greater-than &gt;
+" Quotes &quot;
+' Apostrophe &apos;
+2. MESSAGE STRUCTURE
+2.1. Request Message
+Request message to SG-GePG shall contain two (2) parts i.e HTTP Header and Payload. HTTP 
+header shall contain the following parameters when sending request to SG-GePG.
+Parameter Values/Description
+Content-Type application/xml
+NBC-Authorization Shall be given during the integration
+Payload shall change based on service encountered (Please refer to respective sections in this 
+document).
+2.2. Response Message
+Response message from SG-GePG shall contain two (2) parts i.e HTTP Header and
+Payload. HTTP header shall contain the following parameters when responding to Payment 
+System.
+Parameter Values/Description
+Content-Type application/xml
+Payload shall change based on service encountered (Please refer to respective sections in this 
+document).
+7 | P a g e
+3. PAYMENT OPTIONS
+Payment options define the rules to which the bill should be paid. A bill can have any of the 
+following options: -
+i. 1 - FULL payment option - shall be paid in one instalment with the amount paid 
+equal or greater than the billed amount;
+ii. 2 - PARTIAL payment option - may be paid in single or multiple instalments, 
+with the last instalment greater or equal to the remaining billed amount;
+iii. 3 - EXACT payment option - shall be paid in one instalment with the amount paid 
+being equal to the billed amount;
+iv. 4 - INFINITY payment option – shall be paid with any amount greater than zero 
+(0); and
+v. 5 - LIMITED payment option - may be paid in single or multiple instalments, 
+with the last instalment equal to the remaining billed amount.
+8 | P a g e
+4. PAYMENT PLAN
+Payment plan defines the rules with which payment crediting should be handled. A bill can 
+have any of the following options: -
+i. 1 payment plan – this shall define that the bill is a POSTPAID bill. On this plan, 
+after a successful bill verification, Payment System shall debit the customer and 
+credit the respective mapped collection account of the institution as per other bill
+rules. Then after successful crediting to the respective Institution’s mapped 
+collection account, payment systems shall notify SG-GePG with the payment 
+details. SG-GePG shall process payment request to Gepg on behalf of the payment 
+system and settle the bill with Gepg for the payment system.
+ii. 2 payment plan – this shall define that the bill is a PREPAID bill. On this plan, after 
+a successful bill verification, payment system shall debit the customer and credit 
+NBC’s suspense account and notify SG-GePG with the quote payment details. After 
+receiving quote details, SG-GePG shall process quote request to Gepg, so that Gepg 
+and SP(Service Provider) shall process request and provide a service code to SGGePG. Upon receiving successful response (service code), SG-GEPG shall return 
+the quote details to payment system and the payment system shall then debit her 
+suspense account and credit respective institution’s(Gepg Biller) mapped collection 
+account and then shall notify SG-GePG with the payment details; SG-GePG shall 
+process the final payment request to Gepg, else upon receiving negative response 
+from GePG, payment system shall debit her suspense account and credit customer’s 
+account (return amount to customer).
+9 | P a g e
+5. GENERAL RULES AND BUSINESS REQUIREMENTS
+5.1. General Rules
+The following are the general rules that Payment System shall observe while implementing this API
+i. Payment System shall submit the correct payload as per respective requesting;
+ii. All the payload tags MUST be submit during payload request and response. For tags 
+which its data condition has been described as optional, tag MUST be submitted with 
+no value;
+iii. All the payload tags MUST be in the same sequential order as described in this API;
+iv. Unnecessary empty spaces MUST be avoided;
+v. Payment System shall always perform customer reference verification before 
+proceeding with payment transaction;
+vi. Payment System shall issue the GePG potential receipt to customer, this will be 
+shared by SG-GePG to payment system. SG-GePG shall save the same on 
+institutions collection account and submit the same to GePG. Thereafter, upon GePG 
+acceptance of the payment, GePG shall treat the receipt as valid receipt of the 
+transaction. GePG Potential receipt can be obtained on <PayRefId> of the inquiry 
+response from SG-GePG interface.
+vii.Payment System shall collect depositor details whenever available and submit them 
+as payer details on payment posting;
+viii. Payment System shall ensure integrity of data between those submitted to SGGePG versus those saved on its own database.
+5.2. Business Requirements
+Payment System shall observe and implement the following business requirements in
+sequence. Any failure of the below sequence should not proceed to the next validation stage:-
+i. SG-GePG shall validate if the respective service provider has collection account 
+as per bill currency;
+ii. Payment System shall validate the paid amount against bill minimum payable amount;
+10 | P a g e
+iii. Payment System shall validate the paid amount against bill payment option;
+iv. Payment System shall validate paid amount if is above billed amount. If so, the 
+customer should have consent that is actual paying above billed amount (a check box 
+control is proposed instead of a button);
+v. SG-GePG shall credit the respective service provider collection account;
+vi. SG-GePG will ensure the respective collection account have been credited before 
+next step;
+vii. SG-GePG shall ensure payment notification is sent to GePG and acknowledged 
+successful;
+viii. SG-GePG shall implement an auto and manual retry mechanism of payment
+notification if it was not acknowledged by GePG;
+ix. SG-GePG shall ensure payment system has received callback message from GePG
+and confirm if the respective transaction was accepted;
+x. SG-GePG shall ensure the respective transaction is included on end of the day 
+reconciliation batch notification;
+xi. Payment System shall ensure ALL of the above constraints are track via a 
+dashboard where support team can validate the compliance to business requirement 
+during operations;
+11 | P a g e
+6. CONTROL NUMBER VERIFICATION AND PAYMENT POSTING
+6.1. POSTPAID Payment Flow
+Post-paid payment flow defines the complete flow of payment for the respective bill 
+categorized as POSTPAID.
+Once Payment Service Provider (PSP) receives a bill and want to process payment, PSP shall 
+undergo the following sequential steps: -
+i. Payment system shall verify the validity of bill before conducting a
+transaction on the respective bill. The verification shall be done using a 
+control number as presented by the customer. The data required and format
+for bill verification request shall be as per Control Number Verification and 
+Payment Posting (Section 6.3.1).
+ii. Once SG-GePG receives bill verification request from I, above, SG-GePG 
+shall post the same to GePG and, GePG shall process the request and 
+responds either with GePG response code(s) (other than 7101 or 7336) or 
+bill details of the respective request. The data returned and format for bill
+verification response shall be as per Control
+12 | P a g e
+Number Verification and Payment Posting (Section 6.3.2). GePG response 
+codes can be referred on Response Codes (Section 10).
+iii. If Payment system receives response of the bill verification with GePG
+response code(s) (other than 7101 or 7336) from ii. above, payment systems 
+shall terminate the transaction and issue a reasonable message to the 
+customer as per received GePG response code.
+iv. If Payment system receives response of the bill verification with GePG
+response code 7101 from ii. above, payment systems shall use the bill details 
+to correctly debit the customer then credit the respective mapped collection 
+account of the service provider. This process of debiting customer and 
+crediting the respective institution account is handled by SG-GePG engine.
+v. If Payment system receives response of the bill verification with GePG
+response code 7336 from ii. above, PSP shall use the bill details to correctly 
+debit the customer then transfer the same to the Central Bank (Bank of 
+Tanzania). This process of debiting customer and crediting Central Bank 
+(Bank of Tanzania) respective institution account is handled by SG-GePG 
+engine.
+vi. Correct debiting of the customer in iv. and v. above, hereby means debiting 
+the customer using bill details rules which are:
+a. Billed amount
+b. Billed currency
+c. Payment options (Section 3)
+d. Payment plan (Section 4)
+vii. After successful crediting the respective service provider’s mapped 
+collection account whose currency is matching bill currency from vi. above, 
+Payment systems shall send payment notification to SG-GePG until GePG
+acknowledges receiving it. The data required and format for payment 
+notification and acknowledgment shall be as per payment request (Section 
+6.4.1) and payment acknowledgment (Section 6.4.2) respectively.
+viii. GePG shall process the payment and send call back response to SG-GePG
+until Payment systems acknowledges receiving it. The data required and 
+format for payment final response and acknowledgment shall be as per Final 
+Response (Section 6.4.3).
+13 | P a g e
+6.2. PREPAID Payment Flow
+Pre-paid payment flow defines the complete flow of payment for the respective bill 
+categorized as PREPAID.
+Once Payment system / channel receives a bill and want to process payment, PSP shall 
+undergo the following sequential steps: -
+i. Payment system / channel shall verify the validity of customer reference 
+before conducting a transaction on the respective bill. The verification shall 
+be done using a control number as presented by the customer. The data
+required and format for bill verification request shall be as per Control 
+Number Verification and Payment Posting (Section 6.3.1).
+ii. Once SG-GePG receives bill validation request from i. above, SG-GePG
+shall process the request and responds either with GePG response code(s) 
+(other than 7101 or 7336) or details of the respective request. The data
+returned
+14 | P a g e
+and format for customer reference verification response shall be as per 
+Verification Response (Section 6.3.2). GePG response codes can be referred 
+on Response Codes (Section 10).
+iii. If Payment systems receives response of the customer reference verification 
+with GePG response code(s) (other than 7101 or 7336) from ii. above, 
+Payment systems shall terminate the transaction and issue a reasonable 
+message to the customer as per received GePG response code.
+iv. If Payment systems receives response of the bill verification with GePG
+response code 7101 from ii. above, SG-GePG shall use the bill details to 
+correctly debit the customer then credit PSP’s suspense account.
+v. If Payment systems receives response of the customer reference verification 
+with GePG response code 7336 from ii. above, SG-GePG shall use the bill 
+details to correctly debit the customer then transfer the same to the Central 
+Bank (Bank of Tanzania).
+vi. Correct debiting of the customer in iv. and v. above, hereby means debiting 
+the customer using bill details rules which are:
+a. Billed amount
+b. Billed currency
+c. Payment options (Section 3)
+d. Payment plan (Section 4)
+vii. After successful crediting PSP’s suspense account from vi. above, SGGePG shall send quote notification to GePG until GePG acknowledges 
+receiving it. The data required and format for quote posting and 
+acknowledgment shall be as per Quote Posting (Section 6.5.1.1 and 6.5.1.2).
+viii. GePG shall process the quote and send call back response to SG-GePG until
+SG-GePG acknowledges receiving it. The data required and format for quote 
+final response shall be as Quote Posting (Section 6.5.1.1).
+ix. Once a successful quote response is received in viii. above, SG-GePG shall 
+then debit the same amount from NBC suspense GL account and credit the 
+same in respective service provider’s mapped collection account whose 
+currency is matching bill currency.
+x. After successful crediting the respective service provider’s mapped 
+collection account whose currency is matching bill currency from ix.
+15 | P a g e
+above, SG-GePG shall send payment notification to GePG until GePG
+acknowledges receiving it. The data required and format for payment 
+notification and acknowledgment shall be as per payment request (Section 
+6.4.1) and payment acknowledgment (Section 6.4.2) respectively.
+ix. Once a negative response is received in viii. above, SG-GePG shall then 
+debit the same amount from PSP’s suspense account and credit the same to 
+customer (return to customer).
+NOTE 1: A potential GePG payment reference (receipt) issued during bill verification shall
+be used as a valid GePG payment reference (receipt) for a successful transaction and the
+same sent to SG-GePG during payment/quote notification. This can be found on XML tag
+<PayRefId>
+NOTE 2: Payment systems shall ensure <QtRefId>from successful final quote response 
+received at Payment systems end, is included in the payment notification.
+NOTE 3: Payment Systems shall collect all response codes returned by GePG and act to 
+them accordingly so as to assure customer is not denied / delayed to get service.
+16 | P a g e
+NOTE 4: Success or failed response codes and their respective descriptions can be any 
+Response code with its respective description. Please refer to Response Codes (Section 9.2)
+6.3. Control Number Verification
+Control number verification 
+6.3.1. Control Number Inquiry
+ The following payload is used to query the validity of the customer control number.
+<GepgGateway>
+ <GepgGatewayBillQryReq>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_INQ</Service>
+ </GepgGatewayHdr>
+ <gepgBillQryReq>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CustCtrNum>991043382776</CustCtrNum>
+ <DebitAccountNo>0154324324</DebitAccountNo>
+ <DebitAccountCurrency>TZS</DebitAccountCurrency>
+ </gepgBillQryReq>
+ </GepgGatewayBillQryReq>
+<gepggatewaySignature>AA3AddMJyu/SJDnr6AV40lzXo2Smo7SiXgWKWMn7xMm6Iupuhxrw1AP5Kk+eBp38JleWvT1++EP5rX/8Fvq
+KVA+aVBNrn7IRgwBiuiojkkXZE8R1AkvNh/EAAG9ZrTAJGF8K3BySEzYKL4gtoarJkB3dYGlcX0p9wzneTxduZ4UbMVEqNbWpm1P
+sL7OQqxgim5NIe59nkhRKJP6yfk2TRr1nmtmJn5RTSuv9yxajBsNpnJjvU0eLMU4edGo5aD5ALNhFtE92Vg8cnhwXNLFHy5+L67/CFTn
+YgEXr9xzzszFelW+RnyKbVQ/hu6KRYnDitY4ESzgJLomBHFQ0Ux8tvQ==</gepggatewaySignature>
+</GepgGateway>
+Xml Tag Data Type Field 
+Conditio
+n
+Description
+ChannelID String(20) Mandatory Channel Identificationunique id for the 
+connecting payment 
+system and will be 
+shared by SG-GePG upon 
+successful onboarding. 
+ChannelName String(50) Mandatory Channel Name-Name for 
+the connecting payment 
+system and will be 
+shared by SG-GePG upon 
+successful onboarding.
+17 | P a g e
+Service String(25) Mandatory Service that will be 
+consumed by the 
+channel. will be shared 
+by SG-GePG upon 
+successful onboarding.
+ChannelRef String(50) Mandatory Transaction 
+Identification – Unique 
+reference of the 
+request generated by 
+Payment Systems.
+CustCtrNum String(20) Mandatory Control number given to 
+customer to facilitate 
+bill query
+DebitAccountNo String(30) Mandatory Debit Payer account 
+number, whoever is 
+wanting to pay for this 
+DebitAccountCurrency Number(20) Mandatory bill. Debit Payer 
+account currency. 
+18 | P a g e
+6.3.2. Response
+The following payload is used to return response of customer control number inquiry
+Failure Response Payload
+<GepgGateway>
+ <GepgGatewayBillQryResp>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_INQ</Service>
+ </GepgGatewayHdr>
+ <BillHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ <PayType></PayType>
+ <EntryCnt></EntryCnt>
+ <BillStsCode>Failed Response Code</BillStsCode>
+ <BillStsDesc>Failed Response Description</BillStsDesc>
+ </BillHdr>
+ <BillDtls></BillDtls>
+ </GepgGatewayBillQryResp>
+ <gepggatewaySignature>SignatureGoesHere</gepggatewaySignature>
+</GepgGateway>
+Successful Response Payload
+<GepgGateway>
+ <GepgGatewayBillQryResp>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_INQ</Service>
+ </GepgGatewayHdr>
+ <BillHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ <PayType>2</PayType>
+ <EntryCnt>3</EntryCnt>
+ <BillStsCode>7101</BillStsCode>
+ <BillStsDesc>Success Response Description</BillStsDesc>
+ </BillHdr>
+ <BillDtls>
+ <BillDtl>
+ <SpCode>SP99104</SpCode>
+19 | P a g e
+ <SpName>TRA-Commissioner General Deposit Others</SpName>
+ <PayRefId>922255125723111</PayRefId>
+ <BillCtrNum>1998440562806</BillCtrNum>
+ <PayOpt>PaymentOptionValueGoesHere</PayOpt>
+ <BillAmt>9153.00</BillAmt>
+ <MinPayAmt>9153.00</MinPayAmt>
+ <Ccy>TZS</Ccy>
+ <BillExprDt>2042-09-09T23:59:59</BillExprDt>
+ <BillDesc>TAX REVENUE BILL</BillDesc>
+ <CustName>JH LIMITED</CustName>
+ <CustCellNum></CustCellNum>
+ <CustEmail>customer@mail.com</CustEmail>
+ <PayPlan>PayPlanValueGoesHere</PayPlan>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ </BillDtl>
+ <BillDtl>
+ <SpCode>SP99104</SpCode>
+ <SpName>TFS- Tanzania Forestry Service</SpName>
+ <PayRefId>922255125723112</PayRefId>
+ <BillCtrNum>455440562806</BillCtrNum>
+ <PayOpt>PaymentOptionValueGoesHere</PayOpt>
+ <BillAmt>29153.00</BillAmt>
+ <MinPayAmt>29153.00</MinPayAmt>
+ <Ccy>TZS</Ccy>
+ <BillExprDt>2042-09-09T23:59:59</BillExprDt>
+ <BillDesc>Customer BILL</BillDesc>
+ <CustName>JH LIMITED</CustName>
+ <CustCellNum></CustCellNum>
+ <CustEmail>customer@mail.com</CustEmail>
+ <PayPlan>PayPlanValueGoesHere</PayPlan>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ </BillDtl>
+ </BillDtls>
+ <GepgGatewayTxn>
+ <BankType>OFFUS | ONUS</BankType>
+ <Forex>Y | N</Forex>
+ <BankDetails>
+ <BankTrfDetails>
+ <CreditBankName>BANK A</CreditBankName>
+ <CreditBankAccountNo>67264141241</CreditBankAccountNo>
+ <CreditAccountCurrency>TZS</CreditAccountCurrency>
+ <CreditAccountName>TEST BILLER</CreditAccountName>
+ <CreditBankBenBic>BANKTZTC</CreditBankBenBic>
+ </BankTrfDetails>
+ <BankTrfDetails>
+ <CreditBankName>BANK C</CreditBankName>
+ <CreditAccountNo>89764141241</CreditAccountNo>
+ <CreditAccountCurrency>TZS</CreditAccountCurrency>
+20 | P a g e
+ <CreditAccountName>TEST ANOTHER BILLER</CreditAccountName>
+ <CreditBankBenBic>NLBTZTD</CreditBankBenBic>
+ </BankTrfDetails>
+ </BankDetails>
+ </GepgGatewayTxn>
+ </GepgGatewayBillQryResp>
+</GepgGateway>
+NOTE: Credit Bank Details will be returned for OFFUS payments, i.e., transfers
+21 | P a g e
+NOTE:
+Success response code and Success response description can be Response code 7101 or 7336 
+and its respective description. 7379 is a the payment acknowledgement response code
+• 7101 – When this GePG Response code is returned, Payment Service Provider may 
+proceed with the transaction as per payment flow through SG-GePG
+• 7336 – When this GePG Response code is returned, Payment Service Provider may 
+proceed with the transaction BUT transfer the funds to Central Bank (Bank of Tanzania 
+– BoT) through SG-GePG.
+• 7379 – This is a payment acknowledgement response code
+Xml Tag Data Type Data 
+Condition
+Description
+CbpGwRef String(50) Mandatory SG-GePG Reference that is unique per 
+each request.
+CustCtrNum String(20) Mandatory Control number given to customer to
+facilitate bill query
+PayType Number(1) Mandatory Payment Type
+1 – Pay All Bill Control 
+Numbers At Once
+2 – Pay any Bill Control 
+Number
+EntryCnt Number(4) Mandatory Total Number of bill entries contained in 
+the details payload
+PayRefId String(50) Mandatory Temporary GePG Receipt that is unique 
+per each request. Must be shared to 
+customer, saved in core banking 
+database, Included in bank statement, 
+Included in transactional reconciliation, 
+included during payment notification
+SpCode String(10) Mandatory Service Provider Code
+SpName String(150) Mandatory Service Provider Name
+BillStsCode String(10) Mandatory Bill Status Code (Response Codes)(Section 
+9.2)
+22 | P a g e
+BillStsDesc String(150) Mandatory Bill Status Code Description (Response 
+Description) (Section 9.2)
+BillCtrNum Number(20) Mandatory Bill control number to be used
+during crediting respective
+Xml Tag Data Type Data 
+Condition
+Description
+service provider collection
+account, Included in bank statement and 
+included in transactionalreconciliation 
+submission
+PayOpt String(20) Mandatory Payment Options define the rules with 
+which the bill should be paid. Refer
+Payment
+Options (Section 3)
+BillAmt Double Mandatory Billed Amount with two(2)
+decimal places
+MinPayAmt Double Mandatory Minimum payable amount for billed 
+amount of the respective bill with two(2)
+decimal places
+Ccy String(3) Mandatory Currency
+BillExprDt DateAndTime Mandatory Bill Expiry Date YYYY-MMDDTHH24:MI:SS (e.g. 2021-03-
+25T14:30:12)
+BillDesc String(1000) Mandatory Bill Description
+CustName String(250) Mandatory Customer Name
+CustCellNum String (15) Optional Customer Mobile/Cell Number 
+should start with a country code e.g. 
+255XXXXXXXXX
+CustEmail String (150) Optional Customer Email Address
+PayPlan Number (1) Mandatory Payment Plan define the rules with which
+the bill should be paid. Refer Payment Plan 
+(Section 4)
+Rsv1 String Optional Reserved field
+Rsv2 String Optional Reserved field
+Rsv3 String Optional Reserved field
+23 | P a g e
+6.4.Payment Posting
+							Payment Posting to Sg-GePG
+6.4.1. Payment Request
+The following payload is for sending payment(s) to SG-GePG from Payment System.
+<GepgGateway>
+ <GepgGatewayPaymentReq>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY</Service>
+ </GepgGatewayHdr>
+ <PmtHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ <PayType>1</PayType>
+ <EntryCnt>3</EntryCnt>
+ <BillStsCode>7101/7336</BillStsCode>
+ <ResultUrl>PSPResultUrlGoesHere</ResultUrl>
+ </PmtHdr>
+ <PmtDtls>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000022</ChannelTrxId>
+ <SpCode>SP19844</SpCode>
+ <PayRefId>922255125723111</PayRefId>
+ <BillCtrNum>1998440562806</BillCtrNum>
+ <PaidAmt>9153.00</PaidAmt>
+ <TrxDtTm>2021-06-08T12: 30: 00</TrxDtTm>
+ <PayOpt>Full / Partial /Exact /Infinity /Limited</PayOpt>
+ <PayPlan>1</PayPlan>
+ <BillAmt>454656.50</BillAmt>
+ <MinPayAmt>0.01</MinPayAmt>
+ <Ccy>TZS</Ccy>
+ <TrdPtyTrxId></TrdPtyTrxId>
+ <PyrCellNum>255177100100</PyrCellNum>
+ <PyrName>Elivira Kweka</PyrName>
+ <PyrEmail>e.kweka@gmail.com</PyrEmail>
+ <PyrId>4747488</PyrId>
+ <PyrIdType>1</PyrIdType>
+ <DebitAmount></DebitAmount>
+ <DealID></DealID> 
+24 | P a g e
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ </PmtDtl>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE00000204</ChannelTrxId>
+ <SpCode>SP45544</SpCode>
+ <PayRefId>922255125723112</PayRefId>
+ <BillCtrNum>455440562806</BillCtrNum>
+ <PaidAmt>29153.00</PaidAmt>
+ <TrxDtTm>2021-06-08T12: 35: 00</TrxDtTm>
+ <PayOpt>Full / Partial /Exact /Infinity /Limited</PayOpt>
+ <PayPlan>1</PayPlan>
+ <BillAmt>454656.50</BillAmt>
+ <MinPayAmt>0.01</MinPayAmt>
+ <Ccy>TZS</Ccy>
+ <TrdPtyTrxId></TrdPtyTrxId>
+ <PyrCellNum>255177100100</PyrCellNum>
+ <PyrName>Elivira Kweka</PyrName>
+ <PyrEmail>e.kweka@gmail.com</PyrEmail>
+ <PyrId>4747488</PyrId>
+ <PyrIdType>1</PyrIdType>
+ <DebitAmount></DebitAmount>
+ <DealID></DealID>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ </PmtDtl>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000027</ChannelTrxId>
+ <SpCode>SP85544</SpCode>
+ <PayRefId>922255125723113</PayRefId>
+ <BillCtrNum>855440562806</BillCtrNum>
+ <PaidAmt>189000.00</PaidAmt>
+ <TrxDtTm>2021-06-08T12: 32: 00</TrxDtTm>
+ <PayOpt>Full / Partial /Exact /Infinity /Limited</PayOpt>
+ <PayPlan>1</PayPlan>
+ <BillAmt>454656.50</BillAmt>
+ <MinPayAmt>0.01</MinPayAmt>
+ <Ccy>TZS</Ccy>
+ <TrdPtyTrxId></TrdPtyTrxId>
+ <PyrCellNum>255177100100</PyrCellNum>
+ <PyrName>Elivira Kweka</PyrName>
+ <PyrEmail>e.kweka@gmail.com</PyrEmail>
+ <PyrId>4747488</PyrId>
+ <PyrIdType>1</PyrIdType>
+ <DebitAmount></DebitAmount>
+ <DealID></DealID>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+25 | P a g e
+ </PmtDtl>
+ </PmtDtls>
+ <GepgGatewayProcessingInfo>
+ <BankType>Offus/Onus</BankType>
+ <Forex>Y | N</Forex>
+ <DebitAccountNo>031231212112</DebitAccountNo>
+ <DebitAccountType>CASA</DebitAccountType>
+ <DebitAccountCurrency>USD</DebitAccountCurrency>
+ <DebitAmount>227306.00</DebitAmount>
+ <CreditAccountNo>67264141241</CreditAccountNo>
+ <CreditCurrency>TZS</CreditCurrency>
+ <CreditBankName>BANKX</CreditBankName>
+ <CreditBankBenBic>NLBTZTZ</CreditBankBenBic>
+ <CreditAmount>227306.00</CreditAmount>
+ </GepgGatewayProcessingInfo>
+ </GepgGatewayPaymentReq>
+ <signature>Signature</signature>
+</GepgGateway>
+NOTE: Credit Bank Details will be sent to Sg-GePG for off us payments.
+26 | P a g e
+Xml Tag Data Type Data 
+Condition 
+Description 
+CbpGwRef String(50) Mandatory SG-GePG Reference that is unique 
+per each request.
+ChannelRef String(50) Mandatory Transaction Identification – Unique 
+reference of the request generated by 
+Payment Systems.
+CustCtrNum Number(20) Mandatory Control number given to customer to
+facilitate bill query
+PayType Number(1) Mandatory Payment Type
+1 – Pay All Bill Control 
+Number At Once
+2 – Pay any Bill Control 
+Number
+EntryCnt Number(4) Mandatory Number of entries of payments
+ResultUrl String(300) Mandatory Callback for posting response after 
+payment being processed by SGGePG
+ChannelTrxId String(100) Mandatory Payment Systems / channel
+Reference Unique for each 
+transaction.
+SpCode String(10) Mandatory Service Provider Code
+PayRefId String(50) Mandatory Qualified GePG Receipt Number 
+for the respective transaction. It is 
+the value of PayRefId obtained 
+during bill verification
+BillCtrNum Number(20) Mandatory Bill control number to be used 
+during crediting respective service
+provider collection account, 
+Included in bank statement and 
+included in transactional 
+reconciliation submission
+27 | P a g e
+Xml Tag Data Type Data 
+Condition 
+Description 
+PaidAmt Double Mandatory Paid Amount with two(2)
+decimal places
+Ccy String(3) Mandatory Currency
+CollAccNum String(50) Mandatory Credited Collection Account Number
+TrxDtTm DateAndTime Mandatory Transaction Date and Time of when
+the transaction was made
+YYYY-MMDDTHH24:MI:SS (2020-
+04-17T14:30:12)
+TrdPtyTrxId String(100) Optional Third Party Receipt such as Issuing 
+Bank authorization Identification, 
+MNO Receipt, and Aggregator 
+Receipt etc. This should be 
+mandatory for all transaction done 
+through third parties.
+PyrCellNum String(15) Optional Depositor Mobile/Cell Number
+should start with a country code e.g.
+255XXXXXXXXX
+It is mandatory for payments that
+come through mobile channel eg. 
+MB, TPESA etc.
+PyrName String 
+(250)
+Optional Depositor Name
+PyrEmail String(150) Optional Depositor Email Address
+PyrId String(150) Optional DepositorIdentification number
+PyrIdType Number Optional Depositor Identity Type as per 
+(Section 10.1)
+Forex String (1) Mandatory Identification of cross currency 
+transaction. Values are “Y” or “N”. If 
+value is “Y” debit amount must be 
+specified on the payment request for 
+each control number
+DebitAmount double Optional Amount to debit in the case of cross 
+currency (Forex). The amount should 
+already be converted from the channel 
+or upstream system. Same amount will 
+be passed as debit amount to 
+downstream systems
+28 | P a g e
+DealId String Optional Deal ID for cross currency (Forex)
+transactions originating from internet 
+banking. The Deal ID should 
+correspond to the transaction initiated 
+from the channel.
+Rsv1 String Optional Reserved field
+Rsv2 String Optional Reserved field
+Rsv3 String Optional Reserved field
+29 | P a g e
+6.4.2. Payment Acknowledgment
+The following payload will be sent to Payment System upon receiving request on SG-GePG.
+<GepgGateway>
+ <GepgGatewayPymtACK>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY</Service>
+ </GepgGatewayHdr>
+ <gepgGatewayPmtSubReqAck>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <AckId>254385-858585</AckId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </gepgGatewayPmtSubReqAck>
+ </GepgGatewayPymtACK>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+Xml Tag Data Type Data 
+Condition
+Description
+CbpGwRef String(50) Mandatory SG-GePG Reference that is unique per each 
+request.
+ChannelRef String(50) Mandatory Transaction Identification – Unique reference 
+of the request generated by Payment Systems.
+AckId String(50) Mandatory Acknowledgment stamp generated by GePG
+payment System and shared to channels by 
+SG-GepG
+PayStsCode String(10) Mandatory Status Code (Response Codes) (Section 9.2)
+PayStsDesc String(255) Mandatory Status Code Description (Response 
+Description) (Section 9.2)
+6.4.3. Final Response
+The following payload will be sent to Payment system after payment request has been 
+processed. Response will be sent through the URL specified in the <ResultUrl> tag of the 
+payment request payload
+30 | P a g e
+ <GepgGateway>
+ <pmtSubRes>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY</Service>
+ </GepgGatewayHdr>
+ <PmtResHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ <PayType>1</PayType>
+ <EntryCnt>3</EntryCnt>
+ </PmtResHdr>
+ <PmtResDtls>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000425</ChannelTrxId>
+ <SgGwTrxId>CB2100000FBE0000027</SgGwTrxId>
+ <BillCtrNum>1998440562806</BillCtrNum>
+ <PayRefId>922255125723111</PayRefId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </PmtDtl>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000836</ChannelTrxId>
+ <SgGwTrxId>CB2100000FBE0000027</SgGwTrxId>
+ <BillCtrNum>455440562806</BillCtrNum>
+ <PayRefId>922255125723112</PayRefId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </PmtDtl>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000027</ChannelTrxId>
+ <SgGwTrxId>CB2100000FBE000023</SgGwTrxId>
+ <BillCtrNum>855440562806</BillCtrNum>
+ <PayRefId>922255125723113</PayRefId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </PmtDtl>
+ </PmtResDtls>
+ </pmtSubRes>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+31 | P a g e
+Xml Tag Data Type Data Condition Description
+ChannelTrxId String(100) Mandatory Payment Systems / channel
+Reference Unique for each 
+transaction.
+SgGwTrxId String(50) Mandatory SG-GePG Reference Unique
+for each transaction.
+PspCode String(10) Mandatory PaymentService Provider 
+Code
+CustCtrNum String(20) Mandatory Control number given to 
+customer to facilitate bill query
+PayType Number(1) Mandatory Payment Type
+1 – Pay All Bill Control
+Number At Once
+Xml Tag Data Type Data Condition Description
+2 – Pay any Bill
+Control Number
+EntryCnt Number(4) Mandatory Number of entries of Payment
+Response I.e
+<PmtDtl>
+ChannelTrxId String(100) Mandatory Payment Systems / channel
+Reference Unique for each 
+transaction.
+BillCtrNum String(20) Mandatory Bill control number to be used 
+during crediting respective 
+service provider collection 
+account.
+32 | P a g e
+PayRefId String(50) Mandatory GePG Receipt Number –
+Generated for each successful
+payment. For failed transaction 
+no receipt will be generated or 
+value of ChannelTrxId Tag
+may be return on this tag.
+PayStsCode String(10) Mandatory Payment Status Code 
+(Response Code) (Section 9.2)
+PayStsDesc String(255) Mandatory Payment Status Code 
+Description(Response 
+Description)(Section 9.2)
+33 | P a g e
+6.4.4. Final Response Acknowledgment
+The following payload is for acknowledgement upon receive of payment response from SGGePG, it is sent by Payment System to SG-GePG after receive of response.
+ <GepgGateway>
+ <GepgGatewayFinRespACK>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY</Service>
+ </GepgGatewayHdr>
+ <pmtSubResAck>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <AckId>8858585-58KFK-KFKF20114</AckId>
+ <PayStsCode>Response Code</PayStsCode>
+ </pmtSubResAck>
+ <signature>SignatureGoesHere</signature>
+ </GepgGatewayFinRespACK>
+</GepgGateway>
+Xml Tag Data Type Data 
+Condition
+Description
+CbpGwRef String(50) Mandatory SG-GePG Reference that is unique 
+per each request. it’s value should 
+be the same as of tag<CbpGwRef> 
+of Response Payload.
+AckId String(50) Mandatory UniqueIdentification of 
+Response from Payment
+System / channel
+PayStsCode String(255) Mandatory Payment Status Code – Psp 
+Payment system should 
+always return 7101 i.e 
+Successful Received.
+On return other than 7101 SGGePG will assume response is 
+not received and keep on 
+sending until receive 7101
+34 | P a g e
+6.5. Quote Posting
+											
+Quote Payment Posting
+6.5.1.1. Quote Request
+The following payload is for sending quote to SG-GePG from Payment System
+For Quote Posting (Pre-Paid Payments) channel will share a call-back URL which will be 
+configured on SG-GePG for sending quote call-back. After quote call-back, SG-GePG shall send 
+payment notification to MoF (GePG) and final response will be shared to channel. Final response
+shall be as per section 6.4.3 on this API Document
+<GepgGateway>
+ <quotSubReq>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY_QUOTE</Service>
+ </GepgGatewayHdr>
+ <QuotHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ <ResultUrl>PSPResultUrlGoesHere</ResultUrl>
+ </QuotHdr>
+ <QuotDtl>
+ <SpCode>SP99993</SpCode>
+ <BillCtrNum>99993938440564229</BillCtrNum>
+ <PaidAmt>50000.00</PaidAmt>
+ <Ccy>TZS</Ccy>
+ <PayRefId>922255125723178</PayRefId>
+ <TrxDtTm>2022-06-08T22:30:00</TrxDtTm>
+ <TrdPtyTrxId>1039-39393320</TrdPtyTrxId>
+ <PyrCellNum>255177100100</PyrCellNum>
+ <PyrName>Luhaja Emmanuel</PyrName>
+ <PyrEmail>e.luhaja@safeserva.cm</PyrEmail>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ </QuotDtl>
+ <GepgGatewayProcessingInfo>
+ <BankType>Offus/Onus</BankType>
+ <Forex>Y | N</Forex>
+ <DebitAccountNo>031231212112</DebitAccountNo>
+ <DebitAccountType>CASA</DebitAccountType>
+ <DebitAccountCurrency>USD</DebitAccountCurrency>
+ <DebitAmount>227306.00</DebitAmount>
+ <CreditAccountNo>67264141241</CreditAccountNo>
+35 | P a g e
+ <CreditCurrency>TZS</CreditCurrency>
+ <CreditBankName>BANKX</CreditBankName>
+ <CreditBankBenBic>NLBTZTZ</CreditBankBenBic>
+ <CreditAmount>227306.00</CreditAmount>
+ </GepgGatewayProcessingInfo>
+ </quotSubReq>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+Xml Tag Data Type Data 
+Condition
+Description
+ChannelRef String(50) Mandatory Transaction Identification – Unique 
+reference of the request generated 
+by Payment Systems.
+ResultUrl String(150) Mandatory Result Url – Call back Url for
+posting Response of processed 
+quote Request
+SpCode String(10) Mandatory Service Provider Code
+BillCtrNum Number(20) Mandatory Bill control number to be used 
+during crediting respective service 
+provider collection account,
+Included in bank statement and
+included in transactional 
+reconciliationsubmission
+PaidAmt Double Mandatory Paid Amount with two(2) decimal 
+places
+Ccy String(3) Mandatory Currency
+PayRefId String(50) Mandatory Qualified GePG Receipt Number
+for the respective transaction. It is 
+the value of PayRefId obtained 
+during bill verification
+TrxDtTm DateAndTime Mandatory Transaction Date and Time
+YYYY-MM-DDTHH24:MI:SS
+(2021-04-17T14:30:12)
+36 | P a g e
+Xml Tag Data Type Data 
+Condition
+Description
+TrdPtyTrxId String (100) Optional Third Party Receipt such as 
+Issuing Bank Authorization 
+Identification, MNO Receipt, and 
+Aggregator Receipt etc. This
+should be mandatory for all 
+transaction done through third 
+parties.
+PyrCellNum String(15) Optional Depositor Mobile/Cell Number
+should start with a country code 
+e.g.
+255XXXXXXXXX
+It is mandatory for payment 
+come through mobile channel eg.
+MB, TPESA etc.
+PyrName String(1000) Optional Depositor Name
+PyrEmail String(150) Optional Depositor Email Address
+Rsv1 String Optional Reserved field
+Rsv2 String Optional Reserved field
+Rsv3 String Optional Reserved field
+6.5.1.2. Quote Acknowledgment
+The following payload will be sent to Payment System upon receiving request on SG-GePG.
+<GepgGateway>
+ <GepgGatewayQuotACK>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY</Service>
+ </GepgGatewayHdr>
+ <gepgGatewayQuotSubReqAck>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <AckId>254385-858585</AckId>
+ <PayStsCode>Response Code</PayStsCode>
+37 | P a g e
+ <PayStsDesc>Response Description</PayStsDesc>
+ </gepgGatewayQuotSubReqAck>
+ </GepgGatewayQuotACK>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+38 | P a g e
+Xml Tag Data Type Data 
+Condition
+Description
+CbpGwRef String(50) Mandatory SG-GePG Reference that is unique per 
+each request.
+ChannelRef String(50) Mandatory Transaction Identification – Unique 
+reference of the request generated by 
+Payment Systems.
+AckId String(50) Mandatory Unique identification of
+acknowledgment of Payment System
+QtStsCode String(10) Mandatory Quote Status Code (Response Codes) 
+(Section 9.2)
+QtStsDesc String(255) Mandatory Quote Status Code Description 
+(Response Code Description (Section 
+9.2)
+6.5.1.3. Quote Final Response
+The following payload will be sent to Payment system, when processed request of quote(s) fail. 
+Response will be sent through the URL specified in the <ResultUrl> tag of the quote request 
+payload
+Failure Response
+<GepgGateway>
+ <quotSubRes>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY_QUOTE</Service>
+ </GepgGatewayHdr>
+ <QuotResHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ </QuotResHdr>
+ <QuotResDtl>
+ <BillCtrNum>991081234567</BillCtrNum>
+ <PayRefId>920114000000003</PayRefId>
+39 | P a g e
+ <PaidAmt>50000</PaidAmt>
+ <TokenAmt></TokenAmt>
+ <Token></Token>
+ <Units></Units>
+ <DedItems></DedItems>
+ <CustMsg></CustMsg>
+ <QtStsCode>Success Response Code</QtStsCode>
+ <QtStsDesc>Success Response Description</QtStsDesc>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ </QuotResDtl>
+ </quotSubRes>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+Success Response
+<GepgGateway>
+ <quotSubRes>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY_QUOTE</Service>
+ </GepgGatewayHdr>
+ <QuotResHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ </QuotResHdr>
+ <QuotResDtl>
+ <BillCtrNum>991081234567</BillCtrNum>
+ <PayRefId>920114000000003</PayRefId>
+ <PaidAmt>50000</PaidAmt>
+ <TokenAmt>40983.61</TokenAmt>
+ <Token>4235-2352-35423-5325</Token>
+ <Units>140.4KWH</Units>
+ <DedItems>
+ <DedItem>
+ <DedCode>001</DedCode>
+ <DedDesc>VAT</DedDesc>
+ <DedPer>18%</DedPer>
+ <DedAmt>7377.05</DedAmt>
+ </DedItem>
+ <DedItem>
+ <DedCode>002</DedCode>
+ <DedDesc>EWURA</DedDesc>
+ <DedPer>1%</DedPer>
+40 | P a g e
+ <DedAmt>409.84</DedAmt>
+ </DedItem>
+ <DedItem>
+ <DedCode>003</DedCode>
+ <DedDesc>REA</DedDesc>
+ <DedPer>3%</DedPer>
+ <DedAmt>1229.50</DedAmt>
+ </DedItem>
+ </DedItems>
+ <CustMsg>LUKU 991081234567 920114000000003 140.4KWH 2964 3655 3109 8639 
+9519 Cost 50000.00 VAT 18% 7377.05 EWURA 1% 409.84 REA 3% 1229.50 TOTAL 
+50,000.00</CustMsg>
+ <QtStsCode>Success Response Code</QtStsCode>
+ <QtStsDesc>Success Response Description</QtStsDesc>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ </QuotResDtl>
+ </quotSubRes>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+Xml Tag Data Type Data Condition Description
+CbpGwRef String(50) Mandatory SG-GePG Reference that is 
+unique per each request.
+ChannelRef String(50) Mandatory Transaction Identification –
+Unique reference of the 
+request generated by Payment 
+Systems.
+BillCtrNum Number(20) Mandatory Bill control number to be used 
+during crediting respective 
+service provider collection 
+account, Included in bank 
+statement and included in 
+transactional reconciliation 
+submission
+CustMsg String (250) Mandatory Customized message to be
+shared to customer
+PayRefId String(50) Mandatory GePG Receipt Number –
+Generated for each successful
+payment. For failed transaction 
+no receipt will be generated, 
+value of CbpGwRef Tag may be 
+return on this tag.
+41 | P a g e
+PaidAmt Double Mandatory Paid Amount with two(2) 
+decimal places
+Xml Tag Data Type Data Condition Description
+TokenAmt Double Mandatory Amount of equivalent
+value with token generated
+Token Number Mandatory Utility Token
+Units Number Mandatory Number of Units Received
+DedCode String(50) Mandatory Deduction Code
+DedDesc String(100) Mandatory Deduction Description
+DedAmt Double Mandatory Deduction Amountfrom Paid 
+Amount
+DedPer String(50) Mandatory Percentage of Deduction
+QtStsCode String(10) Mandatory Status Code (Response Codes)
+(Section 9.2)
+QtStsDesc String(255) Mandatory Status Code Description 
+(Response Code Description) 
+(Section 9.2)
+Rsv1 String Optional Reserved field
+Rsv2 String Optional Reserved field
+Rsv3 String Optional Reserved field
+6.5.1.4. Quote Final Response Acknowledgment
+The following payload is for acknowledgement upon receive of payment response from SGGePG, it is sent by Payment System of PSP to SG-GePG after receive of response.
+<GepgGateway>
+ <GepgGatewayFinRespACK>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_PAY_Quote</Service>
+ </GepgGatewayHdr>
+ <quotSubResAck>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <AckId>8858585-58KFK-KFKF20114</AckId>
+ <QtStsCode>Success Response Code</QtStsCode>
+ </quotSubResAck>
+42 | P a g e
+ </GepgGatewayFinRespACK>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+Xml Tag Data Type Data Condition Description
+CbpGwRef String(50) Mandatory SG-GePG Reference that is unique per 
+each request. it’s value should be the 
+same as of tag<CbpGwRef> of 
+Response Payload.
+7. OTHER	CHANNELS	(INCOMING	TRANSFERS,	MUSE,	MNO)
+The following is a guide on how other channels which do not interact with users directly will post GePG 
+post-paid transaction on SG-GePG. Channels will only send one request to SG GePG where the request 
+will be acknowledged after some validation. There after SG-GePG will process the transaction 
+accounting and notify GePG. SG-GePG will respond with final response as a callback on the payment 
+status to the requesting channel on the callback URL supplied. 
+7.1. Other	Channels	Inquiry	
+ <GepgGateway>
+ <GepgGatewayBillQryReq>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_STP</Service>
+ </GepgGatewayHdr>
+ <gepgBillQryReq>
+ <ResultUrl>ResultUrlGoesHere</ResultUrl>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CustCtrNum>991043382776</CustCtrNum>
+ <PaidAmount>1000</PaidAmount>
+ <DebitAccountNo>0154324324</DebitAccountNo>
+AckId String(100) Mandatory Unique Identification of 
+Response acknowledgment, 
+generated by Payment System.
+QtStsCode String(255) Mandatory Quote Status Code – Payment system
+should always return 7101 i.e 
+Successful Received.
+On return other than 7101 SG-GePG
+will assume response is not received 
+and keep on sending until receive 7101
+43 | P a g e
+ <DebitAccountCurrency>TZS</DebitAccountCurrency>
+ <TrxDtTm>2022-06-08T12:30:00</TrxDtTm>
+ <PyrCellNum>255717369730</PyrCellNum>
+ <PyrId>4747488</PyrId>
+ <PyrIdType>1</PyrIdType>
+ <Rsv1></Rsv1>
+ <Rsv2></Rsv2>
+ <Rsv3></Rsv3>
+ <Rsv4></Rsv4>
+ </gepgBillQryReq>
+ </GepgGatewayBillQryReq>
+ <gepggatewaySignature>AA3AddMJyu/SJDnr6A 
+V40lzXo2Smo7SiXgWKWMn7xMm6Iupuhxrw1AP5Kk+eBp38JleWvT1++EP5rX/8Fvq KV 
+A+aVBNrn7IRgwBiuiojkkXZE8R1AkvNh/EAAG9ZrT 
+AJGF8K3BySEzYKL4gtoarJkB3dYGlcX0p9wzneTxduZ4UbMVEqNbWpm1P 
+sL7OQqxgim5NIe59nkhRKJP6yfk2TRr1nmtmJn5RTSuv9yxajBsNpnJjvU0eLMU4edGo5aD5ALNhFtE92Vg8cnhwXNLFH
+y5+L67/CFTn YgEXr9xzzszFelW+RnyKbVQ/hu6KRYnDitY4ESzgJLomBHFQ0Ux8tvQ==</gepggatewaySignature>
+</GepgGateway>
+Note: Same payload above will be used for status check, with service tag 
+<Service>GEPG_STATUS. All other details remain the same. Upon receipt, Gateway will respond with the 
+Acknowledgment as per section 7.2
+7.2. Other	Channels	Inquiry	Acknowledgement
+The following payload will be sent to requesting system upon receiving request, validating, and 
+accounting.
+<GepgGateway>
+ <GepgGatewayPymtACK>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_STP</Service>
+ </GepgGatewayHdr>
+ <gepgGatewayPmtSubReqAck>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <AckId>254385-858585</AckId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </gepgGatewayPmtSubReqAck>
+ </GepgGatewayPymtACK>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+44 | P a g e
+7.3. Other	Channels	Final	Response
+<GepgGateway>
+ <pmtSubRes>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_STP</Service>
+ </GepgGatewayHdr>
+ <PmtResHdr>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CbpGwRef>CB101481888788-00043682</CbpGwRef>
+ <CustCtrNum>99993938440564229</CustCtrNum>
+ <PayType>1</PayType>
+ <EntryCnt>3</EntryCnt>
+ </PmtResHdr>
+ <PmtResDtls>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000425</ChannelTrxId>
+ <SgGwTrxId>CB2100000FBE0000027</SgGwTrxId>
+ <BillCtrNum>1998440562806</BillCtrNum>
+ <PayRefId>922255125723111</PayRefId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </PmtDtl>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000836</ChannelTrxId>
+ <SgGwTrxId>CB2100000FBE0000027</SgGwTrxId>
+ <BillCtrNum>455440562806</BillCtrNum>
+ <PayRefId>922255125723112</PayRefId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </PmtDtl>
+ <PmtDtl>
+ <ChannelTrxId>2100000FBE0000027</ChannelTrxId>
+ <SgGwTrxId>CB2100000FBE000023</SgGwTrxId>
+ <BillCtrNum>855440562806</BillCtrNum>
+ <PayRefId>922255125723113</PayRefId>
+ <PayStsCode>Response Code</PayStsCode>
+ <PayStsDesc>Response Description</PayStsDesc>
+ </PmtDtl>
+ </PmtResDtls>
+ </pmtSubRes>
+ <signature>SignatureGoesHere</signature>
+</GepgGateway>
+45 | P a g e
+Xml Tag Data Type Data Condition Description
+CbpGwRef String(50) Mandatory SG-GePG Reference that is 
+unique per each request.
+ChannelID String(20) Mandatory Channel Identification- unique 
+id for the connecting payment 
+system and will be shared by 
+SG-GePG upon successful 
+onboarding. 
+ChannelName String(50) Mandatory Channel Name-Name for the 
+connecting payment system 
+and will be shared by SGGePG upon successful 
+onboarding.
+Service String(25) Mandatory Service that will be consumed 
+by the channel. will be shared 
+by SG-GePG upon successful 
+onboarding.
+DebitAccountNo String(30) Optional Debit Payer account number, 
+whoever is wanting to pay for 
+this bill.
+DebitAccountCur
+rency
+Number(20) Mandatory Debit Currency. 
+EntryCnt Number(4) Optional Total Number of bill entries 
+contained in the details 
+payload
+PayRefId String(50) Mandatory GePG Receipt that is unique 
+per each request. 
+PayStsCode String(10) Mandatory Payment Status Code 
+(Response Code) (Section 9.2)
+PayStsDesc String(255) Mandatory Payment Status Code 
+Description(Response 
+Description)(Section 9.2)
+BillCtrNum Number(20) Mandatory Bill control number to be used
+during crediting respective
+ChannelTrxId String(100) Mandatory Payment Systems / channel
+Reference Unique for each 
+transaction. Returned as 
+channel reference when empty
+SgGwTrxId String(50) Mandatory SG-GePG Reference Unique
+for each transaction.
+46 | P a g e
+CustCtrNum String(20) Mandatory Control number given to 
+customer to facilitate bill 
+query
+PayType Number(1) Mandatory Payment Type
+1 – Paid All Bill Control
+Number At Once
+2 – Pay any Bill
+Control Number
+TrxDtTm DateAndTim
+e
+Mandatory Transaction Date and Time
+YYYY-MMDDTHH24:MI:SS
+(2021-04-17T14:30:12)
+PyrCellNum String(15) Optional Depositor Mobile/Cell 
+Number should start with a 
+country code e.g.
+255XXXXXXXXX
+It is mandatory for payment 
+come through mobile channel
+eg. MB, TPESA etc.
+Rsv1 String(25) Optional This refers to credit account 
+from swift message received 
+from other bank when channel 
+is sybrin / MUSE. It is 
+mandatory for incoming gepg 
+transactions and gepg on muse
+Rsv2 String(15) Optional This refers to credit account 
+currency from swift message 
+received from other bank 
+when channel is sybrin / 
+MUSE. It is mandatory for 
+incoming gepg transactions 
+and gepg on muse
+Rsv3 String(15) Optional This refers to credit account 
+Name from swift message 
+received from other bank 
+when channel is sybrin / 
+MUSE. It is mandatory for 
+incoming gepg transactions 
+and gepg on muse
+47 | P a g e
+8. DIGITAL SIGNATURE SECURITY
+8.1. Overview
+Digital signature will be used for messages exchange between the SG-GePG and Payment
+System. The payment system will be required to apply for digital signature from Certificate 
+Authority (CA). Digital signatures will also be used for message(s) sharing. Message(s) must 
+previously be signed by the Participant’s private key and verified using participant’s Public 
+Key.
+8.2. Digital Signature
+The security architecture used by the SG-GePG is based on Public Key Infrastructure (PKI) 
+technology in which two keys (Public and Private) are used to provide the highest levels of 
+security and universal acceptance.
+There are typically three algorithms involved with the digital signature process:
+a) Key generation — This algorithm provides a private key along with its corresponding 
+public key from CA.
+48 | P a g e
+b) Signing — This algorithm produces a signature upon receiving a private key and the 
+message that is being signed.
+49 | P a g e
+c) Verification — This algorithm checks for the authenticity of the message by verifying 
+it along with the signature and the public key.
+8.3. Digital Signature File Format
+SG-GePG accepts and shares public and private keys in Public-Key Cryptography Standards 
+version 12 (PKCS #12). The expected filename extension for PKCS #12 files is .p12 or .pfx. 
+For example, pspABCPublicKey.pfx or pspABCPublicKey.p12
+8.4. Signature Algorithm
+The supported signature algorithm is SHA256withRSA
+8.5. Signed Final Payload Format
+SG-GePG expects message to be digitally signed and obey the following rules: 
+Sample content to be signed
+<GepgGatewayBillQryReq>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_INQ</Service>
+ </GepgGatewayHdr>
+ <gepgBillQryReq>
+ <ChannelRef>test004142r4</ChannelRef>
+ <CustCtrNum>991043382776</CustCtrNum>
+ <DebitAccountNo>0154324324</DebitAccountNo>
+ <DebitAccountCurrency>TZS</DebitAccountCurrency>
+ </gepgBillQryReq>
+</GepgGatewayBillQryReq>
+Final payload after signing
+<GepgGateway>
+ <GepgGatewayBillQryReq>
+ <GepgGatewayHdr>
+ <ChannelID>IBMB</ChannelID>
+ <ChannelName>IB</ChannelName>
+ <Service>GEPG_INQ</Service>
+ </GepgGatewayHdr>
+ <gepgBillQryReq>
+50 | P a g e
+ <ChannelRef>test004142r4</ChannelRef>
+ <CustCtrNum>991043382776</CustCtrNum>
+ <DebitAccountNo>0154324324</DebitAccountNo>
+ <DebitAccountCurrency>TZS</DebitAccountCurrency>
+ </gepgBillQryReq>
+ </GepgGatewayBillQryReq>
+ <gepggatewaySignature>AA3AddMJyu/SJDnr6AV40lzQ==</gepggatewaySignature>
+</GepgGateway>
+9. APPENDIX
+Content under this section may be updated by GePG from time to time and still be used on the 
+same API version. Payment System / Channel may request for an updated version if available
+from SG-GePG.
+9.1. Payer Identity Types
+The following shall be used by Payment Systems / Channel as Payer Identity Type captured
+(Identity value) submitted on the respective payload tag <PyrIdType>
+Identity
+Value
+Identity
+Description
+1 National Identification Number
+2 Driver’s License
+3 Tax Payer’s Identification
+4 Wallet Pay Number
+51 | P a g e
+9.2. Response Codes
+List of response codes maybe added but prior information will be provided.
+CODE DESCRIPTION 
+7101 Successful
+7201 Failure
+7202 Required header is not given
+7203 Unauthorized
+7204 Bill does not exist
+7205 Invalid service provider
+7206 Service provider is not active
+7207 Duplicate payment
+7208 Invalid business account
+7209 Business account is not active
+7210 Collection account balance limit reached
+7211 Payment service provider code did not match Bill service provider code
+7212 Payment currency did not match Bill currency
+7213 Bill has expired
+CODE DESCRIPTION 
+7214 Insufficient amount paid
+7215 Invalid payment service provider
+7216 Payment service provider is not active
+7219 Wrong currency
+7241 Invalid session
+52 | P a g e
+7242 Invalid request data
+7279 Bill already settled
+7281 Invalid payment transaction date
+7284 Payment currency did not match collection account currency
+7289 Invalid batch generated date
+7290 Total batch amount cannot be zero(0)
+7291 Total batch amount is not equal to summation of items(transactions)
+7297 Inactive currency
+7301 Bill has been paid partially
+7302 Paid amount is not exact billed amount
+7303 Invalid Signature
+7304 Invalid Signature Configuration missing one of parameter
+7305 Invalid batch start and end date
+7306 Batch has no item(transaction)
+7307 Inconsistency batch start, end and generated date
+7311 Invalid SG-GePG configurations missing one of parameter
+7317 Error on processing request
+7318 Invalid reconciliation request date
+CODE DESCRIPTION 
+7319 Reconciliation request date is out of allowable range
+7321 Request cannot complete at this time, try later
+7322 Inactive communication protocol
+7323 Invalid code, mismatch of supplied code on information and header
+7333 Invalid bill control number
+53 | P a g e
+7335 Requested bill control number does not exist
+7336 Requested bill amount has reached the maximum payable limit
+7337 Requested resource is not available
+7379 Payment Acknowledgment

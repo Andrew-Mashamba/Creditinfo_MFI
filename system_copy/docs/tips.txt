@@ -1,0 +1,577 @@
+
+
+
+PAYMENT ORCHESTRATION ENGINE API DOCUMENT
+Version	v1.03
+Owner	NBC Development Team
+
+Description	This is a document describing how one could integrate with Payments Orchestration Engine, all APIs in this document are RESTful, and all requests and responses to/from this service are in Json format.
+Purpose	This document act as integration guide to NBC’s Payments Orchestration Engine. It can be consumed by Developers and Software Analysts
+Consultations	All questions or comments regarding this document should be forwarded to InhouseDevelopments@nbc.co.tz
+
+
+Version History:
+Version	Date	Description of changes/updates
+v1.00	August 23, 2023	-	Initial Draft
+v1.01	September 14, 2023	-	Update lookup request to accommodate use case transaction limit validation as per BOT guidance.
+v1.02	December 22, 2023	-	Added FSP Details retrieval API
+v1.03	April 01, 2024	-	Accommodated Outgoing Merchant/TANQR Payments
+
+
+A.	KEY POINTS TO NOTE.
+	Base Endpoints for UAT and PROD will be shared.
+	All requests will be through HTTPS.
+	Authentication method to be used will be Token based.
+Initial token will be configured and securely shared to the connecting channel.
+PROD token(s) will be securely shared after successfully completing SIT and UAT Sign-off.
+	IP whitelisting might be put in place as well.
+
+
+B.	HIGH-LEVEL ARCHITECTURE:
+
+Below is the high-level architecture of the engine, to show you involved systems and how will requests flow.
+
+First, the following are the involved systems: -
+1.	Client
+	Customer facing system / channel, from which actual request(s) will originate.
+	For instance, Digital Channels (App, USSD, Internet Bank), NBC Direct, CBP, Agency Bank etc.
+
+2.	Payments Orchestration Engine
+	The orchestration layer that facilitates these mentioned channels to process domestic transfers (both Bank related and Wallet related).
+
+3.	Middleware / API Gateway
+	The middleware and API Manager that links upstream system to the core banking.
+
+4.	CBS (FCC and FCR)
+
+2
+
+
+
+	Core banking system, handling the actual debit and credit (from sender to the intended beneficiary)
+
+5.	Notification Engine (Email / SMS)
+	A system that notifies customers on the status of the initiated transaction(s).
+
+
+
+C.	HEADER PARAMETERS
+Below are header parameters to be set by the client/downstream system
+Header Parameter	Required	Sample Value
+Content-Type	Yes	application/json
+Accept	Yes	application/json
+X-Api-Key	Yes	TkJDX1VTRVJOQU1FOk5CQ19QQVNTV09SRA==
+Signature	Yes	VEhJUyBET0NVTUVOVCBJUyBQUkVQQVJFRCBCWSBEVVNU QU4gTUJBR0EgRlJPTSBJTk5PVkFUSU9OIEFORCBERVZFTE9Q TUVOVCBURUFNIEZST00gTkJDIEJBTksgVEFOWkFOSUEgKFB BUlQgT0YgQUJTQSBHUk9VUCk=
+Timestamp	No	2021-07-05T17:08:00.00
+Client-Id	Yes	DABP
+Service Name	No	TIPS_LOOKUP
+
+
+
+
+Tracing-UUID	No	Example: clientId-ewqbdjk721bhdsa-3e21h21g7gads-sad372t2e This needs to be unique for every request
+
+
+D.	LOOKUP API
+Enable client system to request for other FSP’s customer information (e.g., name, account type, identity) through BOT TIPS, before sending an outgoing transfer request.
+
+HTTP Method	POST
+Endpoint	/domestix/api/v2/lookup
+Request Payload
+For Bank to Bank
+	{
+"serviceName": "TIPS_LOOKUP", "clientId": "DABP",
+"clientRef": "789348234872334",
+"identifierType": "MSISDN", "identifier": "0786XXXX", "destinationFsp": "AMCASHIN-3", "debitAccount": "011234567890", "debitAccountCurrency": "TZS", "debitAccountBranchCode": "012",
+"amount": "780000", "debitAccountCategory": "PERSON"
+}
+	For Bank to Wallet
+	{
+"serviceName": "TIPS_LOOKUP", "clientId": "OBDX",
+"clientRef": "789348234872334",
+"identifierType": "BANK", "identifier": "0198765432100", "destinationFsp": "CORUTZTZ", "debitAccount": "011234567890", "debitAccountCurrency": "TZS", "debitAccountBranchCode": "012",
+"amount": "123780000",
+"debitAccountCategory": "BUSINESS"
+}
+	For Merchant Payments [TANQR]
+{
+"serviceName": "TIPS_LOOKUP", "clientId": "APP_IOS",
+"clientRef": "20210705QDHMK11102",
+"identifierType": "BUSINESS", "identifier": "12099995", "destinationFsp": "NMIBTZT0",
+"debitAccount": "011103033734",
+
+
+
+
+	"debitAccountCurrency": "TZS", "debitAccountBranchCode": "012",
+"amount": "5000000", "debitAccountCategory": "BUSINESS"
+}
+Success Response Payload	A.  Within Transfer Limit
+
+{
+"statusCode": 600,
+"message": "Successfully retrieved beneficiary information from Payee FSP", "clientId": "DABP",
+"clientRef": "1694795064",
+"engineRef": "DTc598360f-b60f-41f5-970c-67ef856b4e2f", "serviceType": "TIPS_LOOKUP",
+"processAs": "TIPS_B2W_TRANSFER", "timestamp": "2023-09-15T19:22:40",
+"amount": 780000, "transactionFee": null, "totalAmount": 780000, "useCase": "P2P_B2W", "body": {
+"identifierType": "MSISDN", "identifier": "255786XXXYYY", "fspId": "504",
+"fullName": "TEST CUSTOMER",
+"accountCategory": "PERSON", "accountType": "WALLET", "identity": {
+"type": "",
+"value": "01992910121"
+}
+}
+}
+	B.  Exceeded Transfer Limit
+	{
+"statusCode": 600,
+"message": "Maximum cap per this kind of transaction has been exceeded. Amount to be transferred 18000000 is greater than maximum cap per transaction, which is currently set at 5000000",
+"clientId": "SIMULATOR", "clientRef": "1694795141",
+"engineRef": "DT648a3cf3-088a-4297-987a-6d3cec9d69f3", "serviceType": "TIPS_LOOKUP",
+"processAs": "B2W_TRANSFER", "timestamp": "2023-09-15T19:22:40",
+"amount": 18000000, "transactionFee": null, "totalAmount": 18000000, "useCase": "P2P_B2W",
+"body": {
+
+
+
+
+	"identifierType": "MSISDN", "identifier": "255786XXXAAA", "fspId": "504",
+"fullName": "MTEJA MAJARIBIO",
+"accountCategory": "PERSON", "accountType": "WALLET", "identity": {
+"type": "",
+"value": "01992910121"
+}
+}
+}
+Failure Response Payload	{
+"statusCode": 601,
+"message": "Validation failure, request has (some) invalid data", "clientId": "IBX",
+"clientRef": null, "engineRef": null,
+"serviceType": "TIPS_LOOKUP", "processAs": null,
+"timestamp": "2023-08-24T23:17:12",
+"body": [
+"serviceName must be TIPS_LOOKUP", "clientId is invalid"
+]
+}
+
+
+E.	PAYMENT API
+Payment API enables Institution to send payments request. Engine will validate the request, upon success, will queue the request for processing.
+
+HTTP Method	POST
+Endpoint	/domestix/api/v2/outgoing-transfers
+Request Payload	For: B2W Transfers
+{
+"serviceName": "TIPS_B2W_TRANSFER", "clientId": "APP_IOS",
+"clientRef": "CLREFXXXXXXXXXX", "customerRef": "CUSTOMERREF1694269578", "lookupRef": "LOOKUPREF1694269578", "timestamp": "2023-09-09T14:26:18.757914Z",
+"callbackUrl": "https://client-x.com/callback-url", "payerDetails": {
+"identifierType": "BANK", "identifier": "01234567890", "phoneNumber": "255653XXXXXX", "email": "nbc-test@nbc.co.tz", "initiatorId": "1694269578",
+"branchCode": "012",
+
+
+
+
+	"fspId": "015",
+"fullName": "Fulani Bin Nanii", "accountCategory": "PERSON", "accountType": "BANK", "identity": {
+"type": "",
+"value": ""
+}
+},
+"payeeDetails": { "identifierType": "MSISDN", "identifier": "0786XXXXXX", "fspId": "504",
+"destinationFsp": "AMCASHIN", "fullName": "CUSTOMER TEST",
+"accountCategory": "PERSON", "accountType": "WALLET", "identity": {
+"type": "",
+"value": ""
+}
+},
+"transactionDetails": { "debitAmount": "14800", "debitCurrency": "TZS", "creditAmount": "14800", "creditCurrency": "TZS", "productCode": null, "isServiceChargeApplicable": null, "serviceChargeBearer": null
+},
+"remarks": "Test Outgoing Transfer Initiated from NLCBTZTX"
+}
+
+FOR: Merchant Payments [TANQR]
+
+{
+"serviceName": "TIPS_B2B_OUTWARD_TRANSFER", "clientId": "APP_IOS",
+"clientRef": "CREF1714031555", "customerRef": "CUSTOMERREF1714031555", "lookupRef": "LOOKUPREF1714031555", "timestamp": "2024-04-25T07:52:35",
+"callbackUrl": "http://localhost:90/post", "payerDetails": {
+"identifierType": "BANK", "identifier": "015103001490",
+"phoneNumber": "255653666201",
+"initiatorId": "1714031555",
+"branchCode": "011",
+"fspId": "015",
+"fullName": "MBUZI NG'OMBE",
+"accountCategory": "BUSINESS",
+
+
+
+
+	"accountType": "BANK", "identity": {
+"type": "TIN", "value": "123456789"
+}
+},
+"payeeDetails": { "identifierType": "BUSINESS", "identifier": "12099995",
+"fspId": "016",
+"destinationFsp": "NMIBTZT0", "fullName": "NMB TEST RESTAURANT 0",
+"accountCategory": "MERCHANT", "accountType": "BANK", "identity": {
+"type": "TIN",
+"value": "9876543219"
+},
+"additionalInfo": {
+"field62": "12345678901714031555"
+}
+},
+"transactionDetails": { "debitAmount": "485000", "debitCurrency": "TZS", "creditAmount": "76000", "creditCurrency": "TZS", "productCode": "FTLC", "isServiceChargeApplicable": true, "serviceChargeBearer": "OUR"
+},
+"remarks": "Test Merchant Outgoing Transfer Initiated from NLCBTZT0"
+}
+Success Response Payload	{
+"statusCode": 600,
+"serviceName": "TIPS_B2W_TRANSFER", "message": "Successfully received for processing", "clientId": "APP_IOS",
+"clientRef": "CLREFXXXXXXXXXX", "engineRef": "DT23090910000065",
+"processedAs": "TIPS ",
+"timestamp": "2023-09-09T17:26:23",
+"body": {
+"transferredAmount": "72100", "transferredCurrency": "TZS", "destinationFsp": "015", "payerName": "Fulani Bin Nanii", "payeeName": "CUSTOMER TEST",
+"remarks": "Request has been received and its being processed."
+}
+}
+
+
+
+
+Failure Response Payload	{
+"statusCode": 601,
+"serviceName": "TIPS_B2W_TRANSFER",
+"message": "Validation Error, your request failed during validations", "clientId": "APP_IOSX",
+"clientRef": "XXXXCLREFYYYYYYYYYY", "timestamp": "2023-09-09 17:31:25",
+"body": [
+"Invalid clientId, please use a valid one as per API", "clientRef should have 3 to 16 characters"
+]
+}
+
+
+F.	FINAL NOTIFICATION CALLBACK
+The Notification callback will be (optionally) triggered from Payments Orchestration Engine to the client, updating the final state of the transfer, i.e., whether it has been Committed or Aborted.
+
+Payments Orchestration Engine will automatically retry this callback 5 times within 32 minutes with exponential delays between retries, if still not acknowledged, notification requests retry will be stopped.
+Note: Client will need to develop this service that will be receiving the “Request Payload”, validating API AUT Key and Digital Signature then respond with “Success Response Payload”.
+
+NBC’s customers will be notified (by Engine) through SMS and/or email at this stage.
+
+HTTP Method	POST
+Endpoint	https://client-x.com/callback-url
+Request Payload	{
+"serviceName": "NOTIFICATION_CALLBACK",
+"clientId": "APP_IOS", "clientRef": "CLREFXXXXXXXXXX",
+"engineRef": "DT23090910000065", "hostRef": "999976866776575765", "status": "COMMITTED",
+"remarks": "Transfer has been COMMITTED", "completedAt": "2023-09-09T14:26:18.757914Z"
+}
+Success Response Payload	{
+"engineRef": "DT23090910000065", "status": "RECEIVED",
+"datetime": "2023-09-09T17:26:23",
+"message": "Notification has been acknowledged successfully"
+}
+Failure Response Payload	{
+"engineRef": "DT23090910000065", "status": "REJECTED",
+"datetime": "2023-09-09T17:26:23",
+"message": "Unknown engineRef"
+}
+
+
+
+
+
+
+G.	STATUS CHECK
+The Status Check API enables client to inquire status of a particular transfer. Indicating whether it has already been Committed/Aborted or not.
+
+API limit will be set, 100 requests per day, per client, adjustments will be made should there be a necessary need, otherwise, callback is preferred to reduce avoidable load on the system.
+
+HTTP Method	POST
+Endpoint	/domestix/api/v2/status-check
+Request Payload	{
+"serviceName": "STATUS_CHECK", "clientId": "APP_IOS",
+"clientRef": "CLREFXXXXXXXXXX", "engineRef ": "DT23090910000065",
+"requestTimestamp": "2023-09-09T14:26:18.757914Z",
+}
+Success Response Payload	{
+"statusCode": 600, "serviceName": "STATUS_CHECK",
+"message": "Status check for Ref# DT23090910000065", "clientId": "APP_IOS",
+"clientRef": "CLREFXXXXXXXXXX", "engineRef": "DT23090910000065", "timestamp": "2023-09-09T17:26:23",
+"body": {
+"hostRef": "99943543534534534543324", "status": "COMMITTED",
+"remarks": "Transfer has been COMMITTED", "completedAt": "2023-09-09T17:26:23"
+}
+}
+Failure Response Payload	{
+"statusCode": 601, "serviceName": "STATUS_CHECK",
+"message": "Transfer with Ref# DT23090910000065 not found", "clientId": "APP_ANDROID",
+"clientRef": "CLREFYYYYYYYYYY", "timestamp": "2023-09-09 17:31:25",
+"body": null
+}
+
+
+H.	FSP DETAILS RETRIEVAL
+The API enables client to retrieve FSPs details. Clients are advised to fetch these details once every day (in the morning) and catch them for the entire day. This is only when client has a need to do so, otherwise client can maintain.
+
+HTTP Method	POST
+Endpoint	/domestix/api/v2/fsp-details
+
+
+
+
+Request Payload	{
+"serviceName": "FSP_DETAILS_CHECK", "clientId": "APP_IOS",
+"clientRef": "CLREFXXXXXXXXXX", "engineRef ": "DT23090910000065",
+"requestTimestamp": "2023-09-09T14:26:18.757914Z",
+}
+Success Response Payload	{
+"statusCode": 600, "serviceName": "FSP_RETRIEVAL",
+"message": "Successfully retrieve FSP Details", "clientId": "APP_ANDROID",
+"clientRef": "CREF1702024625",
+"engineRef": "46207bc1-ff17-4e52-8bde-3a04f5ebf051", "processedAs": "N/A",
+"timestamp": "2023-12-08T11:37:05",
+"body": [
+{
+"fspShortNme": "NMB", "fspCode": "NMIBTZTZ",
+"isRoutedViaTips": true, "fspType": "BANK", "fspFullNme": "NMB Bank", "isFspActive": true,
+"fspId": "016"
+},
+{
+"fspShortNme": "MPesa", "fspCode": "VMCASHIN",
+"isRoutedViaTips": true, "fspType": "MNO",
+"fspFullNme": "Vodacom Mpesa", "isFspActive": true,
+"fspId": "503"
+},
+{
+"fspShortNme": "Airtel Money", "fspCode": "AMCASHIN",
+"isRoutedViaTips": true, "fspType": "MNO", "fspFullNme": "Airtel Money", "isFspActive": true,
+"fspId": "504"
+},
+{
+"fspShortNme": "CRDB", "fspCode": "CORUTZTZ",
+"isRoutedViaTips": true, "fspType": "BANK", "fspFullNme": "CRDB BANK PLC",
+"isFspActive": true, "fspId": "003"
+},
+
+
+
+
+	{
+"fspShortNme": "DTB", "fspCode": "DTKETZTZ",
+"isRoutedViaTips": true, "fspType": "BANK",
+"fspFullNme": "DIAMOND TRUST BANK",
+"isFspActive": true, "fspId": "011"
+},
+{
+"fspShortNme": "MKOMBOZI", "fspCode": "MKCBTZTZ",
+"isRoutedViaTips": true, "fspType": "BANK",
+"fspFullNme": "MKOMBOZI COMMERCIAL BANK svc_tips_app.LTD", "isFspActive": true,
+"fspId": "039"
+},
+{
+"fspShortNme": "AZAMPESA", "fspCode": "APCASHIN",
+"isRoutedViaTips": true, "fspType": "MNO", "fspFullNme": "AZAM PESA", "isFspActive": true,
+"fspId": "511"
+},
+{
+"fspShortNme": "TigoPesa", "fspCode": "ZPCASHIN",
+"isRoutedViaTips": true, "fspType": "MNO", "fspFullNme": "Zantel - Tigo", "isFspActive": true,
+"fspId": "501"
+},
+{
+"fspShortNme": "T-PESA", "fspCode": "TTCLPPS", "isRoutedViaTips": true, "fspType": "MNO", "fspFullNme": "TTCL", "isFspActive": true, "fspId": "505"
+}
+]
+}
+Failure Response Payload	{
+"statusCode": 601,
+"serviceName": "FSP_RETRIEVALX",
+"message": "Validation Error, invalid request payload received.", "clientId": "APP_ANDROID",
+"clientRef": "CREF1702024774",
+
+
+
+
+	"timestamp": "2023-12-08 11:39:34",
+"body": [
+" FSP_RETRIEVALX, Reason: Invalid serviceName, please use a valid one as per API"
+]
+}
+
+
+I.	FIELDS DESCRIPTION:
+Field	Required	Description
+TIPS_LOOKUP
+serviceName	Yes	Identifies service being consumed.
+
+Below is the list of all service names currently available:
+	TIPS_LOOKUP – For lookup transfer
+	STATUS_CHECK – For status check
+
+During Lookup request, use case will be determined by the engine which will then compute and verify transfer limit check. On the success response, there engine will include the use case plus type of transfer (on the processAs field of lookup response) basing on this computation, channel is required to pass the exact value returned on lookup response, processAs field on the serviceName of the subsequent transfer request.
+Expected values for this are:
+	B2W_TRANSFER – Non-TIPS B2W
+	TIPS_B2W_TRANSFER – TIPS B2W
+	B2B_OUTWARD_TRANSFER – Non-TIPS B2B Outgoing
+	TIPS_B2B_OUTWARD_TRANSFER – TIPS B2B Outgoing
+clientId	Yes	Identified consuming client / channel. To be shared during integration kick-off
+clientRef	Yes	Unique alphanumeric reference generated by client for every request
+Validations: A-Za-z0-9, Min=3, Max=16
+identifierType	Yes	Identifies the type of beneficiary’s account/number.
+
+Possible values are:
+	BANK – if identifier is Other Domestic/Local Bank
+	MSISDN – if identifier is Mobile Money Operator (MNO) or wallet based.
+	BUSINESS – if identifier is Merchant / Lipa Number / QR Code Number
+identifier	Yes	This is the actual beneficiary account, wallet, phone number, Mechant ID, Lipa Number or QR Code Number.
+destinationFsp	Yes	Destination FSP owning the above identifier.
+
+	For banks, use Swift Codes / BIC (UAT / PROD BIC can be shared upon request)
+	For Wallet based use the below.
+
+
+
+
+
+DESTINATION_CODE, INSTITUTION_NAME,
+	VMCASHIN, M-PESA,
+	AMCASHIN, AIRTEL-MONEY,
+	TPCASHIN, TIGO-PESA,
+	HPCASHIN, HALLOTEL,
+	APCASHIN, AZAMPESA,
+	ZPCASHIN, EZYPESA,
+debitAccount	Yes	NBC’s customer account, which will be debit the transferred amount and charge
+debitAccountCurrency	Yes	Currency of the debit account
+debitAccountBranchCode	Yes	Branch code owning the debit account
+amount	Yes	Transferred amount. No decimals for Wallet transfers
+debitAccountCategory	Yes	This indicate whether debit account is personal or business one.
+
+Possible values:
+	PERSON – Personal Account
+	BUSINESS – Business Account
+
+customerRef	No	Customer’s own reference number such as Invoice Number etc.
+
+Validations: A-Za-z0-9, Min=3, Max=16
+lookupRef	Yes	ClientRef used during TIPS_LOOKUP
+
+Validations: A-Za-z0-9, Min=3, Max=16
+timestamp	Yes	Date and Time when the transfer was initiated
+callbackUrl	No	Callback endpoint, POST request will be sent to this endpoint once the transfer is Committed or Aborted
+
+Validation: Should be valid HTTPS endpoint
+
+payerDetails	Yes	Details of the payer, NBC’s customer initiating the transfer
+payerDetails	Yes	Details of the payee, Other FSPs customer i.e., recipient or beneficiary of the transferred amount whose details will be obtained through TIPS_LOOKUP
+
+identifierType	Yes	Identifies the type of beneficiary’s account/number.
+
+Possible values are:
+	BANK – if identifier is Other Domestic/Local Bank
+	MSISDN – if identifier is Mobile Money Operator (MNO) or wallet based.
+	BUSINESS – if identifier is Merchant / Lipa Number / QR Code Number.
+Hence, on the PayerDetails which for this case contains NBC customer details use BANK.
+identifier	Yes	This is the actual sender or beneficiary account/wallet or phone number.
+
+
+
+
+		Hence, on the PayeeDetails which for this case contains NBC customer details set Customer’s account, i.e., the debit account used during TIPS_LOOKUP.
+phoneNumber	Yes	NBC’s customer phone number
+This is only on the payerDetails. SMS Alert will be sent to this number after commit/abort of the transfer
+initiatorId	Yes	NBC’s customer channel ID, required for operations and traceability issues.
+
+This is only on the payerDetails.
+branchCode	Yes	Branch owning the account.
+This is only on the payerDetails. Branch on which the transfer was initiated. For the case of digital channels and/or agency banking, use debit account branch code
+fspId	Yes	FSP Unique identifier,
+
+For payerDetails configure 015 which is NBC’s FSP ID
+fullName	Yes	Sender or beneficiary’s customer’s full name
+
+Validations: A-Za-z0-9, Min=2, Max=50
+accountCategory	Yes	Account Category describes the category of the transacting account. Possible values are:
+	PERSON (for personal accounts),
+	BUSINESS (for business accounts),
+	MERCHANT (for merchants’ accounts, Lipa Number,
+QR Code Numbers)
+accountType	Yes	Account Type describes the type of the transacting account. Possible values are:
+	BANK
+	WALLET
+Identity - type	Yes	Identity Type can either be:
+	NIN – NIDA ID
+	TIN – Tax Identity Number
+Identity - value	Yes	Actual ID number, make sure NIN and TIN are passed without hyphen
+UseCase	Yes	This indicate the use case of the transfer, it will be calculated basing on the Payer and Payee Account Type and Account Category,
+Sample use cases are:
+	P2P_B2W – Person to Person – Bank to Wallet
+	B2P_B2B – Business to Person – Bank to Bank
+	P2M_B2B – Person to Merchant – Bank to Bank
+
+transactionDetails	Yes	This object contains transactional /amount details
+debitAmount	Yes	Debited amount
+debitCurrency	Yes	Currency of the debited amount
+
+At the moment, only TZS is supported
+creditAmount	Yes	Credited amount
+
+
+
+
+creditCurrency	Yes	Currency of the credited amount
+
+At the moment, only TZS is supported
+productCode	No	Product code (normally for the Bank to bank), depending on business alignment, actual code to use will be identified during UAT, for development purposes you may use the below.
+
+Example: FTLC,
+isServiceChargeApplicable	No	Indicating if the transfer is charged or not, currently all transfers will be charged
+serviceChargeBearer	No	This allow customer to instruct how payment charges or payment fees should be handled.
+Available options:
+
+	OUR: The Payer (sender of the payment) will bear all the payment transaction fees/charges.
+
+	BEN: The Payee (recipient/beneficiary of the payment) will incur the payment transaction fees/charges.
+	SHA: Charges will be shared, The Payer (sender of the payment) will pay fees charged by the sending bank and The Payee (recipient/beneficiary of the payment) will pay fees charged by the receiving bank (if any)
+Currently OUR is defaulted for all TISS transfers i.e. for the case of B2B_OUTWARD_TRANSFER
+
+remarks	Yes	Remarks describing the particular transaction, reason of Payment.
+
+Validations:
+A-Za-z0-9, space, full stop, and hyphen, Min=3, Max=16
+
+J.	RESPONSE CODES
+Describes possible response codes and their meaning
+
+Code	Description
+600	Success
+601	Validation Failure
+602	Digital Signature Verification Failure
+609	Authentication Fail
+610	Channel Not Onboarded
+612	Requested Service In Unavailable
+698	Unexpected fault response received from downstream services.
+699	Exception caught
+
+
+
+K.	NOTE
+	All requests need to be signed with private key, using SHA256withRSA algorithm. Sign the entire payload and put base64 “signature” on the header parameter as per the sample signature included on part. We shall use your public key to verify the request before processing it.
+
+L.	EXPECTED ACTION ITEMS:
+Expected tasks to be closed before starting with integration and testing:
+
+No	Our Tasks	Required
+1	Sharing API Documentation	Yes
+2	Sharing API Base Endpoints (IP and Port) For UAT	Yes
+3	Sharing API Auth Key	Yes
+4	Sharing clint ID	Yes
+5	Sharing Payments Orchestration Public signed certificate (PEM base64 encoded)	Yes
+6	Sharing API Base Endpoints for PROD (after UAT Sign-Off)	Yes
+
+No	Your Tasks	Required
+1	Sharing your Public signed certificate (it should be PEM base64 encoded)	Yes
+2	Network connectivity testing from your server(s) to our IP and Port	Yes
+

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIT Test Report - 2025-08-11</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-card h3 {
+            margin-top: 0;
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .summary-card .value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .passed { color: #10b981; }
+        .failed { color: #ef4444; }
+        .error { color: #f59e0b; }
+        .warning { color: #eab308; }
+        .suite {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .suite-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .test-case {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .test-case.passed { background: #d1fae5; }
+        .test-case.failed { background: #fee2e2; }
+        .test-case.error { background: #fed7aa; }
+        .test-case.warning { background: #fef3c7; }
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-badge.passed { background: #10b981; color: white; }
+        .status-badge.failed { background: #ef4444; color: white; }
+        .status-badge.error { background: #f59e0b; color: white; }
+        .status-badge.warning { background: #eab308; color: white; }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧪 SIT Test Report</h1>
+        <p>SACCOS Core System - System Integration Tests</p>
+        <p>Date: 2025-08-11 | Generated: 2025-08-11 05:30:24</p>
+    </div>
+    
+    <div class="summary">
+        <div class="summary-card">
+            <h3>Total Suites</h3>
+            <div class="value">5</div>
+        </div>
+        <div class="summary-card">
+            <h3>Passed Suites</h3>
+            <div class="value passed">2</div>
+        </div>
+        <div class="summary-card">
+            <h3>Failed Suites</h3>
+            <div class="value failed">3</div>
+        </div>
+        <div class="summary-card">
+            <h3>Total Tests</h3>
+            <div class="value">27</div>
+        </div>
+        <div class="summary-card">
+            <h3>Passed Tests</h3>
+            <div class="value passed">19</div>
+        </div>
+        <div class="summary-card">
+            <h3>Failed Tests</h3>
+            <div class="value failed">4</div>
+        </div>
+        <div class="summary-card">
+            <h3>Error Tests</h3>
+            <div class="value error">3</div>
+        </div>
+        <div class="summary-card">
+            <h3>Success Rate</h3>
+            <div class="value">70.4%</div>
+        </div>
+    </div>
+    <div class="suite">
+        <div class="suite-header">
+            <div>
+                <h2>Bank Transaction Service</h2>
+                <p style="color: #666; margin: 0;">Duration: 0.004s | 2025-08-11 05:28:58</p>
+            </div>
+            <span class="status-badge failed">FAILED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>IFT Transaction</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">IFT Transaction test passed</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>EFT Transaction</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">EFT Transaction test passed</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Mobile Transaction</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Mobile Transaction test passed</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Invalid Transaction Type</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Invalid Transaction Type test passed</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case failed">
+            <div>
+                <strong>Connection Failure Handling</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Connection Failure test failed: Error not handled properly</div>
+            </div>
+            <span class="status-badge failed">FAILED</span>
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e5e5; color: #666; font-size: 14px;">
+            Passed: 4 | 
+            Failed: 1 | 
+            Errors: 0 | 
+            Warnings: 0
+        </div>
+    </div>
+    <div class="suite">
+        <div class="suite-header">
+            <div>
+                <h2>GEPG Gateway</h2>
+                <p style="color: #666; margin: 0;">Duration: 0s | 2025-08-11 05:28:58</p>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Bill Query (Control Number Verification)</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Bill Query test passed - Control Number: 991700123456</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Bill Payment Processing</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Bill Payment test passed - Reference: PAY1754890138</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Prepaid Payment (Quote)</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Prepaid Payment test passed - Token: 12345678901234567890</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Transaction Status Check</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Status Check test passed - Status: SUCCESS</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>XML Signing and Verification</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">XML Signing test passed</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Error Handling</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Error scenario handled: 4001 - Invalid control number</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e5e5; color: #666; font-size: 14px;">
+            Passed: 6 | 
+            Failed: 0 | 
+            Errors: 0 | 
+            Warnings: 0
+        </div>
+    </div>
+    <div class="suite">
+        <div class="suite-header">
+            <div>
+                <h2>Luku Gateway</h2>
+                <p style="color: #666; margin: 0;">Duration: 0.095s | 2025-08-11 05:28:58</p>
+            </div>
+            <span class="status-badge failed">FAILED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Token Query</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Token Query test passed - Meter: 04123456789</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Token Purchase</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Token Purchase test passed - Token: 12345-67890-12345-67890</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Meter Validation</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Meter 04123456789 validation: Valid (as expected)</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case error">
+            <div>
+                <strong>Transaction Status Check</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">cURL error 6: Could not resolve host: nbc-gateway-uat.intra.nbc.co.tz (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://nbc-gateway-uat.intra.nbc.co.tz/api/transaction/status?transaction_id=TRX1754890138</div>
+            </div>
+            <span class="status-badge error">ERROR</span>
+        </div>
+        <div class="test-case warning">
+            <div>
+                <strong>SSL Configuration</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">SSL Configuration warning - SSL verification disabled</div>
+            </div>
+            <span class="status-badge warning">WARNING</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Error Handling</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Error 400 handled: Invalid meter number</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e5e5; color: #666; font-size: 14px;">
+            Passed: 2 | 
+            Failed: 2 | 
+            Errors: 1 | 
+            Warnings: 1
+        </div>
+    </div>
+    <div class="suite">
+        <div class="suite-header">
+            <div>
+                <h2>NBC SMS</h2>
+                <p style="color: #666; margin: 0;">Duration: 0.001s | 2025-08-11 05:28:58</p>
+            </div>
+            <span class="status-badge failed">FAILED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Single SMS Send</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Single SMS test passed - Message ID: MSG1754890138</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Bulk SMS Send</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Bulk SMS test passed - Batch ID: BATCH1754890138</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>SMS Status Check</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">SMS Status test passed - Status: DELIVERED</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case failed">
+            <div>
+                <strong>Rate Limiting</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Rate Limiting test failed - limit not enforced</div>
+            </div>
+            <span class="status-badge failed">FAILED</span>
+        </div>
+        <div class="test-case error">
+            <div>
+                <strong>Invalid Phone Number Handling</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">A request was made, but the response sequence is empty.</div>
+            </div>
+            <span class="status-badge error">ERROR</span>
+        </div>
+        <div class="test-case error">
+            <div>
+                <strong>Long Message Handling</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">A request was made, but the response sequence is empty.</div>
+            </div>
+            <span class="status-badge error">ERROR</span>
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e5e5; color: #666; font-size: 14px;">
+            Passed: 3 | 
+            Failed: 1 | 
+            Errors: 2 | 
+            Warnings: 0
+        </div>
+    </div>
+    <div class="suite">
+        <div class="suite-header">
+            <div>
+                <h2>AI Services</h2>
+                <p style="color: #666; margin: 0;">Duration: 0s | 2025-08-11 05:28:58</p>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Groq API</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Groq API test passed - Model: llama3-8b-8192</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>OpenAI API</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">OpenAI API test passed - Model: gpt-3.5-turbo</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Together AI API</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Together AI API test passed - Model: meta-llama/Llama-2-70b-chat-hf</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div class="test-case passed">
+            <div>
+                <strong>Claude API</strong>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Claude API test passed</div>
+            </div>
+            <span class="status-badge passed">PASSED</span>
+        </div>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #e5e5e5; color: #666; font-size: 14px;">
+            Passed: 4 | 
+            Failed: 0 | 
+            Errors: 0 | 
+            Warnings: 0
+        </div>
+    </div>
+    <div class="footer">
+        <p>Generated by SACCOS Core System SIT Test Suite</p>
+    </div>
+</body>
+</html>

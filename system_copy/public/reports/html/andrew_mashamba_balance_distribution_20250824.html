@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrew Mashamba - Account Balance Distribution</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 40px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .stat-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+        .stat-card.shares {
+            border-color: #4299e1;
+        }
+        .stat-card.savings {
+            border-color: #48bb78;
+        }
+        .stat-card.deposits {
+            border-color: #ed8936;
+        }
+        .stat-card.total {
+            border-color: #9f7aea;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .stat-percent {
+            font-size: 14px;
+            color: #4a5568;
+            margin-top: 5px;
+        }
+        .account-list {
+            margin-top: 30px;
+        }
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .color-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        .account-name {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        .account-balance {
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Account Balance Distribution</h1>
+            <div class="subtitle">Andrew Stanslaus Mashamba | Client #00003</div>
+            
+            <div class="chart-container">
+                <canvas id="balanceChart"></canvas>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card shares">
+                    <div class="stat-label">Mandatory Shares</div>
+                    <div class="stat-value">TZS 12,000,000</div>
+                    <div class="stat-percent">55.04% of total</div>
+                </div>
+                <div class="stat-card savings">
+                    <div class="stat-label">Mandatory Savings</div>
+                    <div class="stat-value">TZS 6,000,000</div>
+                    <div class="stat-percent">27.52% of total</div>
+                </div>
+                <div class="stat-card deposits">
+                    <div class="stat-label">Mandatory Deposits</div>
+                    <div class="stat-value">TZS 3,700,000</div>
+                    <div class="stat-percent">16.97% of total</div>
+                </div>
+                <div class="stat-card total">
+                    <div class="stat-label">Total Balance</div>
+                    <div class="stat-value">TZS 21,700,000</div>
+                    <div class="stat-percent">100% across 3 accounts</div>
+                </div>
+            </div>
+
+            <div class="account-list">
+                <h3 style="color: #2d3748; margin-bottom: 15px;">Account Details</h3>
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="color-indicator" style="background: #4299e1;"></div>
+                        <div>
+                            <div class="account-name">Mandatory Shares</div>
+                            <div style="font-size: 12px; color: #718096;">Account: 010000330018</div>
+                        </div>
+                    </div>
+                    <div class="account-balance">TZS 12,000,000.00</div>
+                </div>
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="color-indicator" style="background: #48bb78;"></div>
+                        <div>
+                            <div class="account-name">Mandatory Savings</div>
+                            <div style="font-size: 12px; color: #718096;">Account: 010000321019</div>
+                        </div>
+                    </div>
+                    <div class="account-balance">TZS 6,000,000.00</div>
+                </div>
+                <div class="account-item">
+                    <div class="account-info">
+                        <div class="color-indicator" style="background: #ed8936;"></div>
+                        <div>
+                            <div class="account-name">Mandatory Deposits</div>
+                            <div style="font-size: 12px; color: #718096;">Account: 010000321028</div>
+                        </div>
+                    </div>
+                    <div class="account-balance">TZS 3,700,000.00</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            Generated on August 24, 2025 | SACCOS Core System
+        </div>
+    </div>
+
+    <script>
+        // Chart configuration
+        const ctx = document.getElementById('balanceChart').getContext('2d');
+        
+        const data = {
+            labels: ['Mandatory Shares', 'Mandatory Savings', 'Mandatory Deposits'],
+            datasets: [{
+                data: [12000000, 6000000, 3700000],
+                backgroundColor: [
+                    '#4299e1',
+                    '#48bb78', 
+                    '#ed8936'
+                ],
+                borderColor: '#ffffff',
+                borderWidth: 3,
+                hoverOffset: 15
+            }]
+        };
+
+        const config = {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 14
+                            },
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map((label, i) => {
+                                        const dataset = data.datasets[0];
+                                        const value = dataset.data[i];
+                                        const total = dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(2);
+                                        
+                                        return {
+                                            text: `${label}: ${percentage}%`,
+                                            fillStyle: dataset.backgroundColor[i],
+                                            strokeStyle: dataset.borderColor,
+                                            lineWidth: dataset.borderWidth,
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(2);
+                                
+                                label += 'TZS ' + value.toLocaleString() + ' (' + percentage + '%)';
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        new Chart(ctx, config);
+    </script>
+</body>
+</html>

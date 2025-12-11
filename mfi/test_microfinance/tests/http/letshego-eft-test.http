@@ -1,0 +1,226 @@
+###
+# Letshego EFT Service HTTP Test Collection
+# Use with VS Code REST Client extension or similar HTTP client
+###
+
+@baseUrl = https://api-staging-cb.letshego.com/letshego-api-gw/tz-eftpay-tips/v2
+@consumerId = 12123
+@apikey = eyJ4NXQiOiJPREUzWTJaaE1UQmpNRE00WlRCbU1qQXlZemxpWVRJMllqUmhZVFpsT0dJeVptVXhOV0UzWVE9PSIsImtpZCI6ImdhdGV3YXlfY2VydGlmaWNhdGVfYWxpYXMiLCJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJhZG1pbkBjYXJib24uc3VwZXIiLCJhcHBsaWNhdGlvbiI6eyJvd25lciI6ImFkbWluIiwidGllclF1b3RhVHlwZSI6bnVsbCwidGllciI6IlVubGltaXRlZCIsIm5hbWUiOiJUWi1USVBTLVJBSUxTLVYyIiwiaWQiOjcsInV1aWQiOiJhZWU4ZmE5NC0xNzQ1LTQyM2UtOGZjYi1kMzMwMDkyZGZkYzMifSwiaXNzIjoiaHR0cHM6XC9cL3dzbzItYXBpbS1zdGFnaW5nLmxldHNoZWdvLmNvbTo5NDQ0XC9vYXV0aDJcL3Rva2VuIiwidGllckluZm8iOnsiVW5saW1pdGVkIjp7InRpZXJRdW90YVR5cGUiOiJyZXF1ZXN0Q291bnQiLCJncmFwaFFMTWF4Q29tcGxleGl0eSI6MCwiZ3JhcGhRTE1heERlcHRoIjowLCJzdG9wT25RdW90YVJlYWNoIjp0cnVlLCJzcGlrZUFycmVzdExpbWl0IjowLCJzcGlrZUFycmVzdFVuaXQiOm51bGx9fSwia2V5dHlwZSI6IlBST0RVQ1RJT04iLCJwZXJtaXR0ZWRSZWZlcmVyIjoiIiwic3Vic2NyaWJlZEFQSXMiOlt7InN1YnNjcmliZXJUZW5hbnREb21haW4iOiJjYXJib24uc3VwZXIiLCJuYW1lIjoidHotZWZ0cGF5LXRpcHMtcmFpbHMiLCJjb250ZXh0IjoiXC9sZXRzaGVnby1hcGktZ3dcL3R6LWVmdHBheS10aXBzXC92MiIsInB1Ymxpc2hlciI6ImFkbWluIiwidmVyc2lvbiI6InYyIiwic3Vic2NyaXB0aW9uVGllciI6IlVubGltaXRlZCJ9XSwidG9rZW5fdHlwZSI6ImFwaUtleSIsInBlcm1pdHRlZElQIjoiIiwiaWF0IjoxNzU3MzI5ODYwLCJqdGkiOiJjMDQ3NDY3Yy1kZmE1LTRhMTItOTU4ZC00ZGEyOGExMDFhYzcifQ==.ME2XheKIiUrdG5cOZ0INhmoNemXUL_hLS4Qx54TdszlKEHhcZf375GJIHQvEFTr-Lc7bXQNcWfyBzGcD7GfVo_eg8eECCfjyaTF_8JiGYpa2ImSPMKnhwU4O4b1YnuWpQC5bjpDDx5c9K2RnGurmPbxVf4nRSs4zUTTGk3xz2ktCD9hgAUOAdic2ubandIv9XnzZ7tjxufI5TcVNUlvu5Gxwg_BnIF9KFfVXkM-TSI0JnPBzBrgqbgPc9NXLCgDPQu2OaZWmxTnY1N4lkI29pNPetZ47zN0NHzHGQfeGJ9qOIKXeI4t_7mjajM-TCVfNOxhdDSouQUL2Hv5ba0HVCA==
+
+###
+# Test 1: Get Institution List
+# This should return all supported banks/institutions
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/institution
+apikey: {{apikey}}
+
+###
+# Test 2: Account Enquiry - Valid Account
+# This should return account details for a valid account
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/accountenquiry/0752518001
+fsp-destination: 016
+x-user-platform: web
+apikey: {{apikey}}
+
+###
+# Test 3: Account Enquiry - Different Bank
+# Test with different bank code
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/accountenquiry/3401000000065
+fsp-destination: 035
+x-user-platform: web
+apikey: {{apikey}}
+
+###
+# Test 4: Account Enquiry - Invalid Account
+# This should return an error for invalid account
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/accountenquiry/1234567890
+fsp-destination: 999
+x-user-platform: web
+apikey: {{apikey}}
+
+###
+# Test 5: Initiate Transfer - Small Amount (TIPS)
+# This should initiate a transfer via TIPS (amount < 20M TZS)
+###
+POST {{baseUrl}}/{{consumerId}}/outwards/transfers
+Content-Type: application/json
+x-user-platform: web
+apikey: {{apikey}}
+
+{
+    "payee": {
+        "identifierType": "BANK",
+        "identifier": "0752518001",
+        "fspId": "016",
+        "fullName": "HAJI NYEMBO",
+        "accountCategory": "PERSON",
+        "accountType": "BANK",
+        "identity": {
+            "type": "NIN",
+            "value": ""
+        },
+        "additionalInfo": null
+    },
+    "payer": {
+        "identifierType": "BANK", 
+        "identifier": "21710176786",
+        "fspId": "044",
+        "fullName": "LETSHEGO TEST ACCOUNT",
+        "accountCategory": "BUSINESS",
+        "accountType": "BANK",
+        "identity": {
+            "type": "NIN",
+            "value": ""
+        }
+    },
+    "amount": {
+        "amount": "50000.0",
+        "currency": "TZS"
+    },
+    "endUserFee": {
+        "amount": "130",
+        "currency": "TZS"
+    },
+    "transactionType": {
+        "scenario": "TRANSFER",
+        "initiator": "PAYER",
+        "initiatorType": "CONSUMER",
+        "subScenario": null
+    },
+    "description": "Test transfer via HTTP client",
+    "payerRef": "044-HTTP{{$timestamp}}",
+    "callbackUrl": "http://localhost:8005/api/letshego-callback"
+}
+
+###
+# Test 6: Initiate Transfer - Large Amount (would use TISS if supported)
+# This tests amount routing logic
+###
+POST {{baseUrl}}/{{consumerId}}/outwards/transfers
+Content-Type: application/json
+x-user-platform: web
+apikey: {{apikey}}
+
+{
+    "payee": {
+        "identifierType": "BANK",
+        "identifier": "0752518001",
+        "fspId": "016",
+        "fullName": "HAJI NYEMBO", 
+        "accountCategory": "PERSON",
+        "accountType": "BANK",
+        "identity": {
+            "type": "NIN",
+            "value": ""
+        },
+        "additionalInfo": null
+    },
+    "payer": {
+        "identifierType": "BANK",
+        "identifier": "21710176786",
+        "fspId": "044",
+        "fullName": "LETSHEGO TEST ACCOUNT",
+        "accountCategory": "BUSINESS",
+        "accountType": "BANK",
+        "identity": {
+            "type": "NIN",
+            "value": ""
+        }
+    },
+    "amount": {
+        "amount": "25000000.0",
+        "currency": "TZS"
+    },
+    "endUserFee": {
+        "amount": "130",
+        "currency": "TZS"
+    },
+    "transactionType": {
+        "scenario": "TRANSFER",
+        "initiator": "PAYER",
+        "initiatorType": "CONSUMER",
+        "subScenario": null
+    },
+    "description": "Large amount test transfer",
+    "payerRef": "044-LARGE{{$timestamp}}",
+    "callbackUrl": "http://localhost:8005/api/letshego-callback"
+}
+
+###
+# Test 7: Transaction Status - Valid Reference
+# Check status of a known transaction
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/status/044-WK175371850125227076
+apikey: {{apikey}}
+
+###
+# Test 8: Transaction Status - Invalid Reference
+# This should return error for non-existent transaction
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/status/INVALID-REF-123
+apikey: {{apikey}}
+
+###
+# Test 9: Transaction Reversal
+# Reverse a transaction (use valid payerRef from previous transfer)
+###
+POST {{baseUrl}}/{{consumerId}}/outwards/transfers/reversal
+Content-Type: application/json
+apikey: {{apikey}}
+
+{
+    "payerRef": "044-20220616000009",
+    "reversalReason": "Test reversal via HTTP client"
+}
+
+###
+# Test 10: Invalid Transfer - Missing Required Fields
+# This should return validation error
+###
+POST {{baseUrl}}/{{consumerId}}/outwards/transfers
+Content-Type: application/json
+x-user-platform: web
+apikey: {{apikey}}
+
+{
+    "payee": {
+        "identifier": "0752518001"
+    },
+    "amount": {
+        "amount": "50000.0"
+    },
+    "description": "Invalid transfer test"
+}
+
+###
+# Test 11: Invalid API Key
+# This should return authentication error
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/institution
+apikey: invalid-api-key-12345
+
+###
+# Test 12: Rate Limiting Test
+# Multiple rapid requests to test rate limiting
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/institution
+apikey: {{apikey}}
+
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/institution
+apikey: {{apikey}}
+
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/institution
+apikey: {{apikey}}
+
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/institution
+apikey: {{apikey}}
+
+###
+GET {{baseUrl}}/{{consumerId}}/outwards/institution
+apikey: {{apikey}}

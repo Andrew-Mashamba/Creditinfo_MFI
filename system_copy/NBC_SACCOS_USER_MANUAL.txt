@@ -1,0 +1,1398 @@
+================================================================================
+                    NBC SACCOS CORE BANKING SYSTEM
+                           USER MANUAL
+================================================================================
+
+Document Version: 1.0
+Generated: November 2025
+System: NBC SACCOS Core Banking Application
+
+================================================================================
+                          TABLE OF CONTENTS
+================================================================================
+
+1.  Dashboard
+2.  Branches
+3.  Members
+4.  Shares
+5.  Savings
+6.  Deposits
+7.  Loans
+8.  Accounting
+9.  Products Management
+10. Payments
+11. Human Resources
+12. Reconciliation
+13. Reports Manager
+14. Billing
+15. Expenses
+16. Budget Management
+17. Institution Settings
+18. Transactions
+19. Self Services
+20. Active Loans
+21. Mobile & Web Portal
+22. Subscriptions
+23. Approvals
+24. Users Manager
+
+================================================================================
+                          1. DASHBOARD
+                    Overview of all the data
+================================================================================
+
+DESCRIPTION:
+The Dashboard module provides a comprehensive overview of all system data and
+activities. It serves as the central hub for monitoring organizational
+performance and accessing key metrics at a glance.
+
+KEY FEATURES:
+
+1.1 Role-Based Dashboards
+    - CEO Dashboard: Executive summary with high-level KPIs
+    - Branch Manager Dashboard: Branch-specific performance metrics
+    - Loan Officer Dashboard: Loan portfolio and collection status
+    - Teller Dashboard: Daily transaction summary
+    - Accountant Dashboard: Financial overview and pending tasks
+    - Auditor Dashboard: Compliance and audit information
+    - System Admin Dashboard: System health and user activity
+    - HR Dashboard: Employee metrics and HR tasks
+    - Member Dashboard: Personal account summary
+
+1.2 Real-Time Monitoring
+    - Live activity tracking
+    - Transaction monitoring
+    - Loan repayment tracking
+    - Support ticket status
+
+1.3 Quick Actions
+    - Member search functionality
+    - Balance inquiry
+    - Internal transfers
+    - Statement requests
+    - Cash management operations
+
+1.4 Summary Widgets
+    - Cash summary and cashbook ledger
+    - Loan portfolio overview
+    - Member statistics
+    - Pending approvals count
+    - Daily transaction totals
+
+HOW TO USE:
+- Login to access your role-specific dashboard
+- Click on any widget to drill down into detailed information
+- Use the quick search bar to find members or accounts
+- Access frequently used functions from the quick actions menu
+
+================================================================================
+                          2. BRANCHES
+                   Manage all branch locations
+================================================================================
+
+DESCRIPTION:
+The Branches module enables management of all branch locations including
+creation, configuration, and monitoring of branch operations.
+
+KEY FEATURES:
+
+2.1 Branch Creation
+    - Auto-generated branch numbers
+    - Branch type selection (MAIN, SUB, MOBILE)
+    - Operating hours configuration
+    - Manager assignment
+
+2.2 Branch Management
+    - View all branches in list or table format
+    - Edit branch details and contact information
+    - Activate/deactivate branches
+    - Region and district management
+
+2.3 Branch Configuration
+    - Automatic account creation (Vault, Till, Petty Cash)
+    - Cash-In-Transit (CIT) provider assignment
+    - Branch hierarchy management
+
+2.4 Branch Status Management
+    - ACTIVE: Fully operational branch
+    - PENDING: Awaiting approval
+    - BLOCKED: Temporarily suspended
+    - DELETED: Permanently closed
+
+HOW TO USE:
+
+Creating a New Branch:
+1. Navigate to Branches > Add New Branch
+2. Fill in branch details (name, type, location)
+3. Set operating hours
+4. Assign a branch manager
+5. Configure CIT provider if applicable
+6. Submit for approval
+
+Editing Branch Details:
+1. Go to Branches > Branches List
+2. Click on the branch to edit
+3. Select "Edit" option
+4. Update required fields
+5. Save changes
+
+================================================================================
+                          3. MEMBERS
+                    Directory of all members
+================================================================================
+
+DESCRIPTION:
+The Members module manages the complete lifecycle of SACCOS members from
+registration through active membership to exit processing.
+
+KEY FEATURES:
+
+3.1 Member Registration
+    - New member application
+    - Personal information capture
+    - Document upload and verification
+    - KYC compliance
+
+3.2 Member Categories
+    - Individual members
+    - Group members
+    - Corporate members
+
+3.3 Member Status Tracking
+    - ACTIVE: Full membership privileges
+    - INACTIVE: Dormant membership
+    - PENDING: Awaiting approval
+    - BLOCKED: Suspended membership
+
+3.4 Member Management
+    - View member profiles
+    - Edit member information
+    - Member group management
+    - Bulk member import
+    - Member history tracking
+
+3.5 Membership Applications
+    - Application submission
+    - Application review
+    - Approval/rejection workflow
+
+HOW TO USE:
+
+Registering a New Member:
+1. Go to Members > Add New Member
+2. Enter personal details (name, ID, contact)
+3. Upload required documents
+4. Select membership type/category
+5. Submit application
+
+Processing Member Applications:
+1. Navigate to Members > Pending Applications
+2. Review member details and documents
+3. Verify KYC requirements
+4. Approve or reject with comments
+
+Bulk Member Import:
+1. Go to Members > Bulk Import
+2. Download the template file
+3. Fill in member data
+4. Upload completed file
+5. Review and confirm import
+
+================================================================================
+                          4. SHARES
+                  Shareholder records and info
+================================================================================
+
+DESCRIPTION:
+The Shares module manages share capital, share accounts, purchases, withdrawals,
+and dividend distribution for all SACCOS members.
+
+KEY FEATURES:
+
+4.1 Share Account Management
+    - Open new share accounts
+    - View share portfolio
+    - Track share balance
+    - Share statement generation
+
+4.2 Share Transactions
+    - Share purchase processing
+    - Share withdrawal/redemption
+    - Share transfer between members
+
+4.3 Dividend Management
+    - Dividend calculation
+    - Dividend distribution
+    - Dividend history
+
+4.4 Share Status Workflow
+    - Awaiting Activation
+    - Awaiting Approval
+    - Active Shares
+    - Declined Shares
+    - Closed Shares
+
+4.5 Reporting
+    - Share statement by member
+    - Share statement by product
+    - Share withdrawal reports
+    - Dividend overview reports
+
+HOW TO USE:
+
+Opening a Share Account:
+1. Navigate to Shares > New Share Account
+2. Select member
+3. Choose share product type
+4. Enter initial share amount
+5. Submit for processing
+
+Processing Share Purchase:
+1. Go to Shares > Active Shares
+2. Select member's share account
+3. Click "Purchase Shares"
+4. Enter amount
+5. Confirm transaction
+
+Dividend Distribution:
+1. Access Shares > Dividend Overview
+2. Set dividend calculation parameters
+3. Preview distribution
+4. Approve and process distribution
+
+================================================================================
+                          5. SAVINGS
+                   All savings account types
+================================================================================
+
+DESCRIPTION:
+The Savings module handles all savings account operations including account
+opening, deposits, withdrawals, and interest management.
+
+KEY FEATURES:
+
+5.1 Savings Account Management
+    - Open new savings accounts
+    - Multiple savings product types
+    - Account status management
+    - Balance tracking
+
+5.2 Transaction Processing
+    - Deposits
+    - Withdrawals
+    - Internal transfers
+    - Standing orders
+
+5.3 Interest Management
+    - Interest calculation
+    - Interest crediting
+    - Interest rate configuration
+
+5.4 Mandatory Savings
+    - Mandatory savings configuration
+    - Compliance tracking
+    - Enforcement rules
+
+5.5 Bulk Operations
+    - Bulk account opening
+    - Bulk deposits
+    - Bulk interest crediting
+
+HOW TO USE:
+
+Opening a Savings Account:
+1. Go to Savings > New Savings Account
+2. Select member
+3. Choose savings product
+4. Set initial deposit (if required)
+5. Submit for activation
+
+Processing Deposits:
+1. Navigate to member's savings account
+2. Click "Deposit"
+3. Enter amount and description
+4. Select deposit method
+5. Confirm transaction
+
+Withdrawals:
+1. Access member's savings account
+2. Click "Withdraw"
+3. Enter withdrawal amount
+4. Verify available balance
+5. Process withdrawal
+
+================================================================================
+                          6. DEPOSITS
+                 Deposit and transaction history
+================================================================================
+
+DESCRIPTION:
+The Deposits module manages fixed deposit and term deposit accounts, including
+account creation, maturity tracking, and interest calculations.
+
+KEY FEATURES:
+
+6.1 Deposit Account Types
+    - Fixed deposits
+    - Term deposits
+    - Recurring deposits
+
+6.2 Account Management
+    - Open deposit accounts
+    - Set deposit terms and maturity dates
+    - Track deposit status
+    - Early withdrawal processing
+
+6.3 Interest Management
+    - Interest rate configuration
+    - Interest calculation methods
+    - Interest payment schedules
+
+6.4 Maturity Management
+    - Maturity notifications
+    - Renewal processing
+    - Maturity payout
+
+6.5 Reporting
+    - Deposit statements
+    - Interest earned reports
+    - Maturity schedule reports
+
+HOW TO USE:
+
+Opening a Fixed Deposit:
+1. Navigate to Deposits > New Deposit Account
+2. Select member
+3. Choose deposit product
+4. Enter principal amount
+5. Set term/tenure
+6. Review interest rate
+7. Submit for processing
+
+Maturity Processing:
+1. Go to Deposits > Maturing Deposits
+2. Review deposits due for maturity
+3. Select action (renew/payout)
+4. Process accordingly
+
+================================================================================
+                          7. LOANS
+                   Manage all loan accounts
+================================================================================
+
+DESCRIPTION:
+The Loans module provides comprehensive loan lifecycle management from
+application through disbursement, repayment, and closure.
+
+KEY FEATURES:
+
+7.1 Loan Application
+    - Online loan application submission
+    - Multiple loan product types
+    - Loan amount and term selection
+    - Purpose documentation
+
+7.2 Loan Assessment
+    - Credit scoring
+    - Income verification
+    - Debt-to-income analysis
+    - Risk assessment
+
+7.3 Collateral Management
+    - Collateral registration
+    - Collateral valuation
+    - Multiple collateral types (Land, Vehicle, Equipment)
+    - Collateral release processing
+
+7.4 Guarantor Management
+    - Guarantor assignment
+    - Guarantor verification
+    - Guarantor liability tracking
+
+7.5 Committee Review
+    - Loan committee setup
+    - Committee meeting management
+    - Decision recording
+    - Minutes documentation
+
+7.6 Loan Disbursement
+    - Approval workflow
+    - Disbursement processing
+    - Disbursement methods (Cash, Bank Transfer, Mobile Money)
+
+7.7 Repayment Management
+    - Repayment schedule generation
+    - Payment collection
+    - Early settlement
+    - Penalty calculation
+
+7.8 Loan Recovery
+    - Arrears tracking
+    - Collection efforts
+    - Restructuring
+    - Write-off processing
+
+HOW TO USE:
+
+Submitting a Loan Application:
+1. Go to Loans > New Loan Application
+2. Select member
+3. Choose loan product
+4. Enter loan amount and term
+5. Add collateral information
+6. Add guarantors
+7. Submit application
+
+Loan Assessment Process:
+1. Navigate to Loans > Pending Assessment
+2. Select loan application
+3. Review credit score
+4. Verify income and documents
+5. Complete assessment form
+6. Forward to committee
+
+Committee Decision:
+1. Access Loans > Committee Queue
+2. Review loan details
+3. Record committee discussion
+4. Enter decision (Approve/Reject/Defer)
+5. Add conditions if applicable
+
+Loan Disbursement:
+1. Go to Loans > Approved Loans
+2. Select loan for disbursement
+3. Verify all conditions met
+4. Choose disbursement method
+5. Process disbursement
+
+================================================================================
+                          8. ACCOUNTING
+                  Financial records and reports
+================================================================================
+
+DESCRIPTION:
+The Accounting module provides comprehensive financial management including
+chart of accounts, general ledger, journal entries, and financial reporting.
+
+KEY FEATURES:
+
+8.1 Chart of Accounts
+    - Account creation and configuration
+    - Account hierarchy management
+    - Account categories (Assets, Liabilities, Equity, Income, Expenses)
+    - Sub-account management
+
+8.2 General Ledger
+    - Transaction posting
+    - Ledger inquiry
+    - Account balances
+    - Transaction history
+
+8.3 Journal Entries
+    - Manual journal entries
+    - Recurring entries
+    - Adjustment entries
+    - Entry approval workflow
+
+8.4 Financial Statements
+    - Trial Balance
+    - Balance Sheet
+    - Income & Expenditure Statement
+    - Statement of Cash Flows
+    - Statement of Financial Position
+    - Statement of Changes in Equity
+
+8.5 Accounts Payable
+    - Vendor management
+    - Invoice processing
+    - Payment scheduling
+    - Payment processing
+
+8.6 Accounts Receivable
+    - Customer invoicing
+    - Receipt processing
+    - Aging reports
+    - Collection tracking
+
+8.7 Cash Management
+    - Till management
+    - Vault management
+    - Petty cash
+    - Cash reconciliation
+
+8.8 Asset Management
+    - Fixed asset register
+    - Depreciation calculation
+    - Asset disposal
+    - Asset revaluation
+
+8.9 Year-End Processing
+    - Year-end closing
+    - Profit/Loss transfer
+    - Opening balance carry-forward
+
+HOW TO USE:
+
+Creating Journal Entry:
+1. Navigate to Accounting > Journal Entry
+2. Select entry date
+3. Add debit entries (account, amount)
+4. Add credit entries (account, amount)
+5. Ensure debits equal credits
+6. Add narration/description
+7. Submit for posting
+
+Generating Financial Statements:
+1. Go to Accounting > Financial Statements
+2. Select statement type
+3. Choose reporting period
+4. Select format (Standard/Enhanced)
+5. Generate and view report
+6. Export to PDF/Excel if needed
+
+================================================================================
+                       9. PRODUCTS MANAGEMENT
+                     All available product types
+================================================================================
+
+DESCRIPTION:
+The Products Management module handles configuration and management of all
+financial products offered by the SACCOS.
+
+KEY FEATURES:
+
+9.1 Product Categories
+    - Share products
+    - Savings products
+    - Deposit products
+    - Loan products
+
+9.2 Product Configuration
+    - Interest rate settings
+    - Fee/charge configuration
+    - Minimum/maximum amounts
+    - Eligibility criteria
+    - Product terms and conditions
+
+9.3 Sub-Product Management
+    - Create product variations
+    - Customize for specific member segments
+    - Special promotional products
+
+9.4 Product Status
+    - Active products
+    - Inactive products
+    - Discontinued products
+
+HOW TO USE:
+
+Creating a New Loan Product:
+1. Go to Products > Loans
+2. Click "Add New Product"
+3. Enter product name and code
+4. Set interest rate and calculation method
+5. Configure fees and charges
+6. Set loan limits (min/max)
+7. Define eligibility criteria
+8. Save and activate
+
+Modifying Product Parameters:
+1. Navigate to product list
+2. Select product to modify
+3. Update required parameters
+4. Save changes
+5. Changes apply to new accounts only
+
+================================================================================
+                          10. PAYMENTS
+                 Outgoing and incoming payments
+================================================================================
+
+DESCRIPTION:
+The Payments module manages all payment transactions including internal
+transfers, external payments, and third-party payment integrations.
+
+KEY FEATURES:
+
+10.1 Payment Orders
+    - Create payment orders
+    - Payment order approval
+    - Payment execution
+    - Payment status tracking
+
+10.2 Money Transfers
+    - Internal transfers (between member accounts)
+    - External bank transfers
+    - Mobile money transfers
+
+10.3 Bill Payments
+    - Utility bill payments
+    - GEPG (Government) payments
+    - Third-party bill payments
+
+10.4 Payment Integrations
+    - GEPG (Government Electronic Payment Gateway)
+    - Luku (Mobile Money)
+    - Bank integrations
+
+10.5 Payment Approval
+    - Multi-level approval workflow
+    - Approval limits configuration
+    - Approval tracking
+
+HOW TO USE:
+
+Creating a Payment Order:
+1. Navigate to Payments > New Order
+2. Select payment type
+3. Enter beneficiary details
+4. Enter amount and description
+5. Submit for approval
+
+GEPG Payment:
+1. Go to Payments > GEPG Payment
+2. Enter control number
+3. Enter payment amount
+4. Verify details
+5. Process payment
+
+Internal Transfer:
+1. Access Payments > Money Transfer
+2. Select source account
+3. Select destination account
+4. Enter transfer amount
+5. Add narration
+6. Submit transfer
+
+================================================================================
+                        11. HUMAN RESOURCES
+                      HR and staff management
+================================================================================
+
+DESCRIPTION:
+The Human Resources module provides comprehensive HR management including
+employee records, attendance, leave, payroll, and recruitment.
+
+KEY FEATURES:
+
+11.1 Employee Management
+    - Employee registration
+    - Employee profiles
+    - Department assignment
+    - Position management
+    - Employee status tracking
+
+11.2 Attendance Management
+    - Daily attendance recording
+    - Attendance reports
+    - Late/absence tracking
+
+11.3 Leave Management
+    - Leave types configuration
+    - Leave application
+    - Leave approval workflow
+    - Leave balance tracking
+
+11.4 Payroll Management
+    - Salary configuration
+    - Payroll processing
+    - Deductions management
+    - Payslip generation
+
+11.5 Recruitment
+    - Job posting
+    - Application management
+    - Interview scheduling
+    - Hiring workflow
+
+HOW TO USE:
+
+Adding New Employee:
+1. Go to HR > Employee Management
+2. Click "Add Employee"
+3. Enter personal details
+4. Set department and position
+5. Configure salary details
+6. Save employee record
+
+Processing Payroll:
+1. Navigate to HR > Payroll Management
+2. Select payroll period
+3. Review employee attendance
+4. Apply deductions/allowances
+5. Generate payroll
+6. Approve and process payments
+
+Leave Application:
+1. Access HR > Leave Management
+2. Click "Apply for Leave"
+3. Select leave type
+4. Enter leave dates
+5. Add reason
+6. Submit for approval
+
+================================================================================
+                        12. RECONCILIATION
+                   Account balancing and review
+================================================================================
+
+DESCRIPTION:
+The Reconciliation module enables matching and balancing of internal records
+with external bank statements and other financial documents.
+
+KEY FEATURES:
+
+12.1 Bank Reconciliation
+    - Import bank statements
+    - Match transactions
+    - Identify discrepancies
+    - Record adjustments
+
+12.2 Account Reconciliation
+    - Inter-account reconciliation
+    - Suspense account clearing
+    - GL reconciliation
+
+12.3 Discrepancy Management
+    - Identify mismatches
+    - Investigate discrepancies
+    - Resolution tracking
+
+HOW TO USE:
+
+Bank Reconciliation Process:
+1. Navigate to Reconciliation
+2. Select bank account
+3. Import bank statement
+4. System auto-matches transactions
+5. Review unmatched items
+6. Manually match or investigate
+7. Record adjustments if needed
+8. Complete reconciliation
+
+================================================================================
+                        13. REPORTS MANAGER
+                     Generate and view reports
+================================================================================
+
+DESCRIPTION:
+The Reports Manager module provides comprehensive reporting capabilities with
+50+ standard report templates and custom report generation.
+
+KEY FEATURES:
+
+13.1 Report Categories
+    - Daily Operations Reports
+    - Loan Reports
+    - Financial Statement Reports
+    - Member/Client Reports
+    - Portfolio Analysis Reports
+    - Risk Analysis Reports
+    - Compliance Reports
+    - Committee Reports
+
+13.2 Standard Reports
+    - Daily Operations Report
+    - Loan Portfolio Report
+    - Loan Disbursement Report
+    - Loan Delinquency Report
+    - Portfolio at Risk Report
+    - Capital Adequacy Report
+    - Financial Ratio Report
+    - Client Details Report
+    - And 40+ more...
+
+13.3 Report Features
+    - Date range selection
+    - Branch/Department filtering
+    - Multi-format export (PDF, Excel)
+    - Report scheduling
+    - Email distribution
+
+HOW TO USE:
+
+Generating a Report:
+1. Go to Reports Manager
+2. Select report category
+3. Choose specific report
+4. Set date range
+5. Apply filters (branch, officer, etc.)
+6. Click "Generate"
+7. View on screen or export
+
+Scheduling Reports:
+1. Access report configuration
+2. Set schedule (daily, weekly, monthly)
+3. Select recipients
+4. Enable auto-email
+5. Save schedule
+
+================================================================================
+                          14. BILLING
+       Manage billing, invoices, payment processing, and billing cycles
+================================================================================
+
+DESCRIPTION:
+The Billing module manages invoice generation, billing cycles, and payment
+processing for SACCOS services and charges.
+
+KEY FEATURES:
+
+14.1 Bill Creation
+    - Create member bills
+    - Service charge billing
+    - Fee billing
+
+14.2 Billing Cycles
+    - Monthly billing
+    - Quarterly billing
+    - Annual billing
+
+14.3 Payment Tracking
+    - Payment receipt recording
+    - Outstanding balance tracking
+    - Payment reminders
+
+HOW TO USE:
+
+Creating a Bill:
+1. Navigate to Billing > Create Bill
+2. Select member
+3. Add billable items
+4. Set due date
+5. Generate bill
+6. Send to member
+
+================================================================================
+                          15. EXPENSES
+                    Track and manage expenses
+================================================================================
+
+DESCRIPTION:
+The Expenses module tracks and manages organizational expenses with budget
+control and approval workflows.
+
+KEY FEATURES:
+
+15.1 Expense Recording
+    - Record daily expenses
+    - Categorize expenses
+    - Attach receipts/documents
+
+15.2 Expense Approval
+    - Approval workflow
+    - Budget verification
+    - Multi-level approval
+
+15.3 Budget Tracking
+    - Budget vs. Actual comparison
+    - Budget limit alerts
+    - Expense analytics
+
+HOW TO USE:
+
+Recording an Expense:
+1. Go to Expenses > New Expense
+2. Select expense category
+3. Enter amount and date
+4. Add description
+5. Upload receipt
+6. Submit for approval
+
+Approving Expenses:
+1. Access Expenses > Pending Approval
+2. Review expense details
+3. Verify against budget
+4. Approve or reject with comments
+
+================================================================================
+                       16. BUDGET MANAGEMENT
+                      Plan and track budgets
+================================================================================
+
+DESCRIPTION:
+The Budget Management module enables budget planning, allocation, monitoring,
+and variance analysis across departments.
+
+KEY FEATURES:
+
+16.1 Budget Planning
+    - Annual budget creation
+    - Department-wise budgets
+    - Budget item management
+
+16.2 Budget Allocation
+    - Allocate funds to departments
+    - Budget transfers
+    - Reallocation requests
+
+16.3 Budget Monitoring
+    - Real-time tracking
+    - Budget vs. Actual
+    - Variance analysis
+    - Budget alerts
+
+16.4 Scenario Planning
+    - Multiple budget scenarios
+    - Budget versioning
+    - What-if analysis
+
+HOW TO USE:
+
+Creating Annual Budget:
+1. Navigate to Budget > New Budget
+2. Set budget year
+3. Add budget line items
+4. Allocate amounts
+5. Submit for approval
+
+Budget Monitoring:
+1. Access Budget Dashboard
+2. View budget utilization
+3. Identify variances
+4. Take corrective actions
+
+================================================================================
+                      17. INSTITUTION SETTINGS
+                    System settings and config
+================================================================================
+
+DESCRIPTION:
+The Institution Settings module provides system configuration, organization
+setup, and administrative settings management.
+
+KEY FEATURES:
+
+17.1 Organization Profile
+    - Institution details
+    - Logo and branding
+    - Contact information
+    - Operating parameters
+
+17.2 Account Configuration
+    - Main account setup
+    - Vault accounts
+    - Till accounts
+    - Petty cash accounts
+
+17.3 Committee Management
+    - Committee setup
+    - Member assignment
+    - Meeting management
+
+17.4 System Configuration
+    - System parameters
+    - Email settings
+    - SMS settings
+    - Integration settings
+
+17.5 Data Management
+    - Data migration tools
+    - Backup configuration
+    - Data cleanup
+
+HOW TO USE:
+
+Updating Institution Profile:
+1. Go to Settings > Organization Settings
+2. Update institution details
+3. Upload logo if needed
+4. Save changes
+
+Configuring System Accounts:
+1. Navigate to Settings > Accounts Setup
+2. Configure vault accounts
+3. Set up till accounts
+4. Configure petty cash
+5. Save configuration
+
+================================================================================
+                         18. TRANSACTIONS
+       View and manage all financial transactions, transfers, and history
+================================================================================
+
+DESCRIPTION:
+The Transactions module provides a unified view of all financial transactions
+across the system with search and filtering capabilities.
+
+KEY FEATURES:
+
+18.1 Transaction Viewing
+    - View all transactions
+    - Filter by date range
+    - Filter by transaction type
+    - Filter by account
+
+18.2 Transaction Search
+    - Search by reference number
+    - Search by amount
+    - Search by member
+
+18.3 Transaction Details
+    - View full transaction details
+    - View related transactions
+    - Transaction audit trail
+
+HOW TO USE:
+
+Searching Transactions:
+1. Navigate to Transactions
+2. Enter search criteria
+3. Apply date range filter
+4. View results
+5. Click transaction for details
+
+================================================================================
+                        19. SELF SERVICES
+                     User self-service options
+================================================================================
+
+DESCRIPTION:
+The Self Services module provides employee self-service capabilities for
+various HR-related requests and information access.
+
+KEY FEATURES:
+
+19.1 Leave Requests
+    - Apply for leave online
+    - View leave balance
+    - Track request status
+
+19.2 HR Requests
+    - General HR requests
+    - Training requests
+    - Travel requests
+    - Overtime requests
+
+19.3 Payslip Access
+    - View payslips online
+    - Download payslips
+    - Payslip history
+
+19.4 Other Requests
+    - Materials/Equipment requests
+    - Resignation submission
+
+HOW TO USE:
+
+Submitting Leave Request:
+1. Go to Self Services > Leave Request
+2. Select leave type
+3. Enter start and end dates
+4. Add reason
+5. Submit request
+6. Track approval status
+
+Accessing Payslips:
+1. Navigate to Self Services > Payslip
+2. Select pay period
+3. View or download payslip
+
+================================================================================
+                         20. ACTIVE LOANS
+                      View all current loans
+================================================================================
+
+DESCRIPTION:
+The Active Loans module provides specialized views and management tools for
+monitoring active loan portfolios and handling problem loans.
+
+KEY FEATURES:
+
+20.1 Loan Portfolio View
+    - All active loans listing
+    - Filter by status
+    - Filter by loan officer
+    - Filter by branch
+
+20.2 Arrears Management
+    - Arrears tracking
+    - Arrears by amount
+    - Arrears by days overdue
+    - Collection management
+
+20.3 Early Settlement
+    - Settlement calculation
+    - Settlement processing
+    - Penalty waiver requests
+
+20.4 Loan Restructuring
+    - Restructure requests
+    - Term extension
+    - Interest rate modification
+    - Payment rescheduling
+
+20.5 Write-Off Management
+    - Write-off proposals
+    - Board approval workflow
+    - Write-off processing
+    - Recovery tracking
+
+HOW TO USE:
+
+Viewing Arrears:
+1. Navigate to Active Loans > Arrears
+2. Select view type (by amount/days)
+3. Filter by branch if needed
+4. Review arrears list
+5. Take collection action
+
+Processing Loan Restructuring:
+1. Go to Active Loans > Restructuring
+2. Select loan for restructure
+3. Enter new terms
+4. Submit for approval
+5. Process upon approval
+
+================================================================================
+                      21. MOBILE & WEB PORTAL
+                Manage mobile and web portal settings
+================================================================================
+
+DESCRIPTION:
+The Mobile & Web Portal module manages the member-facing portal for online
+banking and self-service capabilities.
+
+KEY FEATURES:
+
+21.1 Member Portal Access
+    - Member login
+    - Password management
+    - Security settings
+
+21.2 Portal Services
+    - Account balance inquiry
+    - Transaction history
+    - Mini statements
+    - Loan applications
+    - Request submissions
+
+21.3 Portal Configuration
+    - Enable/disable features
+    - Customize portal appearance
+    - Set access limits
+
+HOW TO USE:
+
+Member Portal Login:
+1. Access the member portal URL
+2. Enter member credentials
+3. Complete 2FA if enabled
+4. Access account dashboard
+
+Portal Administration:
+1. Go to Settings > Mobile & Web Portal
+2. Configure available services
+3. Set transaction limits
+4. Enable/disable features
+5. Save configuration
+
+================================================================================
+                        22. SUBSCRIPTIONS
+                 Manage system subscriptions and plans
+================================================================================
+
+DESCRIPTION:
+The Subscriptions module manages subscription plans and member subscription
+tracking for premium services.
+
+KEY FEATURES:
+
+22.1 Subscription Plans
+    - Define subscription plans
+    - Set subscription pricing
+    - Configure plan features
+
+22.2 Member Subscriptions
+    - Track active subscriptions
+    - Process renewals
+    - Handle cancellations
+
+HOW TO USE:
+
+Managing Subscriptions:
+1. Navigate to Subscriptions
+2. View active subscriptions
+3. Process renewals or cancellations
+4. Generate subscription reports
+
+================================================================================
+                          23. APPROVALS
+                   Approval workflows and status
+================================================================================
+
+DESCRIPTION:
+The Approvals module manages all approval workflows across the system including
+configuration, processing, and tracking.
+
+KEY FEATURES:
+
+23.1 Approval Matrix
+    - Define approval levels
+    - Set approval limits
+    - Configure approval hierarchy
+
+23.2 Process Codes
+    - Define process types
+    - Link to approval matrix
+    - Configure escalation rules
+
+23.3 Approval Processing
+    - View pending approvals
+    - Approve/reject items
+    - Add comments/conditions
+    - Track approval history
+
+23.4 Approval Types
+    - Loan approvals
+    - Payment approvals
+    - Branch approvals
+    - User action approvals
+    - Budget approvals
+
+HOW TO USE:
+
+Processing Approvals:
+1. Go to Approvals
+2. View pending items
+3. Click item to review details
+4. Select Approve or Reject
+5. Add comments if needed
+6. Submit decision
+
+Configuring Approval Matrix:
+1. Navigate to Settings > Approval Matrix
+2. Select process type
+3. Define approval levels
+4. Set amount limits per level
+5. Assign approvers
+6. Save configuration
+
+================================================================================
+                        24. USERS MANAGER
+                    Manage all user accounts
+================================================================================
+
+DESCRIPTION:
+The Users Manager module handles all user administration including account
+creation, role assignment, permissions, and security settings.
+
+KEY FEATURES:
+
+24.1 User Account Management
+    - Create user accounts
+    - Edit user profiles
+    - Activate/deactivate users
+    - Password management
+
+24.2 Role Management
+    - Create roles
+    - Define role hierarchy
+    - Assign roles to users
+
+24.3 Permission Management
+    - Define permissions
+    - Assign permissions to roles
+    - Module-level access control
+    - Feature-level access control
+
+24.4 Security Settings
+    - Password policies
+    - Session management
+    - Two-factor authentication
+    - Login tracking
+
+24.5 Audit & Logging
+    - User activity logs
+    - Login history
+    - Change tracking
+
+HOW TO USE:
+
+Creating a New User:
+1. Navigate to Users Manager
+2. Click "Add New User"
+3. Enter user details
+4. Assign branch
+5. Select role(s)
+6. Set initial password
+7. Save user account
+
+Assigning Roles:
+1. Go to Users Manager > Roles
+2. Select user
+3. Add or remove roles
+4. Save changes
+
+Configuring Permissions:
+1. Navigate to Permissions Management
+2. Select role
+3. Check/uncheck permissions
+4. Save permission settings
+
+================================================================================
+                         APPENDIX A: SHORTCUTS
+================================================================================
+
+KEYBOARD SHORTCUTS:
+- Ctrl + S : Save current form
+- Ctrl + P : Print current page
+- Ctrl + F : Search/Find
+- Esc : Close modal/dialog
+
+QUICK NAVIGATION:
+- Click SACCOS logo to return to Dashboard
+- Use sidebar menu for module navigation
+- Use breadcrumbs for page hierarchy
+
+================================================================================
+                      APPENDIX B: COMMON TASKS
+================================================================================
+
+MEMBER REGISTRATION CHECKLIST:
+[ ] Collect personal information
+[ ] Verify identification documents
+[ ] Complete KYC requirements
+[ ] Process membership fee
+[ ] Open share account
+[ ] Open savings account (if required)
+[ ] Issue member certificate
+
+LOAN PROCESSING CHECKLIST:
+[ ] Verify member eligibility
+[ ] Complete loan application
+[ ] Gather required documents
+[ ] Assess creditworthiness
+[ ] Register collateral
+[ ] Verify guarantors
+[ ] Committee approval
+[ ] Disbursement processing
+
+END OF DAY CHECKLIST:
+[ ] Complete all pending transactions
+[ ] Reconcile teller cash
+[ ] Generate daily reports
+[ ] Backup daily data
+[ ] Review pending approvals
+[ ] Close daily activities
+
+================================================================================
+                     APPENDIX C: SUPPORT CONTACTS
+================================================================================
+
+For technical support or assistance:
+- Contact your System Administrator
+- Refer to online help documentation
+- Submit support ticket through the system
+
+================================================================================
+                          END OF USER MANUAL
+================================================================================
+
+Copyright (C) NBC SACCOS
+All Rights Reserved
+
+This manual is for authorized users only. Unauthorized distribution or
+reproduction is prohibited.
+
+================================================================================

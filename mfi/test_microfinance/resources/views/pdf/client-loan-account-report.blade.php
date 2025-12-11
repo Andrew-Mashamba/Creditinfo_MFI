@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Loan Account Report</title>
+    <style nonce="{{ csp_nonce() }}">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #1f2937;
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #1f2937;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+        
+        .header h2 {
+            color: #6b7280;
+            font-size: 16px;
+            margin: 0;
+            font-weight: normal;
+        }
+        
+        .report-info {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .report-info h3 {
+            color: #1f2937;
+            font-size: 14px;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .info-value {
+            color: #6b7280;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .summary-card h4 {
+            color: #1f2937;
+            font-size: 14px;
+            margin: 0 0 5px 0;
+            font-weight: bold;
+        }
+        
+        .summary-card .value {
+            color: #059669;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .table-container {
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #d1d5db;
+        }
+        
+        th {
+            background-color: #1f2937;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        td {
+            font-size: 10px;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .status-badge {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-completed {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-overdue {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .status-current {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #d1d5db;
+            text-align: center;
+            color: #6b7280;
+            font-size: 10px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MEMBER LOAN ACCOUNT REPORT</h1>
+        <h2>Individual member loan account statements and balances</h2>
+    </div>
+
+    <div class="report-info">
+        <h3>Report Information</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Member Number:</span>
+                <span class="info-value">{{ $clientNumber ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Generated On:</span>
+                <span class="info-value">{{ now()->format('Y-m-d H:i:s') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Generated By:</span>
+                <span class="info-value">{{ auth()->user()->name ?? 'System' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Report Type:</span>
+                <span class="info-value">Loan Account Summary</span>
+            </div>
+        </div>
+    </div>
+
+    @if(isset($summary) && !empty($summary))
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h4>Total Loans</h4>
+                <div class="value">{{ $summary['totalLoans'] ?? 0 }}</div>
+            </div>
+            <div class="summary-card">
+                <h4>Total Loan Amount</h4>
+                <div class="value">{{ number_format($summary['totalLoanAmount'] ?? 0, 2) }} TZS</div>
+            </div>
+            <div class="summary-card">
+                <h4>Total Outstanding</h4>
+                <div class="value">{{ number_format($summary['totalOutstanding'] ?? 0, 2) }} TZS</div>
+            </div>
+        </div>
+    @endif
+
+    <div class="table-container">
+        <h3>Loan Account Details</h3>
+        
+        @if(isset($clientLoans) && $clientLoans->count() > 0)
+            <table>
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>Loan ID</th>
+                        <th>Product</th>
+                        <th class="text-right">Principal Amount</th>
+                        <th class="text-right">Outstanding Balance</th>
+                        <th>Interest Rate</th>
+                        <th>Status</th>
+                        <th>Days in Arrears</th>
+                        <th>Next Payment Date</th>
+                        <th class="text-right">Next Payment Amount</th>
+                        <th>Branch</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($clientLoans as $index => $loan)
+                        <tr>
+                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td>{{ $loan->loan_id ?? 'N/A' }}</td>
+                            <td>{{ $loan->product_name ?? 'N/A' }}</td>
+                            <td class="text-right">{{ number_format($loan->principle ?? 0, 2) }} TZS</td>
+                            <td class="text-right">{{ number_format($loan->outstanding_balance ?? 0, 2) }} TZS</td>
+                            <td class="text-center">{{ $loan->interest ?? 'N/A' }}%</td>
+                            <td>
+                                @if(isset($loan->status))
+                                    <span class="status-badge 
+                                        @if($loan->status === 'ACTIVE') status-active
+                                        @elseif($loan->status === 'PENDING') status-pending
+                                        @elseif($loan->status === 'COMPLETED') status-completed
+                                        @endif">
+                                        {{ $loan->status }}
+                                    </span>
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                            <td>
+                                @if(isset($loan->days_in_arrears) && $loan->days_in_arrears > 0)
+                                    <span class="status-badge status-overdue">
+                                        {{ $loan->days_in_arrears }} days
+                                    </span>
+                                @else
+                                    <span class="status-badge status-current">Current</span>
+                                @endif
+                            </td>
+                            <td>{{ $loan->next_payment_date ? date('Y-m-d', strtotime($loan->next_payment_date)) : 'N/A' }}</td>
+                            <td class="text-right">{{ number_format($loan->next_payment_amount ?? 0, 2) }} TZS</td>
+                            <td>{{ $loan->branch_name ?? 'N/A' }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 15px; text-align: right; font-weight: bold;">
+                Total Loans: {{ $clientLoans->count() }} | 
+                Total Principal: {{ number_format($clientLoans->sum('principle'), 2) }} TZS |
+                Total Outstanding: {{ number_format($clientLoans->sum('outstanding_balance'), 2) }} TZS
+            </div>
+        @else
+            <div class="no-data">
+                No loan accounts found for the selected member.
+            </div>
+        @endif
+    </div>
+
+    <div class="footer">
+        <p>This report was generated automatically by the Microfinance Management System</p>
+        <p>For any queries, please contact the system administrator</p>
+    </div>
+</body>
+</html>

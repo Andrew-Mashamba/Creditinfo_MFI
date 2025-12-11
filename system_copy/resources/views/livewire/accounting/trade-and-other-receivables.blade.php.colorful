@@ -1,0 +1,723 @@
+<div>
+    {{-- Header Section --}}
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">Trade and Other Receivables</h2>
+                <p class="text-sm text-gray-600 mt-1">Manage customer invoices, payments, and credit control</p>
+            </div>
+            <button wire:click="openCreateModal" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i> New Invoice
+            </button>
+        </div>
+
+        {{-- Statistics Cards --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-blue-100 text-sm">Total Receivables</p>
+                        <p class="text-2xl font-bold mt-1">{{ number_format($totalReceivables, 2) }}</p>
+                    </div>
+                    <i class="fas fa-file-invoice text-2xl text-blue-200"></i>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-red-500 to-red-600 rounded-lg p-4 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-red-100 text-sm">Overdue Amount</p>
+                        <p class="text-2xl font-bold mt-1">{{ number_format($totalOverdue, 2) }}</p>
+                    </div>
+                    <i class="fas fa-exclamation-triangle text-2xl text-red-200"></i>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-4 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-green-100 text-sm">Collected</p>
+                        <p class="text-2xl font-bold mt-1">{{ number_format($totalCollected, 2) }}</p>
+                    </div>
+                    <i class="fas fa-check-circle text-2xl text-green-200"></i>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg p-4 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-orange-100 text-sm">Bad Debt</p>
+                        <p class="text-2xl font-bold mt-1">{{ number_format($totalBadDebt, 2) }}</p>
+                    </div>
+                    <i class="fas fa-times-circle text-2xl text-orange-200"></i>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-purple-100 text-sm">Avg Collection</p>
+                        <p class="text-2xl font-bold mt-1">{{ $averageCollectionPeriod }} days</p>
+                    </div>
+                    <i class="fas fa-clock text-2xl text-purple-200"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Tabs Navigation --}}
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
+        <div class="border-b border-gray-200">
+            <nav class="flex -mb-px">
+                <button wire:click="$set('activeTab', 'overview')" 
+                    class="px-6 py-3 text-sm font-medium {{ $activeTab == 'overview' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700' }}">
+                    <i class="fas fa-chart-line mr-2"></i> Overview
+                </button>
+                <button wire:click="$set('activeTab', 'receivables')" 
+                    class="px-6 py-3 text-sm font-medium {{ $activeTab == 'receivables' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700' }}">
+                    <i class="fas fa-list mr-2"></i> Receivables List
+                </button>
+                <button wire:click="$set('activeTab', 'aging')" 
+                    class="px-6 py-3 text-sm font-medium {{ $activeTab == 'aging' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700' }}">
+                    <i class="fas fa-calendar-alt mr-2"></i> Aging Analysis
+                </button>
+                <button wire:click="$set('activeTab', 'collections')" 
+                    class="px-6 py-3 text-sm font-medium {{ $activeTab == 'collections' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700' }}">
+                    <i class="fas fa-hand-holding-usd mr-2"></i> Collections
+                </button>
+            </nav>
+        </div>
+
+        {{-- Tab Content --}}
+        <div class="p-6">
+            @if($activeTab == 'overview')
+                {{-- Aging Summary Chart --}}
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Aging Summary</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-6 gap-4">
+                        @foreach($agingBuckets as $bucket)
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <p class="text-sm text-gray-600">{{ $bucket['label'] }}</p>
+                                <p class="text-xl font-bold text-gray-900 mt-1">{{ number_format($bucket['amount'], 2) }}</p>
+                                <p class="text-xs text-gray-500 mt-1">{{ $bucket['count'] }} invoices</p>
+                                <div class="mt-2">
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $bucket['percentage'] }}%"></div>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $bucket['percentage'] }}%</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            @if($activeTab == 'receivables')
+                {{-- Filters --}}
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+                    <div>
+                        <input type="text" wire:model.debounce.300ms="search" 
+                            placeholder="Search customer, invoice..." 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <select wire:model="statusFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="partial">Partial</option>
+                            <option value="paid">Paid</option>
+                            <option value="overdue">Overdue</option>
+                            <option value="written_off">Written Off</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select wire:model="ageFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                            <option value="all">All Ages</option>
+                            <option value="current">Current</option>
+                            <option value="30">1-30 Days</option>
+                            <option value="60">31-60 Days</option>
+                            <option value="90">61-90 Days</option>
+                            <option value="over90">Over 90 Days</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="date" wire:model="dateFrom" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <input type="date" wire:model="dateTo" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+
+                {{-- Receivables Table --}}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Age</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($receivables as $receivable)
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        {{ $receivable->invoice_number }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $receivable->customer_name }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ \Carbon\Carbon::parse($receivable->invoice_date)->format('d M Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ \Carbon\Carbon::parse($receivable->due_date)->format('d M Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ number_format($receivable->amount, 2) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ number_format($receivable->balance, 2) }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($receivable->status == 'paid')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                Paid
+                                            </span>
+                                        @elseif($receivable->status == 'partial')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                Partial
+                                            </span>
+                                        @elseif($receivable->days_overdue > 0)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                Overdue
+                                            </span>
+                                        @elseif($receivable->status == 'written_off')
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                Written Off
+                                            </span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                Pending
+                                            </span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        @if($receivable->days_overdue > 0)
+                                            <span class="text-red-600 font-medium">{{ abs($receivable->days_overdue) }} days overdue</span>
+                                        @else
+                                            {{ abs($receivable->days_overdue) }} days
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex space-x-2">
+                                            @if($receivable->status != 'paid' && $receivable->status != 'written_off')
+                                                <button wire:click="openPaymentModal({{ $receivable->id }})" 
+                                                    class="text-green-600 hover:text-green-900" title="Record Payment">
+                                                    <i class="fas fa-money-bill-wave"></i>
+                                                </button>
+                                            @endif
+                                            <button wire:click="edit({{ $receivable->id }})" 
+                                                class="text-blue-600 hover:text-blue-900" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            @if($receivable->status != 'paid' && $receivable->days_overdue > 30)
+                                                <button wire:click="sendReminder({{ $receivable->id }})" 
+                                                    class="text-orange-600 hover:text-orange-900" title="Send Reminder">
+                                                    <i class="fas fa-bell"></i>
+                                                </button>
+                                            @endif
+                                            @if($receivable->status != 'paid' && $receivable->status != 'written_off' && $receivable->days_overdue > 120)
+                                                <button wire:click="$emit('confirmWriteOff', {{ $receivable->id }})" 
+                                                    class="text-red-600 hover:text-red-900" title="Write Off">
+                                                    <i class="fas fa-ban"></i>
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="9" class="px-6 py-4 text-center text-gray-500">
+                                        No receivables found.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                {{-- Pagination --}}
+                <div class="mt-4">
+                    {{ $receivables->links() }}
+                </div>
+            @endif
+
+            @if($activeTab == 'aging')
+                {{-- Detailed Aging Analysis --}}
+                <div class="space-y-6">
+                    @foreach($agingBuckets as $key => $bucket)
+                        @if($bucket['count'] > 0)
+                            <div class="bg-gray-50 rounded-lg p-4">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="text-lg font-semibold text-gray-900">{{ $bucket['label'] }}</h4>
+                                    <div class="text-right">
+                                        <p class="text-xl font-bold text-gray-900">{{ number_format($bucket['amount'], 2) }}</p>
+                                        <p class="text-sm text-gray-500">{{ $bucket['count'] }} invoices ({{ $bucket['percentage'] }}%)</p>
+                                    </div>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3">
+                                    <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full" style="width: {{ $bucket['percentage'] }}%"></div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            @endif
+
+            @if($activeTab == 'collections')
+                {{-- Collections Dashboard --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Collection Targets</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-sm">
+                                    <span>This Week</span>
+                                    <span class="font-medium">75%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm">
+                                    <span>This Month</span>
+                                    <span class="font-medium">62%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 62%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm">
+                                    <span>This Quarter</span>
+                                    <span class="font-medium">85%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+                                    <div class="bg-purple-600 h-2 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Debtors</h3>
+                        <div class="space-y-3">
+                            @php
+                                $topDebtors = DB::table('trade_receivables')
+                                    ->select('customer_name', DB::raw('SUM(balance) as total_due'))
+                                    ->where('status', '!=', 'paid')
+                                    ->where('status', '!=', 'written_off')
+                                    ->groupBy('customer_name')
+                                    ->orderBy('total_due', 'desc')
+                                    ->limit(5)
+                                    ->get();
+                            @endphp
+                            @foreach($topDebtors as $debtor)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">{{ $debtor->customer_name }}</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ number_format($debtor->total_due, 2) }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Create/Edit Modal --}}
+    @if($showCreateModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+            <div class="fixed inset-0 z-50 overflow-y-auto">
+                <div class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+                    <div class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-4xl sm:w-full">
+                        <form wire:submit.prevent="save">
+                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                                    {{ $editMode ? 'Edit Invoice' : 'Create New Invoice' }}
+                                </h3>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {{-- Customer Information --}}
+                                    <div class="col-span-2">
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Customer Information</h4>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Customer</label>
+                                        <select wire:model="customer_id" wire:change="updatedCustomerId" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                            <option value="">Select Customer</option>
+                                            @foreach($customers as $customer)
+                                                <option value="{{ $customer->id }}">
+                                                    {{ $customer->first_name }} {{ $customer->middle_name }} {{ $customer->last_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('customer_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Customer Name</label>
+                                        <input type="text" wire:model="customer_name" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('customer_name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Email</label>
+                                        <input type="email" wire:model="customer_email" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('customer_email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Phone</label>
+                                        <input type="text" wire:model="customer_phone" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('customer_phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    {{-- Invoice Details --}}
+                                    <div class="col-span-2 mt-4">
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Invoice Details</h4>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Invoice Number</label>
+                                        <input type="text" wire:model="invoice_number" {{ $editMode ? 'readonly' : '' }}
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm {{ $editMode ? 'bg-gray-100' : '' }}">
+                                        @error('invoice_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Invoice Date</label>
+                                        <input type="date" wire:model="invoice_date" wire:change="updatedInvoiceDate"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('invoice_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Payment Terms (Days)</label>
+                                        <input type="number" wire:model="payment_terms" wire:change="updatedPaymentTerms"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('payment_terms') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Due Date</label>
+                                        <input type="date" wire:model="due_date" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('due_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    {{-- Financial Details --}}
+                                    <div class="col-span-2 mt-4">
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Financial Details</h4>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Amount</label>
+                                        <input type="number" step="0.01" wire:model="amount" wire:change="updatedAmount"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('amount') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">VAT Amount</label>
+                                        <input type="number" step="0.01" wire:model="vat_amount" wire:change="updatedVatAmount"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('vat_amount') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Total Amount</label>
+                                        <input type="number" step="0.01" wire:model="total_amount" readonly
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Currency</label>
+                                        <select wire:model="currency" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                            <option value="TZS">TZS - Tanzanian Shilling</option>
+                                            <option value="USD">USD - US Dollar</option>
+                                            <option value="EUR">EUR - Euro</option>
+                                            <option value="GBP">GBP - British Pound</option>
+                                        </select>
+                                        @error('currency') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    {{-- Account Selection --}}
+                                    <div class="col-span-2 mt-4">
+                                        <h4 class="text-sm font-medium text-gray-700 mb-2">Account Selection</h4>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Receivable Account</label>
+                                        <select wire:model="account_id" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                            <option value="">Select Account</option>
+                                            @foreach($receivableAccounts as $account)
+                                                <option value="{{ $account->id }}">
+                                                    {{ $account->account_number }} - {{ $account->account_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('account_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Income Account</label>
+                                        <select wire:model="income_account_id" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                            <option value="">Select Account</option>
+                                            @foreach($incomeAccounts as $account)
+                                                <option value="{{ $account->id }}">
+                                                    {{ $account->account_number }} - {{ $account->account_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('income_account_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    {{-- Additional Information --}}
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">Description</label>
+                                        <textarea wire:model="description" rows="2"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                        @error('description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Reference Number</label>
+                                        <input type="text" wire:model="reference_number" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('reference_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Invoice Attachment</label>
+                                        <input type="file" wire:model="invoice_attachment" 
+                                            class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                        @error('invoice_attachment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">Notes</label>
+                                        <textarea wire:model="notes" rows="2"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                        @error('notes') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    {{-- Account Selection - Corrected Flow --}}
+                                    <div class="col-span-2 bg-gray-50 rounded-lg border border-gray-200 p-4">
+                                        <h3 class="text-lg font-medium text-gray-900 mb-4">Account Selection</h3>
+                                        <p class="text-sm text-gray-600 mb-4">Select where to create the receivable account and the other account for double-entry posting</p>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label for="parent_account_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                                    Parent Account (Create Receivable Under) *
+                                                </label>
+                                                <select wire:model="parent_account_number" id="parent_account_number" 
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                                                    <option value="">-- Select Parent Account --</option>
+                                                    @foreach($parentAccounts as $account)
+                                                        <option value="{{ $account->account_number }}">
+                                                            {{ $account->account_number }} - {{ $account->account_name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <p class="text-xs text-gray-500 mt-1">New receivable account will be created under this parent</p>
+                                                @error('parent_account_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                            
+                                            <div>
+                                                <label for="other_account_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                                    Other Account (Revenue) *
+                                                </label>
+                                                <select wire:model="other_account_id" id="other_account_id" 
+                                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                                                    <option value="">-- Select Revenue Account --</option>
+                                                    @foreach($otherAccounts as $account)
+                                                        <option value="{{ $account->internal_mirror_account_number }}">
+                                                            {{ $account->bank_name }} - {{ $account->account_number }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <p class="text-xs text-gray-500 mt-1">Account to be credited (Revenue/Sales account)</p>
+                                                @error('other_account_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                <button type="submit" 
+                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    {{ $editMode ? 'Update' : 'Create' }}
+                                </button>
+                                <button type="button" wire:click="$set('showCreateModal', false)" 
+                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Payment Modal --}}
+    @if($showPaymentModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+            <div class="fixed inset-0 z-50 overflow-y-auto">
+                <div class="flex items-end sm:items-center justify-center min-h-full p-4 text-center sm:p-0">
+                    <div class="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-2xl sm:w-full">
+                        <form wire:submit.prevent="processPayment">
+                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+                                    Record Payment
+                                </h3>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Payment Amount</label>
+                                        <input type="number" step="0.01" wire:model="payment_amount" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('payment_amount') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Payment Date</label>
+                                        <input type="date" wire:model="payment_date" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('payment_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Payment Method</label>
+                                        <select wire:model="payment_method" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                            <option value="bank_transfer">Bank Transfer</option>
+                                            <option value="cash">Cash</option>
+                                            <option value="cheque">Cheque</option>
+                                            <option value="card">Card</option>
+                                            <option value="mobile_money">Mobile Money</option>
+                                        </select>
+                                        @error('payment_method') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Bank/Cash Account</label>
+                                        <select wire:model="payment_account_id" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                            <option value="">Select Account</option>
+                                            @foreach($bankAccounts as $account)
+                                                <option value="{{ $account->id }}">
+                                                    {{ $account->account_number }} - {{ $account->account_name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('payment_account_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Reference Number</label>
+                                        <input type="text" wire:model="payment_reference" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('payment_reference') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Bank Charges</label>
+                                        <input type="number" step="0.01" wire:model="bank_charges" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('bank_charges') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Discount Amount</label>
+                                        <input type="number" step="0.01" wire:model="discount_amount" 
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                                        @error('discount_amount') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700">Payment Receipt</label>
+                                        <input type="file" wire:model="payment_receipt" 
+                                            class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                        @error('payment_receipt') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+
+                                    <div class="col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700">Notes</label>
+                                        <textarea wire:model="payment_notes" rows="2"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"></textarea>
+                                        @error('payment_notes') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                <button type="submit" 
+                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Process Payment
+                                </button>
+                                <button type="button" wire:click="$set('showPaymentModal', false)" 
+                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- JavaScript for alerts --}}
+    @push('scripts')
+        <script>
+            window.addEventListener('alert', event => {
+                const type = event.detail.type;
+                const message = event.detail.message;
+                
+                // You can implement your preferred notification system here
+                if (type === 'success') {
+                    alert('Success: ' + message);
+                } else if (type === 'error') {
+                    alert('Error: ' + message);
+                } else {
+                    alert(message);
+                }
+            });
+
+            Livewire.on('confirmWriteOff', receivableId => {
+                if (confirm('Are you sure you want to write off this receivable? This action cannot be undone.')) {
+                    @this.writeOff(receivableId);
+                }
+            });
+        </script>
+    @endpush
+</div>

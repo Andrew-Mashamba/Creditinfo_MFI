@@ -1,0 +1,4 @@
+client_number,first_name,middle_name,last_name,full_name,email,phone_number,mobile_phone_number,address,district,region,client_status,registration_date,employment,employer_name,occupation,share_capital
+00001,John,Michael,Doe,John Michael Doe,john.doe@example.com,0755000001,0755000001,123 Main St,Ilala,Dar es Salaam,ACTIVE,2024-01-01,Employed,Company A,Engineer,1000.00
+00002,Mary,Anne,Smith,Mary Anne Smith,mary.smith@example.com,0755000002,0755000002,456 Side St,Arusha,Arusha,ACTIVE,2024-02-01,Self-Employed,Own Business,Trader,2000.00
+00003,ANDREW,STANSLAUS,MASHAMBA,ANDREW STANSLAUS MASHAMBA,andrew.s.mashamba@gmail.com,0692410353,,Namanga Rd,,,ACTIVE,,,,,

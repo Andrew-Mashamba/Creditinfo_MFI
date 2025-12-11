@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Repayment History Report</title>
+    <style nonce="{{ csp_nonce() }}">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #1f2937;
+            padding-bottom: 20px;
+        }
+        
+        .header h1 {
+            color: #1f2937;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+        
+        .header h2 {
+            color: #6b7280;
+            font-size: 16px;
+            margin: 0;
+            font-weight: normal;
+        }
+        
+        .report-info {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .report-info h3 {
+            color: #1f2937;
+            font-size: 14px;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .info-value {
+            color: #6b7280;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background-color: #f3f4f6;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .summary-card h4 {
+            color: #1f2937;
+            font-size: 14px;
+            margin: 0 0 5px 0;
+            font-weight: bold;
+        }
+        
+        .summary-card .value {
+            color: #059669;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .table-container {
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #d1d5db;
+        }
+        
+        th {
+            background-color: #1f2937;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        td {
+            font-size: 10px;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .status-badge {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+        
+        .status-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-failed {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #d1d5db;
+            text-align: center;
+            color: #6b7280;
+            font-size: 10px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MEMBER REPAYMENT HISTORY REPORT</h1>
+        <h2>Complete repayment history and payment patterns</h2>
+    </div>
+
+    <div class="report-info">
+        <h3>Report Information</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Member Number:</span>
+                <span class="info-value">{{ $clientNumber ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Report Period:</span>
+                <span class="info-value">{{ $startDate ?? 'N/A' }} to {{ $endDate ?? 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Generated On:</span>
+                <span class="info-value">{{ now()->format('Y-m-d H:i:s') }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Generated By:</span>
+                <span class="info-value">{{ auth()->user()->name ?? 'System' }}</span>
+            </div>
+        </div>
+    </div>
+
+    @if(isset($summary) && !empty($summary))
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h4>Total Payments</h4>
+                <div class="value">{{ $summary['totalPayments'] ?? 0 }}</div>
+            </div>
+            <div class="summary-card">
+                <h4>Total Amount Paid</h4>
+                <div class="value">{{ number_format($summary['totalPrincipalPaid'] ?? 0, 2) }} TZS</div>
+            </div>
+            <div class="summary-card">
+                <h4>Average Payment</h4>
+                <div class="value">{{ number_format($summary['averagePaymentAmount'] ?? 0, 2) }} TZS</div>
+            </div>
+            <div class="summary-card">
+                <h4>On-Time Payments</h4>
+                <div class="value">{{ $summary['onTimePayments'] ?? 0 }}</div>
+            </div>
+        </div>
+    @endif
+
+    <div class="table-container">
+        <h3>Repayment History Details</h3>
+        
+        @if(isset($repaymentHistory) && $repaymentHistory->count() > 0)
+            <table>
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>Payment Date</th>
+                        <th>Loan ID</th>
+                        <th>Product</th>
+                        <th class="text-right">Payment Amount</th>
+                        <th>Payment Type</th>
+                        <th class="text-right">Account Balance</th>
+                        <th>Reference</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($repaymentHistory as $index => $payment)
+                        <tr>
+                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td>{{ $payment->payment_date ?? 'N/A' }}</td>
+                            <td>{{ $payment->loan_id ?? 'N/A' }}</td>
+                            <td>{{ $payment->product_name ?? 'N/A' }}</td>
+                            <td class="text-right">{{ number_format($payment->credit ?? 0, 2) }} TZS</td>
+                            <td>{{ $payment->payment_type ?? 'N/A' }}</td>
+                            <td class="text-right">{{ number_format($payment->record_on_account_number_balance ?? 0, 2) }} TZS</td>
+                            <td>{{ $payment->reference_number ?? 'N/A' }}</td>
+                            <td>
+                                @if(isset($payment->trans_status))
+                                    <span class="status-badge 
+                                        @if($payment->trans_status === 'SUCCESS') status-success
+                                        @elseif($payment->trans_status === 'PENDING') status-pending
+                                        @elseif($payment->trans_status === 'FAILED') status-failed
+                                        @endif">
+                                        {{ $payment->trans_status }}
+                                    </span>
+                                @else
+                                    N/A
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 15px; text-align: right; font-weight: bold;">
+                Total Records: {{ $repaymentHistory->count() }} | 
+                Total Amount: {{ number_format($repaymentHistory->sum('credit'), 2) }} TZS
+            </div>
+        @else
+            <div class="no-data">
+                No repayment history found for the selected criteria.
+            </div>
+        @endif
+    </div>
+
+    <div class="footer">
+        <p>This report was generated automatically by the Microfinance Management System</p>
+        <p>For any queries, please contact the system administrator</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,124 @@
+Base URL:
+https://reseller.co.tz/api
+Authentication
+Send requests as HTTP POST with JSON body
+Include your API key in header: X-API-KEY: your_api_key
+Or in JSON body: { "api_key": "your_api_key" }
+
+
+
+Available Actions
+1. Check Domain Availability
+Request:
+
+{
+  "action": "checkDomain",
+  "domainName": "example.com"
+}
+Response:
+
+{
+    "status": "success",
+    "data": {
+        "code": 1000,
+        "message": "Command completed successfully",
+        "available": false,
+        "domain": "example.tz"
+    }
+}
+4. Register Domain
+Request:
+{
+  "action": "registerDomain",
+  "domainName": "example.tz",
+  "period": 1,
+  "registrantInfo": {
+    "name": "John Doe",
+    "organization": "Example Corp",
+    "address": "123 Main St",
+    "city": "Dar es Salaam",
+    "country": "TZ",
+    "email": "john@example.com",
+    "phone": "+255123456789"
+  },
+  "adminInfo": {
+    "name": "Jane Admin",
+    "email": "jane@example.com",
+    "phone": "+255987654321"
+  },
+  "nameservers": ["ns12.yatosha.com", "ns13.yatosha.com"]
+}
+
+Response:
+
+{
+  "status": "success",
+  "data": {
+    "domain": "example.com",
+    "registrationDate": "2024-03-20T12:00:00Z",
+    "expiryDate": "2025-03-20T12:00:00Z",
+    "amount": 35000,
+    "currency": "TZS",
+    "transactionId": "TXN123456"
+  }
+}
+
+8. Renew Domain (Ownership required)
+{
+  "action": "renewDomain",
+  "domainName": "example.tz",
+  "period": 1
+}
+
+Response:
+
+{
+  "status": "success",
+  "data": {
+    "domain": "example.ac.tz",
+    "expiryDate": "2026-03-20T12:00:00Z",
+    "amount": 35000,
+    "currency": "TZS",
+    "transactionId": "TXN123456"
+  }
+}
+
+
+
+Error Response Format
+{
+  "status": "error",
+  "message": "Specific error message",
+  "code": 400
+}
+
+General Response Format
+{
+  "status": "success", // or "error"
+  // ... action-specific fields ...
+}
+
+
+Common Error Codes
+400 - Bad Request (Invalid parameters)
+401 - Unauthorized (Invalid API key)
+402 - Payment Required (Insufficient balance)
+403 - Forbidden (Permission denied)
+404 - Not Found (Domain not found)
+409 - Conflict (Domain already registered)
+422 - Unprocessable Entity (Validation failed)
+500 - Internal Server Error
+Code Examples
+PHP Example
+Implementation Notes
+Always handle API errors and timeouts gracefully
+Store API keys securely and never expose them in client-side code
+Implement retry logic for failed requests
+Cache responses where appropriate to avoid rate limit issues
+Rate Limits
+Maximum 100 requests per minute per API key
+Exceeding limits will result in HTTP 429 (Too Many Requests)
+Response headers include rate limit information:
+X-RateLimit-Limit: Requests allowed per window
+X-RateLimit-Remaining: Requests remaining in current window
+X-RateLimit-Reset: Time until limit resets (UTC timestamp)

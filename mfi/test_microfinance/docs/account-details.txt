@@ -1,0 +1,410 @@
+ openapi: 3.0.3
+info:
+  title: Account Details API
+  version: 1.0.0
+  description: API to retrieve account details by account number.
+
+servers:
+  - url: https://baseUrl
+
+paths:
+  /api/v1/account-details:
+    post:
+      summary: Get account details
+      description: Fetch detailed account information using account number.
+      operationId: getAccountDetails
+      parameters:
+        - name: X-API-Key
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Static API key for authentication.
+        - name: Signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Base64-encoded SHA256withRSA signature of the request body.
+        - name: X-Timestamp
+          in: header
+          required: true
+          schema:
+            type: string
+            format: date-time
+          description: ISO8601 UTC timestamp.
+        - name: X-Channel-Name
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Name of the calling system or channel.
+        - name: X-Channel-Code
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Code of the calling system or channel.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountDetailsRequest'
+      responses:
+        '200':
+          description: Success - Account Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '605':
+          description: Failure - Account Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+        '700':
+          description: Known Internal Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Invalid Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FailureResponse'
+      tags:
+        - Account
+
+components:
+  schemas:
+    AccountDetailsRequest:
+      type: object
+      required:
+        - accountNumber
+      properties:
+        accountNumber:
+          type: string
+          example: "011101018916"
+
+    SuccessResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 600
+        message:
+          type: string
+          example: SUCCESS
+        body:
+          type: object
+          properties:
+            currencyShortName:
+              type: string
+              example: TZS
+            availableBalance:
+              type: string
+              example: "740916137.85"
+            blocked:
+              type: boolean
+              example: false
+            replyCode:
+              type: string
+              example: "0"
+            accountTitle:
+              type: string
+              example: VIAZI
+            branchCode:
+              type: string
+              example: "12"
+            branchShortName:
+              type: string
+              example: SAMORA
+            customerShortName:
+              type: string
+              example: JUMA J MWANGU
+            restrictedAccount:
+              type: boolean
+              example: false
+            casaAccountStatus:
+              type: string
+              example: ACCOUNT OPEN REGULAR
+            casaAccountStatusCode:
+              type: string
+              example: "8"
+            customerId:
+              type: string
+              example: "724930"
+
+    ErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 700
+        message:
+          type: string
+          example: An error occurred while processing the request
+        body:
+          type: object
+          example: {}
+
+    FailureResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          example: 605
+        message:
+          type: string
+          example: Account not found
+        body:
+          type: object
+          example: {}
+
+
+ChatGPT said:
+Your OpenAPI specification for the Account Details API is well-structured and mostly complete. Below is a brief review and a few recommendations for enhancement or clarity:
+
+✅ What’s Good
+You’ve properly defined the OpenAPI version and metadata (info section).
+
+The servers, paths, and components sections are properly formed.
+
+Use of components/schemas helps avoid repetition.
+
+Clear use of headers for security/authentication purposes (X-API-Key, Signature, etc.).
+
+Proper use of HTTP response codes and example payloads.
+
+✅ Functional API Overview
+This API:
+
+Accepts a POST request to /api/v1/account-details.
+
+Requires headers including authentication and metadata.
+
+Accepts a request body with an accountNumber.
+
+Returns different responses based on status:
+
+200: Successful fetch with account details.
+
+605: Account not found.
+
+700: Internal error.
+
+400: Bad request.
+
+🔧 Recommendations for Improvement
+Improve SuccessResponse.body balance data type:
+
+Suggest using number instead of string for availableBalance:
+
+yaml
+Copy
+Edit
+availableBalance:
+  type: number
+  format: double
+  example: 740916137.85
+Clarify Header Format (optional):
+
+You can specify header formats for better documentation. For example:
+
+yaml
+Copy
+Edit
+- name: X-Timestamp
+  schema:
+    type: string
+    format: date-time
+    example: "2025-06-22T12:00:00Z"
+Add 401 Unauthorized and 403 Forbidden responses (optional but standard):
+Useful for API key or signature validation failure.
+
+yaml
+Copy
+Edit
+'401':
+  description: Unauthorized - Missing or invalid API key or signature
+  content:
+    application/json:
+      schema:
+        $ref: '#/components/schemas/FailureResponse'
+'403':
+  description: Forbidden - Access denied
+  content:
+    application/json:
+      schema:
+        $ref: '#/components/schemas/FailureResponse'
+Consider separating ErrorResponse from FailureResponse more clearly:
+If they serve different purposes (e.g., internal server error vs user-level error), clarify this in descriptions.
+
+✅ Optional Enhancements (Not Required but Helpful)
+Security Schemes (in components/securitySchemes) if you plan to generate SDKs or use Swagger UI for testing.
+
+Examples object for different request/response cases.
+
+Tags documentation in the info section with tag descriptions.
+
+✅ Final Note
+You can now test this API with tools like Swagger UI, Postman, or generate server/client stubs using tools like OpenAPI Generator.
+
+If you'd like, I can help:
+
+Generate a mock server for this API.
+
+Write a sample cURL/Postman request.
+
+Implement a Laravel controller to handle this.
+
+Let me know!
+
+
+
+
+
+
+
+
+You said:
+is this an api document for getting account details ?
+
+
+ChatGPT said:
+Yes, this is an API document for getting account details. Specifically, it's a well-defined OpenAPI (Swagger) specification for an endpoint that allows a client system to retrieve detailed information about a bank account using an account number.
+
+✅ What the API Does
+Endpoint: POST /api/v1/account-details
+
+Purpose: Retrieve detailed account information such as:
+
+Account title
+
+Branch name/code
+
+Balance
+
+Status
+
+Customer name/ID
+
+Currency
+
+Restrictions, etc.
+
+✅ How It Works
+Request includes:
+
+Headers:
+
+X-API-Key: API key for authentication
+
+Signature: Digital signature (likely SHA256withRSA)
+
+X-Timestamp: ISO8601 timestamp
+
+X-Channel-Name, X-Channel-Code: Identifiers of the calling system
+
+Body:
+
+json
+Copy
+Edit
+{
+  "accountNumber": "011101018916"
+}
+Responses:
+
+200 OK: Account found with detailed info
+
+605: Account not found
+
+700: Internal server error
+
+400: Bad request (e.g., malformed input)
+
+✅ Conclusion
+Yes — this is indeed a formal API definition document for a "Get Account Details" operation, designed for secure internal or external system integrations (e.g., mobile apps, partner systems, back-office tools).
+
+Let me know if you'd like a sample request, Postman collection, or server code to match this spec.
+
+
+
+
+
+
+
+
+You said:
+what is the response like?
+
+
+ChatGPT said:
+The response of the API depends on the outcome of the request — whether it was successful, the account was not found, or there was an error.
+
+Below are examples of each type of response based on your OpenAPI specification:
+
+✅ 1. Success Response (Status Code: 200)
+The account was found and details are returned:
+
+json
+Copy
+Edit
+{
+  "statusCode": 600,
+  "message": "SUCCESS",
+  "body": {
+    "currencyShortName": "TZS",
+    "availableBalance": "740916137.85",
+    "blocked": false,
+    "replyCode": "0",
+    "accountTitle": "VIAZI",
+    "branchCode": "12",
+    "branchShortName": "SAMORA",
+    "customerShortName": "JUMA J MWANGU",
+    "restrictedAccount": false,
+    "casaAccountStatus": "ACCOUNT OPEN REGULAR",
+    "casaAccountStatusCode": "8",
+    "customerId": "724930"
+  }
+}
+❌ 2. Account Not Found (Status Code: 605)
+The account number doesn't exist in the system:
+
+json
+Copy
+Edit
+{
+  "statusCode": 605,
+  "message": "Account not found",
+  "body": {}
+}
+⚠️ 3. Known Internal Error (Status Code: 700)
+Something went wrong on the server side (e.g., DB connection issue):
+
+json
+Copy
+Edit
+{
+  "statusCode": 700,
+  "message": "An error occurred while processing the request",
+  "body": {}
+}
+🚫 4. Invalid Request (Status Code: 400)
+The request body or headers were missing or malformed:
+
+json
+Copy
+Edit
+{
+  "statusCode": 605,
+  "message": "Invalid account number format",
+  "body": {}
+}
+⚠️ Note: While the response body says statusCode 605, the HTTP response code here is 400. You may want to return a separate 400 error code in statusCode as well for clarity.
+

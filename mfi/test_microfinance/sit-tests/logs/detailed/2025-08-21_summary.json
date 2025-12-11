@@ -1,0 +1,73 @@
+{
+    "date": "2025-08-21",
+    "timestamp": "2025-08-21 09:51:09",
+    "statistics": {
+        "total_requests": 6,
+        "total_responses": 6,
+        "successful_responses": 5,
+        "failed_responses": 1,
+        "avg_response_time_ms": 8.48,
+        "apis_tested": [
+            "api.bank.com",
+            "cbpuat.intra.nbc.co.tz"
+        ],
+        "min_response_time_ms": 4.05,
+        "max_response_time_ms": 15.76
+    },
+    "details": [
+        {
+            "test_case": "IFT Transaction",
+            "request_url": "https:\/\/api.bank.com\/ift-transaction",
+            "request_method": "POST",
+            "response_received": true,
+            "status_code": 200,
+            "response_time_ms": 15.76,
+            "error": null
+        },
+        {
+            "test_case": "IFT Transaction",
+            "request_url": "https:\/\/api.bank.com\/ift-transaction",
+            "request_method": "POST",
+            "response_received": true,
+            "status_code": 200,
+            "response_time_ms": 12.62,
+            "error": null
+        },
+        {
+            "test_case": "IFT Transaction",
+            "request_url": "https:\/\/api.bank.com\/ift-transaction",
+            "request_method": "POST",
+            "response_received": true,
+            "status_code": 200,
+            "response_time_ms": 5.19,
+            "error": null
+        },
+        {
+            "test_case": "IFT Transaction",
+            "request_url": "https:\/\/api.bank.com\/ift-transaction",
+            "request_method": "POST",
+            "response_received": true,
+            "status_code": 200,
+            "response_time_ms": 4.77,
+            "error": null
+        },
+        {
+            "test_case": "IFT Transaction",
+            "request_url": "http:\/\/cbpuat.intra.nbc.co.tz:6666\/api\/nbc-sg\/internal_ft\/ift-transaction",
+            "request_method": "POST",
+            "response_received": false,
+            "status_code": null,
+            "response_time_ms": 306.63,
+            "error": "cURL error 6: Could not resolve host: api.bank.com (see https:\/\/curl.haxx.se\/libcurl\/c\/libcurl-errors.html) for https:\/\/api.bank.com\/ift-transaction"
+        },
+        {
+            "test_case": "IFT Transaction",
+            "request_url": "http:\/\/cbpuat.intra.nbc.co.tz:6666\/api\/nbc-sg\/internal_ft\/ift-transaction",
+            "request_method": "POST",
+            "response_received": true,
+            "status_code": 200,
+            "response_time_ms": 4.05,
+            "error": null
+        }
+    ]
+}

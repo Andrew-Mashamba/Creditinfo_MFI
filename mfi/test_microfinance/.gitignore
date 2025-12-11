@@ -1,0 +1,65 @@
+node_modules
+.env
+config/livewire
+/vendor
+storage
+bootstrap/cache/config.php
+.env
+
+# Database backup files
+database/*.sql
+*.sql
+
+# Client uploads
+/public/client-documents/*
+!/public/client-documents/.gitkeep
+/storage/app/public/documents/*
+/storage/app/documents/*
+
+# Logs
+*.log
+/storage/logs/*.log
+/sit-tests/incoming-api-tests/logs/*
+/uat-tests/logs/*
+
+# Compiled assets
+/public/build/*
+/public/assets/js/*.map
+/public/assets/css/*.map
+
+# Large files
+*.xlsx
+*.xls
+/public/calculator.xlsx
+
+# Database dumps
+*.sql
+*.dump
+/database/backups/*
+/data_migration/*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Dependencies (install with composer/npm)
+/vendor/
+/node_modules/
+
+# Cache
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/bootstrap/cache/*
+
+# Private keys and certificates
+storage/keys/*.pem
+storage/keys/*.key
+*.p12
+*.pfx

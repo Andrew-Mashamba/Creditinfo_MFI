@@ -1,0 +1,87 @@
+[
+    {
+        "question": "How many total members does the SACCO have?",
+        "status": "PASSED",
+        "answer": "There are **3 members\/clients** registered in the system."
+    },
+    {
+        "question": "What is the total number of active loans?",
+        "status": "PASSED",
+        "answer": "There are **0 active loans** out of 0 total loans."
+    },
+    {
+        "question": "What is the total savings balance?",
+        "status": "PASSED",
+        "answer": "The total savings balance is **0.00**."
+    },
+    {
+        "question": "How many branches are currently operational?",
+        "status": "PASSED",
+        "answer": "There are **1 branches** in the system."
+    },
+    {
+        "question": "How many transactions were processed today?",
+        "status": "PASSED",
+        "answer": "There were **0 transactions** processed today."
+    },
+    {
+        "question": "How many branches does the SACCO have?",
+        "status": "PASSED",
+        "answer": "There are **1 branches** in the system."
+    },
+    {
+        "question": "What are the names of all branches?",
+        "status": "PASSED",
+        "answer": "There are **1 branch** in the system:\n\n\u2022 **Headquarters** (Branch #1)\n  Region: Dar es Salaam\n  Address: Main Office\n"
+    },
+    {
+        "question": "How many members are registered in the system?",
+        "status": "PASSED",
+        "answer": "There are **3 members\/clients** registered in the system."
+    },
+    {
+        "question": "What are the names of all members?",
+        "status": "FAILED",
+        "answer": "Default message"
+    },
+    {
+        "question": "How many active members are there?",
+        "status": "PASSED",
+        "answer": "There are **3 active members** out of 3 total members."
+    },
+    {
+        "question": "How many users are registered in the system?",
+        "status": "PASSED",
+        "answer": "There are **2 users** in the system."
+    },
+    {
+        "question": "What are the names of all system users?",
+        "status": "PASSED",
+        "answer": "**SACCOS Core System Information:**\n\n\u2022 System: SACCOS Core System Template\n\u2022 Version: 6.0\n\u2022 Database: PostgreSQL\n\u2022 Framework: Laravel 9.x with Livewire\n\u2022 Modules: 31 active modules\n\u2022 Project Path: \/Volumes\/DATA\/PROJECTS\/SACCOS\/SYSTEMS\/SACCOS_CORE_SYSTEM"
+    },
+    {
+        "question": "How many loans are currently active?",
+        "status": "PASSED",
+        "answer": "There are **0 active loans** out of 0 total loans."
+    },
+    {
+        "question": "How many loan applications are pending?",
+        "status": "PASSED",
+        "answer": "There are **0 pending loan applications**."
+    },
+    {
+        "question": "What version of the SACCOS system is running?",
+        "status": "PASSED",
+        "answer": "**SACCOS Core System Information:**\n\n\u2022 System: SACCOS Core System Template\n\u2022 Version: 6.0\n\u2022 Database: PostgreSQL\n\u2022 Framework: Laravel 9.x with Livewire\n\u2022 Modules: 31 active modules\n\u2022 Project Path: \/Volumes\/DATA\/PROJECTS\/SACCOS\/SYSTEMS\/SACCOS_CORE_SYSTEM"
+    },
+    {
+        "question": "How many modules are active?",
+        "status": "PASSED",
+        "answer": "The system has **31 active modules**."
+    },
+    {
+        "question": "Show system overview",
+        "status": "PASSED",
+        "answer": "**SACCOS Core System Information:**\n\n\u2022 System: SACCOS Core System Template\n\u2022 Version: 6.0\n\u2022 Database: PostgreSQL\n\u2022 Framework: Laravel 9.x with Livewire\n\u2022 Modules: 31 active modules\n\u2022 Project Path: \/Volumes\/DATA\/PROJECTS\/SACCOS\/SYSTEMS\/SACCOS_CORE_SYSTEM"
+    }
+]

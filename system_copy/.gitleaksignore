@@ -1,0 +1,40 @@
+# Gitleaks Ignore File
+# Add file paths that contain false positives
+
+# Environment files (gitignored, expected to contain secrets)
+.env
+.env.*
+
+# Log files (gitignored, may contain request/response data)
+storage/logs/*.log
+
+# Private key files (gitignored, expected to be keys)
+storage/keys/*.pem
+storage/keys/*.key
+storage/app/keys/*.pem
+storage/app/keys/*.key
+
+# Security documentation (contains examples of secrets for educational purposes)
+doc/SECRETS_SCAN_REPORT.md
+doc/SECRETS_IMPLEMENTATION_SUMMARY.md
+doc/SECRET_REMEDIATION_SCRIPT.sh
+doc/SECRET_REMEDIATION_CHECKLIST.md
+doc/API_SECURITY.md
+doc/*.md
+
+# Documentation examples (verified as examples only)
+docs/SIT/SIT_TEST_CASES.md
+docs/SIT/SIT_TESTING_GUIDE.md
+docs/tips.txt
+docs/ACCOUNT_DETAILS_ENV_EXAMPLE.md
+docs/*.md
+NBC_STATEMENT_SERVICE.md
+
+# Test commands with example credentials
+app/Console/Commands/TestResellerApiLogging.php
+
+# Database seeders with test data
+database/seeders/InstitutionsSeeder.php
+
+# Exclude client references (not secrets)
+docs/tips.txt:clientRef

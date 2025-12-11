@@ -1,0 +1,193 @@
+{
+	"info": {
+		"_postman_id": "474f53a8-8a93-4b67-915d-6a3ba724cca9",
+		"name": "TZ-EFTPAY-Outwards",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42476156"
+	},
+	"item": [
+		{
+			"name": "Reversal",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"payerRef\": \"044-20220616000009\",\r\n\t\"reversalReason\": \"Sent funds twice\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/{{consumer_id}}/outwards/transfers/reversal",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"{{consumer_id}}",
+						"outwards",
+						"transfers",
+						"reversal"
+					]
+				},
+				"description": "Generated from cURL: curl --location '[https://wso2-apim-staging.letshego.com/letshego-api-gw/tz-eftpay-tips/v2/12123/outwards/transfers/reversal'](https://wso2-apim-staging.letshego.com/letshego-api-gw/tz-eftpay-tips/v2/12123/outwards/transfers/reversal')  \n\\--header 'Content-Type: application/json'  \n\\--data '{  \n\"payerRef\": \"044-20220616000009\",  \n\"reversalReason\": \"Sent funds twice\"  \n}'"
+			},
+			"response": []
+		},
+		{
+			"name": "Institution List",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "apikey",
+						"value": "{{apikey}}"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_URL}}/{{consumer_id}}/outwards/institution",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"{{consumer_id}}",
+						"outwards",
+						"institution"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account Enquiry",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "fsp-destination",
+						"value": "035"
+					},
+					{
+						"key": "x-user-platform",
+						"value": "web"
+					},
+					{
+						"key": "apikey",
+						"value": "{{apikey}}"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_URL}}/{{consumer_id}}/outwards/accountenquiry/3401000000065",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"{{consumer_id}}",
+						"outwards",
+						"accountenquiry",
+						"3401000000065"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Initiate Transaction",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-user-platform",
+						"value": "web",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "apikey",
+						"value": "{{apikey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"payee\": {\n        \"identifierType\": \"BANK\",\n        \"identifier\": \"0752518001\",\n        \"fspId\": \"016\",\n        \"fullName\": \"HAJI NYEMBO\",\n        \"accountCategory\": \"PERSON\",\n        \"accountType\": \"BANK\",\n        \"identity\": {\n            \"type\": \"NIN\",\n            \"value\": \"\"\n        },\n        \"additionalInfo\": null\n    },\n    \"payer\": {\n        \"identifierType\": \"BANK\",\n        \"identifier\": \"21710176786\",\n        \"fspId\": \"044\",\n        \"fullName\": \"HAJI NYEMBO\",\n        \"accountCategory\": \"PERSON\",\n        \"accountType\": \"BANK\",\n        \"identity\": {\n            \"type\": \"NIN\",\n            \"value\": \"19990327121250000124\"\n        }\n    },\n    \"amount\": {\n        \"amount\": \"250000000.0\",\n        \"currency\": \"TZS\"\n    },\n    \"endUserFee\": {\n        \"amount\": \"130\",\n        \"currency\": \"TZS\"\n    },\n    \"transactionType\": {\n        \"scenario\": \"TRANSFER\",\n        \"initiator\": \"PAYER\",\n        \"initiatorType\": \"CONSUMER\",\n        \"subScenario\": null\n    },\n    \"description\": \"akiba\",\n    \"payerRef\": \"044-WK175371850125227080\",\n    \"callbackUrl\": \"http://abc.com/xxxxxx\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/{{consumer_id}}/outwards/transfers",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"{{consumer_id}}",
+						"outwards",
+						"transfers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction Status",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "fsp-destination",
+						"value": "035"
+					},
+					{
+						"key": "apikey",
+						"value": "{{apikey}}"
+					}
+				],
+				"url": {
+					"raw": "{{BASE_URL}}/{{consumer_id}}/outwards/status/044-WK175371850125227076",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"{{consumer_id}}",
+						"outwards",
+						"status",
+						"044-WK175371850125227076"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

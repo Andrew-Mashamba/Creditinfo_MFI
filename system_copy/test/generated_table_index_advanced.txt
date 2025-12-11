@@ -1,0 +1,972 @@
+<?php
+
+// Auto-generated table index structure for AiAgentService.php
+// Generated on: 2025-07-12 09:04:51
+
+// Format: Ready to copy into getTableIndex() method
+
+
+
+
+            'Expenses' => [
+                'description' => 'Expense tracking and management with expense categories, amounts, and approval workflows. Core entity for expense management and cost tracking.',
+                'keywords' => ['expense', 'cost', 'expenditure', 'spending', 'expense tracking', 'expense amount', 'expense category'],
+                'fields' => $this->getTableFields('expenses'),
+                'sample_queries' => ['expenses', 'expense count', 'spending', 'costs', 'expense amounts', 'expense categories'],
+                'data_patterns' => 'Contains expense records with descriptions, amounts, categories, dates, status, approval information, and relationship to employees and departments'
+            ],
+
+
+
+            'Group_loans' => [
+                'description' => 'Tracks loans issued to groups, including group number, loan amount, member participation, and status. Used for managing group lending and collective loan products.',
+                'keywords' => ['group loan', 'group lending', 'group number', 'collective loan', 'loan status'],
+                'fields' => $this->getTableFields('Group_loans'),
+                'sample_queries' => ['group loans', 'loans for group X', 'group loan status', 'group loan members'],
+                'data_patterns' => 'Each record links a loan to a group and member, with amount and status. Used for group lending and collective loan management.'
+            ],
+
+            'account_historical_balances' => [
+                'description' => 'Stores year-end and snapshot balances for accounts, including financial year, account details, and balance breakdowns. Used for financial reporting and audits.',
+                'keywords' => ['historical balance', 'account balance', 'year-end balance', 'financial snapshot', 'balance history'],
+                'fields' => $this->getTableFields('account_historical_balances'),
+                'sample_queries' => ['historical balances', 'year-end balances', 'account balance history', 'balance for year X'],
+                'data_patterns' => 'Each record captures a balance snapshot for an account, with year, account details, and balance breakdowns. Used for reporting and audits.'
+            ],
+
+            'ai_interactions' => [
+                'description' => 'Logs all interactions with the AI agent, including queries, responses, context, and metadata. Used for auditing, analytics, and improving AI performance.',
+                'keywords' => ['AI interaction', 'AI log', 'AI query', 'AI response', 'interaction history'],
+                'fields' => $this->getTableFields('ai_interactions'),
+                'sample_queries' => ['AI interactions', 'AI queries', 'AI responses', 'interaction history'],
+                'data_patterns' => 'Each record logs a query/response pair with context and metadata. Used for auditing and analytics.'
+            ],
+
+            'applicants' => [
+                'description' => 'Tracks individuals or entities applying for membership, loans, or services, including application status and supporting documents. Used for onboarding and workflow management.',
+                'keywords' => ['applicant', 'application', 'membership application', 'loan application', 'application status'],
+                'fields' => $this->getTableFields('applicants'),
+                'sample_queries' => ['applicants', 'pending applications', 'application status', 'applicant documents'],
+                'data_patterns' => 'Each record tracks an applicant, application type, status, and supporting documents. Used for onboarding and workflow.'
+            ],
+
+            'approval_actions' => [
+                'description' => 'Logs actions taken during approval workflows, including approver, status, comments, and timestamps. Used for workflow tracking and compliance.',
+                'keywords' => ['approval action', 'workflow action', 'approver', 'approval status', 'approval comment'],
+                'fields' => $this->getTableFields('approval_actions'),
+                'sample_queries' => ['approval actions', 'actions for approval X', 'approver comments', 'approval workflow history'],
+                'data_patterns' => 'Each record logs an action in an approval workflow, with approver, status, comments, and timestamps. Used for workflow tracking and compliance.'
+            ],
+
+            'approval_comments' => [
+                'description' => 'Stores comments and notes made during approval processes, including approver, comment text, and timestamps. Used for audit trails and workflow transparency.',
+                'keywords' => ['approval comment', 'workflow comment', 'approver note', 'approval note'],
+                'fields' => $this->getTableFields('approval_comments'),
+                'sample_queries' => ['approval comments', 'comments for approval X', 'workflow notes'],
+                'data_patterns' => 'Each record stores a comment made during an approval process, with approver and timestamp. Used for audit trails and transparency.'
+            ],
+
+            'approval_matrix_configs' => [
+                'description' => 'Defines approval matrix configurations, including required approval levels, roles, and thresholds. Used for workflow automation and compliance.',
+                'keywords' => ['approval matrix', 'approval configuration', 'workflow matrix', 'approval level', 'approval threshold'],
+                'fields' => $this->getTableFields('approval_matrix_configs'),
+                'sample_queries' => ['approval matrix configs', 'approval levels', 'workflow matrix', 'approval thresholds'],
+                'data_patterns' => 'Each record defines an approval matrix, with levels, roles, and thresholds. Used for workflow automation and compliance.'
+            ],
+
+            'approvals' => [
+                'description' => 'Tracks approval requests and their status, including requester, approver, approval type, and timestamps. Used for workflow management and compliance.',
+                'keywords' => ['approval', 'approval request', 'approval status', 'approver', 'workflow approval'],
+                'fields' => $this->getTableFields('approvals'),
+                'sample_queries' => ['approvals', 'pending approvals', 'approval status', 'approver history'],
+                'data_patterns' => 'Each record tracks an approval request, with requester, approver, type, and status. Used for workflow management and compliance.'
+            ],
+
+     
+
+            'asset_url' => [
+                'description' => 'Stores URLs or paths to digital assets, such as images, documents, or files, used in the system. Used for asset management and retrieval.',
+                'keywords' => ['asset URL', 'file URL', 'document URL', 'image URL', 'digital asset'],
+                'fields' => $this->getTableFields('asset_url'),
+                'sample_queries' => ['asset URLs', 'file URLs', 'document URLs', 'image URLs'],
+                'data_patterns' => 'Each record stores a URL or path to a digital asset. Used for asset management and retrieval.'
+            ],
+
+            'assets_list' => [
+                'description' => 'Catalogs physical or digital assets owned or managed by the organization, including asset details, value, and status. Used for asset tracking and management.',
+                'keywords' => ['asset', 'asset list', 'asset catalog', 'asset value', 'asset status'],
+                'fields' => $this->getTableFields('assets_list'),
+                'sample_queries' => ['assets', 'asset list', 'asset value', 'asset status'],
+                'data_patterns' => 'Each record catalogs an asset, with details, value, and status. Used for asset tracking and management.'
+            ],
+
+            'audit_logs' => [
+                'description' => 'Logs system events and user actions for auditing and compliance, including event type, user, timestamp, and details. Used for security and compliance.',
+                'keywords' => ['audit log', 'system log', 'user action', 'event log', 'compliance log'],
+                'fields' => $this->getTableFields('audit_logs'),
+                'sample_queries' => ['audit logs', 'system events', 'user actions', 'event history'],
+                'data_patterns' => 'Each record logs a system event or user action, with type, user, timestamp, and details. Used for auditing and compliance.'
+            ],
+
+
+
+            'bank_statements_staging_table' => [
+                'description' => 'Temporary storage for uploaded bank statements before processing and reconciliation. Used for data import and validation.',
+                'keywords' => ['bank statement', 'staging table', 'statement upload', 'reconciliation', 'data import'],
+                'fields' => $this->getTableFields('bank_statements_staging_table'),
+                'sample_queries' => ['bank statements staging', 'uploaded statements', 'pending reconciliation'],
+                'data_patterns' => 'Each record stores a bank statement upload before processing. Used for data import and reconciliation.'
+            ],
+
+
+            'banks' => [
+                'description' => 'Lists banks available for transactions, including bank names, codes, and integration details. Used for linking accounts and processing payments.',
+                'keywords' => ['bank', 'bank name', 'bank code', 'financial institution', 'external bank'],
+                'fields' => $this->getTableFields('banks'),
+                'sample_queries' => ['banks', 'bank list', 'bank codes', 'available banks'],
+                'data_patterns' => 'Each record lists a bank, with name, code, and integration details. Used for linking accounts and processing payments.'
+            ],
+
+            'benefits' => [
+                'description' => 'Tracks member or employee benefits, including benefit type, value, eligibility, and status. Used for HR and member services.',
+                'keywords' => ['benefit', 'member benefit', 'employee benefit', 'benefit type', 'benefit status'],
+                'fields' => $this->getTableFields('benefits'),
+                'sample_queries' => ['benefits', 'member benefits', 'employee benefits', 'benefit status'],
+                'data_patterns' => 'Each record tracks a benefit, with type, value, eligibility, and status. Used for HR and member services.'
+            ],
+
+  
+
+            'bills' => [
+                'description' => 'Billing records and invoice management with amounts, due dates, and payment status. Core entity for billing operations and payment tracking.',
+                'keywords' => ['bill', 'invoice', 'billing', 'payment', 'due date', 'bill amount', 'payment status'],
+                'fields' => $this->getTableFields('bills'),
+                'sample_queries' => ['bills', 'invoices', 'billing', 'bill count', 'payment status', 'due dates', 'bill amounts'],
+                'data_patterns' => 'Contains billing records with member references, amounts, due dates, payment status, service types, and relationship to payments and services'
+            ],
+
+            'branches' => [
+                'description' => 'Physical branch locations and office details with contact information and operational status. Core entity for organizational structure and branch management.',
+                'keywords' => ['branch', 'office', 'location', 'physical address', 'branch office', 'branch location', 'branch details'],
+                'fields' => $this->getTableFields('branches'),
+                'sample_queries' => ['branches', 'branch count', 'office locations', 'branch details', 'branch information', 'branch status'],
+                'data_patterns' => 'Contains branch information with branch codes, names, addresses, contact details, operational status, and relationship to institutions and departments'
+            ],
+
+
+
+            'cash_in_transit_providers' => [
+                'description' => 'Lists providers for cash-in-transit services, including provider details, contact information, and service status. Used for cash logistics and security.',
+                'keywords' => ['cash in transit', 'CIT provider', 'cash logistics', 'provider', 'security'],
+                'fields' => $this->getTableFields('cash_in_transit_providers'),
+                'sample_queries' => ['cash in transit providers', 'CIT providers', 'provider details', 'service status'],
+                'data_patterns' => 'Each record lists a cash-in-transit provider, with details and status. Used for cash logistics and security.'
+            ],
+
+            'cash_movements' => [
+                'description' => 'Tracks movements of cash between tills, vaults, and accounts, including source, destination, amount, and approval. Used for cash management and audit.',
+                'keywords' => ['cash movement', 'cash transfer', 'cash flow', 'source', 'destination'],
+                'fields' => $this->getTableFields('cash_movements'),
+                'sample_queries' => ['cash movements', 'cash transfers', 'cash flow', 'movement approval'],
+                'data_patterns' => 'Each record tracks a cash movement, with source, destination, amount, and approval. Used for cash management and audit.'
+            ],
+
+            'charges' => [
+                'description' => 'Fee and charge definitions with charge types, amounts, and pricing configurations. Core entity for fee management and service charges.',
+                'keywords' => ['charge', 'fee', 'service charge', 'product charge', 'cost', 'pricing', 'charge amount'],
+                'fields' => $this->getTableFields('charges'),
+                'sample_queries' => ['charges', 'fees', 'service charges', 'charge count', 'product charges', 'charge amounts'],
+                'data_patterns' => 'Contains fee definitions with charge names, types, amounts, descriptions, status, and relationship to products and services'
+            ],
+
+            'chargeslist' => [
+                'description' => 'Lists available charges and fees, including charge types, amounts, and applicability. Used for product pricing and compliance.',
+                'keywords' => ['charge', 'fee', 'charge list', 'pricing', 'applicable charge'],
+                'fields' => $this->getTableFields('chargeslist'),
+                'sample_queries' => ['charges', 'fees', 'charge types', 'applicable charges'],
+                'data_patterns' => 'Each record lists a charge or fee, with type, amount, and applicability. Used for product pricing and compliance.'
+            ],
+
+ 
+
+            'client_documents' => [
+                'description' => 'Member document storage and verification with document types, file paths, and verification status. Core entity for document management and compliance.',
+                'keywords' => ['document', 'member document', 'verification', 'id document', 'proof', 'document storage', 'file upload'],
+                'fields' => $this->getTableFields('client_documents'),
+                'sample_queries' => ['member documents', 'document count', 'verification documents', 'document storage', 'file uploads'],
+                'data_patterns' => 'Contains uploaded member documents with file paths, document types, verification status, upload dates, and relationship to members and verification processes'
+            ],
+
+            'clients' => [
+                'description' => 'SACCO members and customers with comprehensive personal, financial, and demographic information. Primary entity for member management including individual, business, and group memberships.',
+                'keywords' => ['client', 'member', 'customer', 'sacco member', 'account holder', 'member registration', 'individual member', 'business member', 'group member', 'member profile'],
+                'fields' => $this->getTableFields('clients'),
+                'sample_queries' => ['members', 'clients', 'member count', 'registered members', 'active members', 'member details', 'member information', 'client profiles', 'member demographics'],
+                'data_patterns' => 'Contains member personal information (name, contact, demographics), financial data (income, expenses), employment details, guarantor information, membership status, and comprehensive address and identification data'
+            ],
+
+            'collateral_types' => [
+                'description' => 'Defines types of collateral accepted for loans, including type name, description, and eligibility. Used for risk management and loan processing.',
+                'keywords' => ['collateral type', 'collateral', 'loan collateral', 'risk management', 'eligibility'],
+                'fields' => $this->getTableFields('collateral_types'),
+                'sample_queries' => ['collateral types', 'accepted collateral', 'collateral eligibility'],
+                'data_patterns' => 'Each record defines a collateral type, with name, description, and eligibility. Used for risk management and loan processing.'
+            ],
+
+
+
+
+
+            'contract_managements' => [
+                'description' => 'Tracks contracts and agreements, including contract terms, parties, status, and renewal dates. Used for legal compliance and contract management.',
+                'keywords' => ['contract', 'agreement', 'contract management', 'contract status', 'renewal'],
+                'fields' => $this->getTableFields('contract_managements'),
+                'sample_queries' => ['contracts', 'active contracts', 'contract status', 'renewal dates'],
+                'data_patterns' => 'Each record tracks a contract, with terms, parties, status, and renewal dates. Used for legal compliance and management.'
+            ],
+
+            'currencies' => [
+                'description' => 'Lists supported currencies, including currency codes, names, and exchange rates. Used for multi-currency transactions and reporting.',
+                'keywords' => ['currency', 'currency code', 'exchange rate', 'multi-currency', 'supported currency'],
+                'fields' => $this->getTableFields('currencies'),
+                'sample_queries' => ['currencies', 'currency codes', 'exchange rates', 'supported currencies'],
+                'data_patterns' => 'Each record lists a currency, with code, name, and exchange rate. Used for multi-currency transactions and reporting.'
+            ],
+
+            'current_loans_stages' => [
+                'description' => 'Tracks the current stage of loan applications, including stage name, status, and timestamps. Used for workflow management and reporting.',
+                'keywords' => ['loan stage', 'application stage', 'workflow stage', 'loan status'],
+                'fields' => $this->getTableFields('current_loans_stages'),
+                'sample_queries' => ['loan stages', 'current loan stage', 'application workflow'],
+                'data_patterns' => 'Each record tracks a loan application stage, with name, status, and timestamps. Used for workflow management and reporting.'
+            ],
+
+
+            'departments' => [
+                'description' => 'Organizational departments and functional units with department codes and descriptions. Core entity for organizational structure and department management.',
+                'keywords' => ['department', 'unit', 'division', 'functional area', 'organizational unit', 'department code', 'department name'],
+                'fields' => $this->getTableFields('departments'),
+                'sample_queries' => ['departments', 'department count', 'organizational units', 'department information', 'department structure'],
+                'data_patterns' => 'Contains department information with department codes, names, descriptions, status, and relationship to institutions and employees'
+            ],
+
+
+
+
+
+            'document_types' => [
+                'description' => 'Defines types of documents used in the system, including document name, category, and requirements. Used for document management and compliance.',
+                'keywords' => ['document type', 'document', 'document category', 'document requirement'],
+                'fields' => $this->getTableFields('document_types'),
+                'sample_queries' => ['document types', 'required documents', 'document categories'],
+                'data_patterns' => 'Each record defines a document type, with name, category, and requirements. Used for document management and compliance.'
+            ],
+
+            'employee_requests' => [
+                'description' => 'Tracks requests made by employees, including request type, status, and approval. Used for HR and workflow management.',
+                'keywords' => ['employee request', 'HR request', 'request type', 'request status', 'approval'],
+                'fields' => $this->getTableFields('employee_requests'),
+                'sample_queries' => ['employee requests', 'pending requests', 'request status', 'approved requests'],
+                'data_patterns' => 'Each record tracks an employee request, with type, status, and approval. Used for HR and workflow management.'
+            ],
+
+            'employee_roles' => [
+                'description' => 'Defines roles assigned to employees, including role name, permissions, and status. Used for HR and access control.',
+                'keywords' => ['employee role', 'role', 'HR role', 'role assignment', 'role permission'],
+                'fields' => $this->getTableFields('employee_roles'),
+                'sample_queries' => ['employee roles', 'assigned roles', 'role permissions'],
+                'data_patterns' => 'Each record defines an employee role, with name, permissions, and status. Used for HR and access control.'
+            ],
+
+            'employeefiles' => [
+                'description' => 'Stores files and documents related to employees, including file type, path, and status. Used for HR and compliance.',
+                'keywords' => ['employee file', 'HR file', 'employee document', 'file type', 'file status'],
+                'fields' => $this->getTableFields('employeefiles'),
+                'sample_queries' => ['employee files', 'HR documents', 'file status'],
+                'data_patterns' => 'Each record stores a file related to an employee, with type, path, and status. Used for HR and compliance.'
+            ],
+
+            'employees' => [
+                'description' => 'Staff records, employment details, and personnel information with job positions and employment history. Core entity for human resource management.',
+                'keywords' => ['employee', 'staff', 'personnel', 'worker', 'employment', 'staff member', 'employee record', 'job position'],
+                'fields' => $this->getTableFields('employees'),
+                'sample_queries' => ['employees', 'staff count', 'personnel', 'employee details', 'employee information', 'staff records'],
+                'data_patterns' => 'Contains employee information with employee numbers, names, positions, hire dates, employment status, and relationship to departments and users'
+            ],
+
+
+
+            'expenses' => [
+                'description' => 'Expense tracking and management with expense categories, amounts, and approval workflows. Core entity for expense management and cost tracking.',
+                'keywords' => ['expense', 'cost', 'expenditure', 'spending', 'expense tracking', 'expense amount', 'expense category'],
+                'fields' => $this->getTableFields('expenses'),
+                'sample_queries' => ['expenses', 'expense count', 'spending', 'costs', 'expense amounts', 'expense categories'],
+                'data_patterns' => 'Contains expense records with descriptions, amounts, categories, dates, status, approval information, and relationship to employees and departments'
+            ],
+
+
+            'general_ledger' => [
+                'description' => 'Tracks general ledger entries, including account, debit, credit, and transaction details. Used for accounting and financial reporting.',
+                'keywords' => ['general ledger', 'ledger entry', 'accounting', 'debit', 'credit', 'transaction'],
+                'fields' => $this->getTableFields('general_ledger'),
+                'sample_queries' => ['general ledger', 'ledger entries', 'debit and credit', 'accounting transactions'],
+                'data_patterns' => 'Each record tracks a general ledger entry, with account, debit, credit, and transaction details. Used for accounting and reporting.'
+            ],
+
+    
+            'groups' => [
+                'description' => 'Member groups and associations with group definitions and member relationships. Core entity for group membership and collective operations.',
+                'keywords' => ['group', 'member group', 'association', 'collective', 'group membership', 'group definition'],
+                'fields' => $this->getTableFields('groups'),
+                'sample_queries' => ['groups', 'group count', 'member groups', 'associations', 'group memberships', 'group definitions'],
+                'data_patterns' => 'Contains group definitions with group names, descriptions, creation dates, status, and relationship to members and group loans'
+            ],
+
+            'guarantors' => [
+                'description' => 'Loan guarantor information and guarantee relationships with guarantor details and guarantee amounts. Core entity for loan guarantee management.',
+                'keywords' => ['guarantor', 'guarantee', 'loan guarantee', 'guarantor information', 'guarantee amount', 'guarantor relationship'],
+                'fields' => $this->getTableFields('guarantors'),
+                'sample_queries' => ['guarantors', 'guarantee', 'loan guarantees', 'guarantor information', 'guarantee amounts'],
+                'data_patterns' => 'Contains guarantor information with member references, guarantor details, relationship types, guarantee amounts, status, and relationship to loans'
+            ],
+
+   
+
+            'historical_balances' => [
+                'description' => 'Stores historical balances for institutions and branches, including balance date, account codes, and balance amounts. Used for financial reporting and trend analysis.',
+                'keywords' => ['historical balance', 'institution balance', 'branch balance', 'balance date', 'trend analysis'],
+                'fields' => $this->getTableFields('historical_balances'),
+                'sample_queries' => ['historical balances', 'balance for date X', 'institution balance history'],
+                'data_patterns' => 'Each record stores a historical balance for an institution or branch, with date, account codes, and balance. Used for reporting and analysis.'
+            ],
+
+
+            'institution_files' => [
+                'description' => 'Stores files and documents related to the institution, including file type, path, and status. Used for compliance and knowledge management.',
+                'keywords' => ['institution file', 'institution document', 'file type', 'file status'],
+                'fields' => $this->getTableFields('institution_files'),
+                'sample_queries' => ['institution files', 'institution documents', 'file status'],
+                'data_patterns' => 'Each record stores a file related to the institution, with type, path, and status. Used for compliance and knowledge management.'
+            ],
+
+            'institutions' => [
+                'description' => 'Financial institutions and SACCO organizations with organizational details and contact information. Core entity for institution management and configuration.',
+                'keywords' => ['institution', 'organization', 'sacco', 'financial institution', 'company', 'institution details'],
+                'fields' => $this->getTableFields('institutions'),
+                'sample_queries' => ['institutions', 'organization details', 'sacco information', 'institution count', 'institution details'],
+                'data_patterns' => 'Contains institution information with institution codes, names, addresses, contact details, status, and relationship to branches and departments'
+            ],
+
+
+            'interviews' => [
+                'description' => 'Tracks interviews conducted for applicants, employees, or members, including interview date, participants, and outcome. Used for HR and onboarding.',
+                'keywords' => ['interview', 'applicant interview', 'employee interview', 'interview outcome'],
+                'fields' => $this->getTableFields('interviews'),
+                'sample_queries' => ['interviews', 'interview dates', 'interview outcomes'],
+                'data_patterns' => 'Each record tracks an interview, with date, participants, and outcome. Used for HR and onboarding.'
+            ],
+
+
+
+            'investments_list' => [
+                'description' => 'Catalog of investment opportunities or holdings, including investment types, values, and associated accounts. Used for tracking organizational or member investments.',
+                'keywords' => ['investment', 'investment list', 'investment type', 'investment value', 'investment account'],
+                'fields' => $this->getTableFields('investments_list'),
+                'sample_queries' => ['investments', 'investment value', 'investment type', 'investment account details'],
+                'data_patterns' => 'Each record includes investment type, value, account linkage, and status. Used for portfolio management and reporting.'
+            ],
+
+            'issued_shares' => [
+                'description' => 'Tracks shares issued to members, including reference numbers, share products, account linkage, price, and status. Part of the shares product category (product_number=1000). Used for auditing share allocations and member equity.',
+                'keywords' => ['issued shares', 'share issuance', 'share allocation', 'share product', 'member shares', 'share account', 'product number 1000'],
+                'fields' => $this->getTableFields('issued_shares'),
+                'sample_queries' => ['issued shares', 'shares issued to member X', 'share issuance history', 'share allocation status', 'shares product number 1000'],
+                'data_patterns' => 'Each record links to a member, share product, and account, with details on number of shares, price, total value, and status. Used for tracking share distribution and compliance. Part of the main shares product category (product_number=1000).'
+            ],
+
+            'job_postings' => [
+                'description' => 'Tracks job openings and recruitment postings, including job titles, descriptions, requirements, and status. Used for HR and recruitment workflows.',
+                'keywords' => ['job posting', 'recruitment', 'job opening', 'job title', 'job status'],
+                'fields' => $this->getTableFields('job_postings'),
+                'sample_queries' => ['job postings', 'open jobs', 'job requirements', 'job status'],
+                'data_patterns' => 'Each record includes job title, description, requirements, and status. Used for managing recruitment and HR processes.'
+            ],
+
+       
+
+            'landed_property_types' => [
+                'description' => 'Defines types of landed property for collateral or investment, including property categories and characteristics. Used for property management and collateral assessment.',
+                'keywords' => ['landed property', 'property type', 'property category', 'real estate', 'collateral property'],
+                'fields' => $this->getTableFields('landed_property_types'),
+                'sample_queries' => ['property types', 'landed property categories', 'collateral property types'],
+                'data_patterns' => 'Each record defines a property type/category, used for classifying collateral or investments.'
+            ],
+
+            'leaderships' => [
+                'description' => 'Tracks leadership roles and assignments within the organization, including positions, tenure, and responsibilities. Used for governance and compliance.',
+                'keywords' => ['leadership', 'leadership role', 'governance', 'position', 'tenure'],
+                'fields' => $this->getTableFields('leaderships'),
+                'sample_queries' => ['leadership roles', 'current leaders', 'leadership tenure', 'governance structure'],
+                'data_patterns' => 'Each record includes leader, position, tenure, and responsibilities. Used for organizational charts and compliance.'
+            ],
+
+            'leave_management' => [
+                'description' => 'Manages employee leave requests, approvals, and balances, including leave types, dates, and status. Used for HR and payroll.',
+                'keywords' => ['leave management', 'employee leave', 'leave request', 'leave approval', 'leave balance'],
+                'fields' => $this->getTableFields('leave_management'),
+                'sample_queries' => ['leave requests', 'leave approvals', 'leave balances', 'leave status'],
+                'data_patterns' => 'Each record tracks employee, leave type, dates, status, and approval. Used for HR and payroll processing.'
+            ],
+
+            'leaves' => [
+                'description' => 'Records individual leave entries for employees, including leave type, duration, and approval status. Used for detailed leave tracking and reporting.',
+                'keywords' => ['leave', 'employee leave', 'leave entry', 'leave type', 'leave status'],
+                'fields' => $this->getTableFields('leaves'),
+                'sample_queries' => ['leaves', 'leave entries', 'leave status', 'leave type for employee X'],
+                'data_patterns' => 'Each record includes employee, leave type, duration, and approval status. Used for HR analytics and compliance.'
+            ],
+
+
+
+
+
+            'loan_guarantors' => [
+                'description' => 'Tracks guarantors for loans, including member linkage, guarantee amount, and relationship to the borrower. Used for risk assessment and loan approval.',
+                'keywords' => ['loan guarantor', 'guarantor', 'guarantee amount', 'loan guarantee', 'guarantor relationship'],
+                'fields' => $this->getTableFields('loan_guarantors'),
+                'sample_queries' => ['loan guarantors', 'guarantor for loan X', 'guarantee amount', 'guarantor status'],
+                'data_patterns' => 'Each record links a guarantor to a loan, with guarantee amount, relationship, and status. Used for loan risk management.'
+            ],
+
+            'loan_images' => [
+                'description' => 'Stores images and documents related to loan applications, such as collateral photos or signed agreements. Used for compliance and verification.',
+                'keywords' => ['loan image', 'loan document', 'collateral photo', 'agreement image', 'loan verification'],
+                'fields' => $this->getTableFields('loan_images'),
+                'sample_queries' => ['loan images', 'collateral photos', 'loan documents for loan X'],
+                'data_patterns' => 'Each record links an image/document to a loan, with file path, type, and status. Used for compliance and verification.'
+            ],
+
+            'loan_process_progress' => [
+                'description' => 'Tracks the progress of loan applications through various stages, including approvals, verifications, and disbursements. Used for workflow management and reporting.',
+                'keywords' => ['loan process', 'loan progress', 'application stage', 'approval workflow', 'loan status'],
+                'fields' => $this->getTableFields('loan_process_progress'),
+                'sample_queries' => ['loan process progress', 'application stage for loan X', 'pending approvals', 'workflow status'],
+                'data_patterns' => 'Each record tracks a loan through workflow stages, with timestamps, status, and responsible users. Used for process optimization and compliance.'
+            ],
+
+            'loan_product_charges' => [
+                'description' => 'Defines charges and fees associated with loan products, including charge types, amounts, and applicability. Used for loan pricing and compliance.',
+                'keywords' => ['loan charge', 'product charge', 'loan fee', 'charge type', 'loan pricing'],
+                'fields' => $this->getTableFields('loan_product_charges'),
+                'sample_queries' => ['loan product charges', 'charges for loan product X', 'loan fee structure'],
+                'data_patterns' => 'Each record defines a charge for a loan product, with type, amount, and applicability. Used for pricing and compliance.'
+            ],
+
+            'loan_provision_settings' => [
+                'description' => 'Configures provisioning rules for loan loss reserves, including thresholds, rates, and product linkage. Used for financial risk management and compliance.',
+                'keywords' => ['loan provision', 'provisioning', 'loan loss reserve', 'provision rate', 'risk management'],
+                'fields' => $this->getTableFields('loan_provision_settings'),
+                'sample_queries' => ['loan provision settings', 'provisioning rules', 'loan loss reserve rates'],
+                'data_patterns' => 'Each record defines provisioning rules for loan products, with thresholds, rates, and product linkage. Used for risk and compliance.'
+            ],
+
+      
+            'loan_sub_products' => [
+                'description' => 'Loan product types and features with interest rates, terms, and product configurations. Part of the four main SACCO products where loans have product_number=4000. Core entity for loan product management and pricing.',
+                'keywords' => ['loan product', 'product type', 'loan type', 'product feature', 'loan category', 'interest rate', 'loan term', 'product number 4000'],
+                'fields' => $this->getTableFields('loan_sub_products'),
+                'sample_queries' => ['loan products', 'product types', 'loan categories', 'product count', 'interest rates', 'loan terms', 'loan product number 4000'],
+                'data_patterns' => 'Contains loan product definitions with product_number=4000, product IDs, names, interest rates, terms, minimum/maximum amounts, collection accounts, and product-specific configurations. Part of the main loans product category.'
+            ],
+
+            'loans' => [
+                'description' => 'Loan applications, disbursements, and repayment tracking with comprehensive business assessment data. Core entity for lending operations including loan products, collateral, guarantors, and risk assessment.',
+                'keywords' => ['loan', 'lending', 'borrowing', 'loan application', 'loan status', 'disbursement', 'loan product', 'loan amount', 'interest rate', 'loan term', 'collateral'],
+                'fields' => $this->getTableFields('loans'),
+                'sample_queries' => ['loans', 'loan count', 'active loans', 'loan applications', 'disbursed loans', 'loan portfolio', 'loan status', 'loan amounts', 'interest rates'],
+                'data_patterns' => 'Contains loan applications with principle amounts, interest rates, terms, business assessment data (inventory, sales, expenses), collateral information, guarantor details, approval stages, and comprehensive risk assessment metrics'
+            ],
+
+            'loans_arreas' => [
+                'description' => 'Tracks loans in arrears, including overdue amounts, days in arrears, and status. Used for collections and risk management.',
+                'keywords' => ['loan arrears', 'overdue loan', 'arrears amount', 'days in arrears', 'collections'],
+                'fields' => $this->getTableFields('loans_arreas'),
+                'sample_queries' => ['loans in arrears', 'overdue loans', 'arrears amount', 'days in arrears for loan X'],
+                'data_patterns' => 'Each record tracks a loan with overdue payments, including amount, days overdue, and status. Used for collections and risk reporting.'
+            ],
+
+
+
+            'loans_summary' => [
+                'description' => 'Aggregates loan portfolio statistics, including total loans, outstanding amounts, and risk metrics. Used for management reporting and analytics.',
+                'keywords' => ['loan summary', 'loan portfolio', 'outstanding loans', 'loan statistics', 'risk metrics'],
+                'fields' => $this->getTableFields('loans_summary'),
+                'sample_queries' => ['loan summary', 'total loans', 'outstanding loan amount', 'portfolio risk metrics'],
+                'data_patterns' => 'Each record summarizes loan portfolio data, including totals, risk metrics, and trends. Used for management and board reporting.'
+            ],
+
+            'locked_amounts' => [
+                'description' => 'Tracks amounts locked in accounts for specific services or compliance, including lock reason, status, and release details. Used for risk management and regulatory compliance.',
+                'keywords' => ['locked amount', 'account lock', 'service lock', 'compliance', 'risk management', 'lock status'],
+                'fields' => $this->getTableFields('locked_amounts'),
+                'sample_queries' => ['locked amounts', 'locked funds for account X', 'active locks', 'lock status'],
+                'data_patterns' => 'Each record links to an account, service, and user, with amount, reason, status, and lock/release timestamps. Used for regulatory and operational controls.'
+            ],
+
+
+
+            'main_budget' => [
+                'description' => 'Tracks the main organizational budget, including allocations, expenditures, and balances. Used for financial planning and control.',
+                'keywords' => ['budget', 'main budget', 'budget allocation', 'budget expenditure', 'budget balance'],
+                'fields' => $this->getTableFields('main_budget'),
+                'sample_queries' => ['main budget', 'budget allocation', 'budget expenditure', 'budget balance'],
+                'data_patterns' => 'Each record tracks budget allocations, expenditures, and balances for the organization. Used for financial planning and control.'
+            ],
+
+
+
+            'mandatory_savings_notifications' => [
+                'description' => 'Tracks notifications sent to members regarding mandatory savings requirements, including notification type, status, and delivery details. Used for compliance and member engagement.',
+                'keywords' => ['mandatory savings', 'savings notification', 'compliance notification', 'member notification'],
+                'fields' => $this->getTableFields('mandatory_savings_notifications'),
+                'sample_queries' => ['mandatory savings notifications', 'notification status', 'compliance notifications sent'],
+                'data_patterns' => 'Each record tracks a notification sent to a member regarding mandatory savings, with type, status, and delivery details. Used for compliance and engagement.'
+            ],
+
+            'mandatory_savings_settings' => [
+                'description' => 'Configures rules and thresholds for mandatory savings, including minimum amounts, frequency, and enforcement. Used for compliance and product configuration.',
+                'keywords' => ['mandatory savings', 'savings settings', 'compliance settings', 'minimum savings', 'savings frequency'],
+                'fields' => $this->getTableFields('mandatory_savings_settings'),
+                'sample_queries' => ['mandatory savings settings', 'minimum savings amount', 'savings frequency rules'],
+                'data_patterns' => 'Each record defines a rule or threshold for mandatory savings, including minimums, frequency, and enforcement. Used for compliance and configuration.'
+            ],
+
+            'mandatory_savings_tracking' => [
+                'description' => 'Tracks member compliance with mandatory savings requirements, including amounts saved, periods, and status. Used for compliance monitoring and enforcement.',
+                'keywords' => ['mandatory savings', 'savings tracking', 'compliance tracking', 'savings period', 'savings status'],
+                'fields' => $this->getTableFields('mandatory_savings_tracking'),
+                'sample_queries' => ['mandatory savings tracking', 'compliance status', 'savings for member X', 'periodic savings compliance'],
+                'data_patterns' => 'Each record tracks a member’s compliance with mandatory savings, including amounts, periods, and status. Used for monitoring and enforcement.'
+            ],
+
+            'meeting_attendance' => [
+                'description' => 'Tracks attendance at organizational meetings, including member participation, meeting dates, and status. Used for compliance and engagement reporting.',
+                'keywords' => ['meeting attendance', 'attendance tracking', 'meeting participation', 'member attendance'],
+                'fields' => $this->getTableFields('meeting_attendance'),
+                'sample_queries' => ['meeting attendance', 'attendance for meeting X', 'member participation', 'attendance status'],
+                'data_patterns' => 'Each record tracks attendance for a meeting, including member, date, and status. Used for compliance and engagement.'
+            ],
+
+            'meeting_documents' => [
+                'description' => 'Stores documents and files related to meetings, such as agendas, minutes, and presentations. Used for compliance and knowledge management.',
+                'keywords' => ['meeting document', 'meeting file', 'agenda', 'minutes', 'presentation'],
+                'fields' => $this->getTableFields('meeting_documents'),
+                'sample_queries' => ['meeting documents', 'agenda for meeting X', 'meeting minutes', 'meeting files'],
+                'data_patterns' => 'Each record links a document to a meeting, with file path, type, and status. Used for compliance and knowledge management.'
+            ],
+
+            'meetings' => [
+                'description' => 'Tracks organizational meetings, including meeting dates, agendas, participants, and outcomes. Used for compliance, planning, and engagement.',
+                'keywords' => ['meeting', 'organizational meeting', 'meeting agenda', 'meeting date', 'meeting outcome', 'participants'],
+                'fields' => $this->getTableFields('meetings'),
+                'sample_queries' => ['meetings', 'meeting dates', 'meeting agendas', 'meeting participants', 'meeting outcomes'],
+                'data_patterns' => 'Each record includes meeting date, agenda, participants, and outcomes. Used for compliance, planning, and engagement.'
+            ],
+
+            'menu_actions' => [
+                'description' => 'Defines actions available in system menus, including action names, permissions, and linkage to menu items. Used for access control and UI configuration.',
+                'keywords' => ['menu action', 'system action', 'menu permission', 'action definition', 'UI action'],
+                'fields' => $this->getTableFields('menu_actions'),
+                'sample_queries' => ['menu actions', 'actions for menu X', 'action permissions'],
+                'data_patterns' => 'Each record defines an action available in a menu, with name, permission, and linkage to menu items. Used for access control and UI configuration.'
+            ],
+
+            'mnos' => [
+                'description' => 'Lists mobile network operators (MNOs) for integration with mobile money and SMS services. Used for payment processing and communication.',
+                'keywords' => ['MNO', 'mobile network operator', 'mobile money', 'SMS provider', 'telecom'],
+                'fields' => $this->getTableFields('mnos'),
+                'sample_queries' => ['MNOs', 'mobile network operators', 'available MNOs', 'MNO integration'],
+                'data_patterns' => 'Each record defines a mobile network operator, with name, code, and integration details. Used for mobile money and SMS services.'
+            ],
+
+            'movable_property_types' => [
+                'description' => 'Defines types of movable property for collateral or asset management, including categories and characteristics. Used for asset tracking and collateral assessment.',
+                'keywords' => ['movable property', 'property type', 'asset type', 'collateral property', 'movable asset'],
+                'fields' => $this->getTableFields('movable_property_types'),
+                'sample_queries' => ['movable property types', 'asset categories', 'collateral property types'],
+                'data_patterns' => 'Each record defines a movable property type/category, used for classifying assets or collateral.'
+            ],
+
+            'notifications' => [
+                'description' => 'Tracks system notifications sent to users, including notification type, recipient, status, and delivery details. Used for communication and compliance.',
+                'keywords' => ['notification', 'system notification', 'user notification', 'notification status', 'notification type'],
+                'fields' => $this->getTableFields('notifications'),
+                'sample_queries' => ['notifications', 'sent notifications', 'notification status', 'user notifications'],
+                'data_patterns' => 'Each record tracks a notification sent to a user, with type, recipient, status, and delivery details. Used for communication and compliance.'
+            ],
+
+            'onboarding' => [
+                'description' => 'Tracks onboarding processes for new members or employees, including steps completed, status, and responsible users. Used for workflow management and compliance.',
+                'keywords' => ['onboarding', 'onboarding process', 'new member onboarding', 'employee onboarding', 'workflow'],
+                'fields' => $this->getTableFields('onboarding'),
+                'sample_queries' => ['onboarding', 'onboarding status', 'onboarding steps', 'completed onboarding'],
+                'data_patterns' => 'Each record tracks onboarding steps, status, and responsible users for a new member or employee. Used for workflow management and compliance.'
+            ],
+
+            'pay_rolls' => [
+                'description' => 'Tracks payroll processing for employees, including salary payments, deductions, and payroll periods. Used for HR and financial management.',
+                'keywords' => ['payroll', 'salary payment', 'payroll processing', 'employee payroll', 'payroll period'],
+                'fields' => $this->getTableFields('pay_rolls'),
+                'sample_queries' => ['payroll', 'salary payments', 'payroll periods', 'employee payroll details'],
+                'data_patterns' => 'Each record tracks payroll processing for an employee, including salary, deductions, and period. Used for HR and financial management.'
+            ],
+
+            'payables' => [
+                'description' => 'Tracks amounts owed by the organization to suppliers or creditors, including due dates, amounts, and payment status. Used for accounts payable and cash flow management.',
+                'keywords' => ['payable', 'accounts payable', 'supplier payment', 'creditor', 'payment due'],
+                'fields' => $this->getTableFields('payables'),
+                'sample_queries' => ['payables', 'amounts due', 'supplier payments', 'payment status'],
+                'data_patterns' => 'Each record tracks an amount owed to a supplier or creditor, with due date, amount, and payment status. Used for accounts payable and cash flow management.'
+            ],
+
+            'payment_methods' => [
+                'description' => 'Defines available payment methods for transactions, including method names, types, and configuration. Used for payment processing and configuration.',
+                'keywords' => ['payment method', 'transaction method', 'payment type', 'payment configuration'],
+                'fields' => $this->getTableFields('payment_methods'),
+                'sample_queries' => ['payment methods', 'available payment methods', 'payment method configuration'],
+                'data_patterns' => 'Each record defines a payment method, with name, type, and configuration. Used for payment processing and configuration.'
+            ],
+
+            'payment_notifications' => [
+                'description' => 'Tracks notifications sent to users regarding payments, including payment status, amount, and delivery details. Used for communication and compliance.',
+                'keywords' => ['payment notification', 'payment status', 'payment communication', 'user notification'],
+                'fields' => $this->getTableFields('payment_notifications'),
+                'sample_queries' => ['payment notifications', 'payment status notifications', 'sent payment notifications'],
+                'data_patterns' => 'Each record tracks a notification sent to a user regarding a payment, with status, amount, and delivery details. Used for communication and compliance.'
+            ],
+
+            'pending_registrations' => [
+                'description' => 'Tracks pending registrations for new members, employees, or accounts, including status, required documents, and responsible users. Used for workflow management and compliance.',
+                'keywords' => ['pending registration', 'registration status', 'new member registration', 'employee registration'],
+                'fields' => $this->getTableFields('pending_registrations'),
+                'sample_queries' => ['pending registrations', 'registration status', 'required documents', 'pending member registrations'],
+                'data_patterns' => 'Each record tracks a pending registration, with status, required documents, and responsible users. Used for workflow management and compliance.'
+            ],
+
+            'permissions' => [
+                'description' => 'System permissions and access rights with permission definitions and granular access control. Core entity for permission management and security.',
+                'keywords' => ['permission', 'access right', 'system permission', 'permission definition', 'access control'],
+                'fields' => $this->getTableFields('permissions'),
+                'sample_queries' => ['permissions', 'permission count', 'access rights', 'system permissions', 'permission definitions'],
+                'data_patterns' => 'Contains permission definitions with permission names, descriptions, categories, status, and relationship to roles and menu actions'
+            ],
+
+
+            'ppes' => [
+                'description' => 'Tracks property, plant, and equipment (PPE) assets, including asset types, values, depreciation, and status. Used for asset management and financial reporting.',
+                'keywords' => ['PPE', 'property', 'plant', 'equipment', 'asset', 'depreciation'],
+                'fields' => $this->getTableFields('ppes'),
+                'sample_queries' => ['PPE assets', 'asset values', 'depreciation schedule', 'asset status'],
+                'data_patterns' => 'Each record tracks a PPE asset, with type, value, depreciation, and status. Used for asset management and financial reporting.'
+            ],
+
+            'process_code_configs' => [
+                'description' => 'Defines process codes and configurations for workflow automation, including code definitions, parameters, and status. Used for workflow and process management.',
+                'keywords' => ['process code', 'workflow automation', 'process configuration', 'code definition'],
+                'fields' => $this->getTableFields('process_code_configs'),
+                'sample_queries' => ['process codes', 'workflow codes', 'process configuration'],
+                'data_patterns' => 'Each record defines a process code and configuration, with parameters and status. Used for workflow and process management.'
+            ],
+
+            'product_has_charges' => [
+                'description' => 'Links products to applicable charges, including charge types, amounts, and applicability. Used for product pricing and compliance.',
+                'keywords' => ['product charge', 'product pricing', 'charge type', 'applicable charge'],
+                'fields' => $this->getTableFields('product_has_charges'),
+                'sample_queries' => ['product charges', 'charges for product X', 'applicable charges'],
+                'data_patterns' => 'Each record links a product to a charge, with type, amount, and applicability. Used for product pricing and compliance.'
+            ],
+
+            'product_has_insurance' => [
+                'description' => 'Links products to applicable insurance policies, including policy details, coverage, and status. Used for risk management and compliance.',
+                'keywords' => ['product insurance', 'insurance policy', 'product risk', 'insurance coverage'],
+                'fields' => $this->getTableFields('product_has_insurance'),
+                'sample_queries' => ['product insurance', 'insurance for product X', 'applicable insurance policies'],
+                'data_patterns' => 'Each record links a product to an insurance policy, with details, coverage, and status. Used for risk management and compliance.'
+            ],
+
+
+            'receivables' => [
+                'description' => 'Tracks amounts owed to the organization by customers or members, including invoice numbers, due dates, and collection status. Used for accounts receivable and cash flow management.',
+                'keywords' => ['receivable', 'accounts receivable', 'customer invoice', 'amount due', 'collection status'],
+                'fields' => $this->getTableFields('receivables'),
+                'sample_queries' => ['receivables', 'amounts due', 'customer invoices', 'collection status'],
+                'data_patterns' => 'Each record tracks an amount owed by a customer or member, with invoice number, due date, and collection status. Used for accounts receivable and cash flow management.'
+            ],
+
+
+            'reports' => [
+                'description' => 'Report definitions and configurations with report types, parameters, and scheduling. Core entity for reporting system and analytics.',
+                'keywords' => ['report', 'reporting', 'analytics', 'report definition', 'report configuration', 'report type'],
+                'fields' => $this->getTableFields('reports'),
+                'sample_queries' => ['reports', 'report count', 'reporting', 'analytics', 'report types', 'report definitions'],
+                'data_patterns' => 'Contains report definitions with report names, types, descriptions, parameters, status, and relationship to scheduled reports and users'
+            ],
+
+            'role_menu_actions' => [
+                'description' => 'Links roles to menu actions, defining which actions are permitted for each role. Used for access control and security.',
+                'keywords' => ['role menu action', 'role permission', 'menu action', 'access control'],
+                'fields' => $this->getTableFields('role_menu_actions'),
+                'sample_queries' => ['role menu actions', 'actions for role X', 'permitted actions'],
+                'data_patterns' => 'Each record links a role to a menu action, defining permitted actions for that role. Used for access control and security.'
+            ],
+
+            'role_permissions' => [
+                'description' => 'Links roles to permissions, defining which permissions are granted to each role. Used for access control and security.',
+                'keywords' => ['role permission', 'role access', 'permission assignment', 'access control'],
+                'fields' => $this->getTableFields('role_permissions'),
+                'sample_queries' => ['role permissions', 'permissions for role X', 'granted permissions'],
+                'data_patterns' => 'Each record links a role to a permission, defining granted permissions for that role. Used for access control and security.'
+            ],
+
+            'roles' => [
+                'description' => 'User roles and permissions with role definitions and access control configurations. Core entity for role-based access control and security management.',
+                'keywords' => ['role', 'permission', 'access control', 'user role', 'role definition', 'security role'],
+                'fields' => $this->getTableFields('roles'),
+                'sample_queries' => ['roles', 'role count', 'user roles', 'permissions', 'access control', 'role definitions'],
+                'data_patterns' => 'Contains role definitions with role names, descriptions, permissions, status, and relationship to users and menu actions'
+            ],
+
+  
+            'scheduled_reports' => [
+                'description' => 'Tracks scheduled and automated reports, including report type, frequency, status, and delivery details. Used for reporting automation and compliance.',
+                'keywords' => ['scheduled report', 'automated report', 'report scheduling', 'report delivery'],
+                'fields' => $this->getTableFields('scheduled_reports'),
+                'sample_queries' => ['scheduled reports', 'automated reports', 'report status', 'report delivery'],
+                'data_patterns' => 'Each record tracks a scheduled or automated report, with type, frequency, status, and delivery details. Used for reporting automation and compliance.'
+            ],
+
+            'scores' => [
+                'description' => 'Credit scoring and risk assessment with score types, values, and assessment history. Core entity for credit risk evaluation and scoring.',
+                'keywords' => ['score', 'credit score', 'risk assessment', 'credit rating', 'scoring', 'credit evaluation'],
+                'fields' => $this->getTableFields('scores'),
+                'sample_queries' => ['scores', 'credit scores', 'risk assessment', 'credit ratings', 'scoring', 'credit evaluation'],
+                'data_patterns' => 'Contains credit scores with member references, score types, values, assessment dates, status, and relationship to loan applications and risk assessment'
+            ],
+
+ 
+            'services' => [
+                'description' => 'Defines services offered by the institution, including service name, code, description, limits, and account linkage. Used for product management and billing.',
+                'keywords' => ['service', 'institution service', 'service code', 'service limit', 'product management'],
+                'fields' => $this->getTableFields('services'),
+                'sample_queries' => ['services', 'service codes', 'service limits', 'offered services'],
+                'data_patterns' => 'Each record defines a service, with name, code, description, limits, and account linkage. Used for product management and billing.'
+            ],
+
+    
+
+            'share_transfers' => [
+                'description' => 'Records transfers of shares between members or accounts, including transfer amounts, source, destination, and approval status. Used for share ownership changes and compliance.',
+                'keywords' => ['share transfer', 'share ownership transfer', 'transfer between members', 'share movement', 'transfer approval'],
+                'fields' => $this->getTableFields('share_transfers'),
+                'sample_queries' => ['share transfers', 'transfers between members', 'transfer status', 'approved transfers'],
+                'data_patterns' => 'Each record tracks a share transfer, with source, destination, amount, and approval status. Used for share ownership changes and compliance.'
+            ],
+
+            'share_withdrawals' => [
+                'description' => 'Tracks requests and approvals for share withdrawals by members, including withdrawn shares, value, approval status, and payment details.',
+                'keywords' => ['share withdrawal', 'withdrawn shares', 'withdrawal approval', 'share redemption', 'withdrawal status'],
+                'fields' => $this->getTableFields('share_withdrawals'),
+                'sample_queries' => ['share withdrawals', 'withdrawal requests', 'approved share withdrawals', 'withdrawal status for member X'],
+                'data_patterns' => 'Each record includes member, product, withdrawn shares, value, approval status, and payment details. Used for managing and auditing share redemptions.'
+            ],
+
+   
+
+            'standing_instructions' => [
+                'description' => 'Defines recurring payment instructions and automated transfers, including frequency, amounts, and account linkage. Used for automated payment processing.',
+                'keywords' => ['standing instruction', 'recurring payment', 'automated transfer', 'payment instruction', 'scheduled payment'],
+                'fields' => $this->getTableFields('standing_instructions'),
+                'sample_queries' => ['standing instructions', 'recurring payments', 'automated transfers', 'active instructions'],
+                'data_patterns' => 'Each record defines a recurring payment instruction, with frequency, amount, source, destination, and status. Used for automated payment processing.'
+            ],
+
+    
+
+            'sub_products' => [
+                'description' => 'Defines product variations and subtypes for the four main SACCO products (shares, savings, deposits, loans), including interest rates, terms, and product configurations. Each product has a product_number: shares=1000, savings=2000, deposits=3000, loans=4000. Used for product management and pricing.',
+                'keywords' => ['sub product', 'product variation', 'product subtype', 'product configuration', 'interest rate', 'product number', 'shares product', 'savings product', 'deposits product', 'loans product'],
+                'fields' => $this->getTableFields('sub_products'),
+                'sample_queries' => ['sub products', 'product variations', 'interest rates', 'product configurations', 'shares products', 'savings products', 'deposits products'],
+                'data_patterns' => 'Each record defines a product variation with product_number (1000=shares, 2000=savings, 3000=deposits, 4000=loans), interest rate, terms, and configuration. Used for product management and pricing across all four main SACCO product categories.'
+            ],
+
+            'accounts' => [
+                'description' => 'Core accounting table that stores all member accounts and internal SACCO accounts with hierarchical chart of accounts structure. Links members to their product accounts (shares, savings, deposits, loans) and maintains account balances, status, and transaction history. Each account is linked to a product via product_number (shares=1000, savings=2000, deposits=3000, loans=4000). Uses 4-level hierarchical structure: Level 1=Major categories (1000=Assets, 2000=Liabilities, 3000=Equity, 4000=Revenue, 5000=Expenses), Level 2=Categories, Level 3=Sub-categories, Level 4=Individual member accounts. Parent-child relationships maintained via parent_account_number field for balance rollups and financial statement generation.',
+                'keywords' => ['account', 'member account', 'product account', 'account balance', 'account status', 'account number', 'product number', 'shares account', 'savings account', 'deposits account', 'loans account', 'chart of accounts', 'account hierarchy', 'parent account', 'child account', 'account level', 'major category', 'category code', 'sub category', 'account rollup', 'financial statement', 'parent_account_number', 'account_level', 'major_category_code', 'category_code', 'sub_category_code'],
+                'fields' => $this->getTableFields('accounts'),
+                'sample_queries' => [
+                    'member accounts for client 12345',
+                    'account balance for account number 0101500056005610',
+                    'all accounts with product_number 1000 (shares)',
+                    'parent account 010150005600 and its child accounts',
+                    'accounts at level 3 (sub-categories)',
+                    'liability accounts (major_category_code 2000)',
+                    'expense accounts with balance > 0',
+                    'account hierarchy for assets category',
+                    'member accounts linked to savings products',
+                    'accounts with status ACTIVE and account_use internal',
+                    'accounts with parent_account_number 010150005600',
+                    'accounts at account_level 1 (major categories)',
+                    'all expense accounts (major_category_code 5000)',
+                    'accounts for product_number 2000 (savings)',
+                    'accounts for product_number 3000 (deposits)',
+                    'accounts for product_number 4000 (loans)'
+                ],
+                'data_patterns' => 'Account numbers follow hierarchical pattern: {institution_number}{branch_number}{major_category_code}{category_code}{sub_category_code}{member_account_code}. Parent-child relationships via parent_account_number field enable balance rollups and financial statement generation. Account levels (1-4) determine hierarchy depth. Product integration via product_number links to SACCO products (1000=shares, 2000=savings, 3000=deposits, 4000=loans). Account types (asset_accounts, liability_accounts, capital_accounts, income_accounts, expense_accounts) determine which specific account table contains detailed fields. Major categories: 1000=Assets, 2000=Liabilities, 3000=Equity, 4000=Revenue, 5000=Expenses. Used for all financial operations, reporting, chart of accounts management, and member product account tracking.'
+            ],
+
+            'sub_roles' => [
+                'description' => 'Defines sub-roles and specialized permissions within main roles, including role hierarchy and access control. Used for granular access management.',
+                'keywords' => ['sub role', 'role hierarchy', 'specialized permission', 'access control', 'role variation'],
+                'fields' => $this->getTableFields('sub_roles'),
+                'sample_queries' => ['sub roles', 'role hierarchy', 'specialized permissions', 'access control'],
+                'data_patterns' => 'Each record defines a sub-role, with hierarchy, permissions, and access control. Used for granular access management.'
+            ],
+
+            'taxes' => [
+                'description' => 'Defines tax rates, types, and applicability for transactions and products. Used for tax calculation and compliance.',
+                'keywords' => ['tax', 'tax rate', 'tax type', 'tax calculation', 'tax compliance'],
+                'fields' => $this->getTableFields('taxes'),
+                'sample_queries' => ['taxes', 'tax rates', 'tax types', 'tax calculations'],
+                'data_patterns' => 'Each record defines a tax, with rate, type, and applicability. Used for tax calculation and compliance.'
+            ],
+
+            'teller_end_of_day_positions' => [
+                'description' => 'Tracks end-of-day cash positions for tellers, including balances, variances, and reconciliation status. Used for cash management and compliance.',
+                'keywords' => ['teller end of day', 'cash position', 'teller balance', 'end of day reconciliation', 'cash variance'],
+                'fields' => $this->getTableFields('teller_end_of_day_positions'),
+                'sample_queries' => ['teller end of day positions', 'cash positions', 'end of day balances', 'cash variances'],
+                'data_patterns' => 'Each record tracks end-of-day position for a teller, with balance, variance, and reconciliation status. Used for cash management and compliance.'
+            ],
+
+            'tellers' => [
+                'description' => 'Tracks teller assignments, permissions, and transaction limits, including user linkage and branch assignment. Used for cash operations and access control.',
+                'keywords' => ['teller', 'cashier', 'teller assignment', 'transaction limit', 'branch teller'],
+                'fields' => $this->getTableFields('tellers'),
+                'sample_queries' => ['tellers', 'teller assignments', 'transaction limits', 'branch tellers'],
+                'data_patterns' => 'Each record tracks a teller assignment, with user, branch, permissions, and transaction limits. Used for cash operations and access control.'
+            ],
+
+
+            'till_reconciliations' => [
+                'description' => 'Tracks reconciliation of till balances and transactions, including variances, explanations, and approval status. Used for cash management and compliance.',
+                'keywords' => ['till reconciliation', 'cash reconciliation', 'till balance', 'variance explanation', 'reconciliation status'],
+                'fields' => $this->getTableFields('till_reconciliations'),
+                'sample_queries' => ['till reconciliations', 'cash reconciliations', 'variance explanations', 'reconciliation status'],
+                'data_patterns' => 'Each record tracks till reconciliation, with balance, variance, explanation, and approval status. Used for cash management and compliance.'
+            ],
+
+            'till_transactions' => [
+                'description' => 'Records transactions processed through tills, including amounts, types, and teller assignments. Used for cash operations and audit trails.',
+                'keywords' => ['till transaction', 'cash transaction', 'teller transaction', 'transaction type', 'cash operation'],
+                'fields' => $this->getTableFields('till_transactions'),
+                'sample_queries' => ['till transactions', 'cash transactions', 'teller transactions', 'transaction types'],
+                'data_patterns' => 'Each record tracks a transaction processed through a till, with amount, type, and teller assignment. Used for cash operations and audit trails.'
+            ],
+
+            'tills' => [
+                'description' => 'Defines cash tills and their configurations, including balances, limits, and assignments. Used for cash management and operations.',
+                'keywords' => ['till', 'cash till', 'till balance', 'till limit', 'till assignment'],
+                'fields' => $this->getTableFields('tills'),
+                'sample_queries' => ['tills', 'cash tills', 'till balances', 'till limits', 'till assignments'],
+                'data_patterns' => 'Each record defines a cash till, with balance, limits, and assignment. Used for cash management and operations.'
+            ],
+
+
+            'transaction_reconciliations' => [
+                'description' => 'Tracks reconciliation of transactions with external systems or accounts, including status, variances, and resolution. Used for audit and compliance.',
+                'keywords' => ['transaction reconciliation', 'external reconciliation', 'reconciliation status', 'transaction variance', 'audit trail'],
+                'fields' => $this->getTableFields('transaction_reconciliations'),
+                'sample_queries' => ['transaction reconciliations', 'external reconciliations', 'reconciliation status', 'transaction variances'],
+                'data_patterns' => 'Each record tracks transaction reconciliation, with status, variance, and resolution. Used for audit and compliance.'
+            ],
+
+
+
+            'transaction_reversals' => [
+                'description' => 'Records reversals of transactions, including reason, approval, and audit trail. Used for error correction and compliance.',
+                'keywords' => ['transaction reversal', 'reversal reason', 'error correction', 'audit trail', 'reversal approval'],
+                'fields' => $this->getTableFields('transaction_reversals'),
+                'sample_queries' => ['transaction reversals', 'reversal reasons', 'error corrections', 'reversal approvals'],
+                'data_patterns' => 'Each record tracks a transaction reversal, with reason, approval, and audit trail. Used for error correction and compliance.'
+            ],
+
+            'transactions' => [
+                'description' => 'Financial transactions and journal entries with comprehensive audit trail and reconciliation tracking. Core entity for all money movements including deposits, withdrawals, transfers, and system-generated transactions.',
+                'keywords' => ['transaction', 'financial transaction', 'journal entry', 'money movement', 'payment', 'deposit', 'withdrawal', 'transfer', 'transaction history'],
+                'fields' => $this->getTableFields('transactions'),
+                'sample_queries' => ['transactions', 'transaction count', 'financial transactions', 'money movements', 'transaction history', 'transaction status', 'transaction amounts'],
+                'data_patterns' => 'Contains financial transactions with amounts, account references, balance tracking, status management, audit logs, reconciliation data, external system integration, and comprehensive metadata for tracking and reporting'
+            ],
+
+            'unearned_deferred_revenue' => [
+                'description' => 'Tracks unearned or deferred revenue, including recognition schedules and accounting treatment. Used for financial reporting and compliance.',
+                'keywords' => ['unearned revenue', 'deferred revenue', 'revenue recognition', 'accounting treatment', 'financial reporting'],
+                'fields' => $this->getTableFields('unearned_deferred_revenue'),
+                'sample_queries' => ['unearned revenue', 'deferred revenue', 'revenue recognition', 'accounting treatment'],
+                'data_patterns' => 'Each record tracks unearned or deferred revenue, with recognition schedule and accounting treatment. Used for financial reporting and compliance.'
+            ],
+
+  
+
+
+
+            'users' => [
+                'description' => 'System users and administrators with authentication, roles, permissions, and security profiles. Core entity for staff access control and system administration.',
+                'keywords' => ['user', 'admin', 'administrator', 'login', 'authentication', 'system user', 'staff login', 'employee login', 'user account', 'staff member'],
+                'fields' => $this->getTableFields('users'),
+                'sample_queries' => ['how many users', 'active users', 'user count', 'system administrators', 'staff members', 'user login history', 'user roles'],
+                'data_patterns' => 'Contains user accounts with email/password authentication, role assignments, department codes, branch assignments, and security profiles including OTP, password expiry, and access controls'
+            ],
+
+            'vaults' => [
+                'description' => 'Defines cash vaults and their configurations, including balances, access controls, and security measures. Used for cash management and security.',
+                'keywords' => ['vault', 'cash vault', 'vault balance', 'vault security', 'cash storage'],
+                'fields' => $this->getTableFields('vaults'),
+                'sample_queries' => ['vaults', 'cash vaults', 'vault balances', 'vault security', 'cash storage'],
+                'data_patterns' => 'Each record defines a cash vault, with balance, access controls, and security measures. Used for cash management and security.'
+            ],
+
+            'vendors' => [
+                'description' => 'Tracks vendor information and relationships, including contact details, payment terms, and performance metrics. Used for procurement and accounts payable.',
+                'keywords' => ['vendor', 'supplier', 'vendor information', 'payment terms', 'procurement'],
+                'fields' => $this->getTableFields('vendors'),
+                'sample_queries' => ['vendors', 'suppliers', 'vendor information', 'payment terms', 'procurement'],
+                'data_patterns' => 'Each record tracks vendor information, with contact details, payment terms, and performance metrics. Used for procurement and accounts payable.'
+            ],
+
+            'wards' => [
+                'description' => 'Defines administrative wards or districts, including boundaries and demographic information. Used for geographic organization and reporting.',
+                'keywords' => ['ward', 'administrative ward', 'district', 'geographic boundary', 'demographic'],
+                'fields' => $this->getTableFields('wards'),
+                'sample_queries' => ['wards', 'administrative wards', 'districts', 'geographic boundaries'],
+                'data_patterns' => 'Each record defines an administrative ward, with boundaries and demographic information. Used for geographic organization and reporting.'
+            ],
+
+            'share_registers' => [
+                'description' => 'Tracks each member’s share account and all share-related activity, including issued, redeemed, and transferred shares, current balances, product type, dividend history, and account status. Part of the shares product category (product_number=1000). Serves as the authoritative ledger for member shareholdings, supporting dividend calculation, share transfers, compliance, and reporting.',
+                'keywords' => ['share register', 'share account', 'member shares', 'shareholding', 'share balance', 'share product', 'issued shares', 'redeemed shares', 'transferred shares', 'dividend', 'share status', 'share ledger', 'share capital', 'share transfer', 'share compliance', 'product number 1000'],
+                'fields' => $this->getTableFields('share_registers'),
+                'sample_queries' => [
+                    'Show all share registers for member 12345',
+                    'What is the current share balance for account X?',
+                    "List all active share registers for product type 'MANDATORY'",
+                    'How much dividend has member 12345 received this year?',
+                    'Total shares issued and redeemed for branch Y',
+                    'Find all share registers with pending dividends',
+                    'Share register details for account number 0012345678',
+                    'shares product number 1000'
+                ],
+                'data_patterns' => 'Each record represents a unique share account for a member and product, tracking issued, redeemed, transferred shares, current balance, and value. Includes dividend history, account status, compliance flags, and links to member, product, and branch. Used for all share-related operations, reporting, and compliance. Part of the main shares product category (product_number=1000).'
+            ],
+

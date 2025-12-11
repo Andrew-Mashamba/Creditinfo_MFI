@@ -1,0 +1,56 @@
+{
+  "permissions": {
+    "allowServers": [
+      "saccos-db"
+    ],
+    "allow": [
+      "Bash(psql -c 'SELECT * FROM*')",
+      "Bash(psql -c 'SHOW*')",
+      "Bash(psql -c 'DESCRIBE*')",
+      "Bash(psql -c '\\d*')",
+      "Bash(psql -c '\\dt')",
+      "Bash(psql -c '\\l')",
+      "Bash(php artisan migrate:status)",
+      "Bash(php artisan db:show)",
+      "Read(database/**)",
+      "Read(app/Models/**)",
+      "Read(app/Services/**)",
+      "Read(config/database.php)",
+      "mcp__ide__getDiagnostics",
+      "mcp__ide__executeCode"
+    ],
+    "deny": [
+      "Bash(psql -c 'DROP*')",
+      "Bash(psql -c 'DELETE*')",
+      "Bash(psql -c 'UPDATE*')",
+      "Bash(psql -c 'INSERT*')",
+      "Bash(psql -c 'TRUNCATE*')",
+      "Bash(psql -c 'ALTER*')",
+      "Bash(psql -c 'CREATE*')",
+      "Bash(php artisan migrate:fresh*)",
+      "Bash(php artisan migrate:reset*)",
+      "Bash(php artisan db:wipe*)",
+      "Bash(rm -rf*)",
+      "Read(.env)",
+      "Read(storage/logs/**)",
+      "Read(secrets/**)",
+      "Write(.env)",
+      "Write(config/database.php)"
+    ]
+  },
+  "mcpServers": {
+    "saccos-db": {
+      "allowedTools": [
+        "query",
+        "describe_table",
+        "list_tables"
+      ],
+      "deniedTools": [
+        "execute",
+        "update",
+        "delete",
+        "drop"
+      ]
+    }
+  }
+}

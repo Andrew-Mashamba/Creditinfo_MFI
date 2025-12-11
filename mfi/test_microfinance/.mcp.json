@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "saccos-db": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@executeautomation/database-server",
+        "--postgresql",
+        "--host",
+        "localhost",
+        "--database",
+        "saccos_core",
+        "--user",
+        "postgres",
+        "--password",
+        ""
+      ],
+      "env": {}
+    }
+  }
+}

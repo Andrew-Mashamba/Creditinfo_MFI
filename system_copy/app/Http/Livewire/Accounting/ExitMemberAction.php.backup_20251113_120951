@@ -1,0 +1,157 @@
+<?php
+
+namespace App\Http\Livewire\Accounting;
+
+use App\Models\ClientsModel;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+
+class ExitMemberAction extends Component
+{
+    public $member;
+    public $exitCalculation = [];
+
+    public function mount()
+    {
+        $memberId = session()->get('viewMemberId_details');
+        if ($memberId) {
+            $this->member = ClientsModel::with([
+                'accounts',
+                'loans.loanAccount',
+                'bills.service',
+                'dividends',
+                'interestPayables'
+            ])->find($memberId);
+            
+            if ($this->member) {
+                $this->calculateExitAmount();
+            }
+        }
+    }
+
+    public function calculateExitAmount()
+    {
+        if (!$this->member) {
+            return;
+        }
+
+        // 1. Total Dividends
+        $totalDividends = $this->member->dividends->sum('amount');
+
+        // 2. Total Interest on Savings
+        $totalInterest = $this->member->interestPayables->sum('interest_payable');
+
+        // 3. Total Accounts Balances
+        $totalAccountsBalance = $this->member->accounts->sum('balance');
+
+        // 4. Total Loan Account Balance
+        $totalLoanBalance = $this->member->loans->sum(function($loan) {
+            return $loan->loanAccount->balance ?? 0;
+        });
+
+        // 5. Sum of Unpaid Control Numbers
+        $unpaidBills = $this->member->bills->where('status', '!=', 'PAID');
+        $totalUnpaidBills = $unpaidBills->sum('amount_due');
+
+        // 6. Calculate Exit Amount
+        $exitAmount = $totalDividends + $totalInterest + $totalAccountsBalance - $totalLoanBalance - $totalUnpaidBills;
+
+        $this->exitCalculation = [
+            'total_dividends' => $totalDividends,
+            'total_interest' => $totalInterest,
+            'total_accounts_balance' => $totalAccountsBalance,
+            'total_loan_balance' => $totalLoanBalance,
+            'total_unpaid_bills' => $totalUnpaidBills,
+            'exit_amount' => $exitAmount,
+            'unpaid_bills_count' => $unpaidBills->count(),
+            'loans_count' => $this->member->loans->count(),
+            'accounts_count' => $this->member->accounts->count(),
+            'dividends_count' => $this->member->dividends->count(),
+            'interest_records_count' => $this->member->interestPayables->count(),
+        ];
+    }
+
+    public function processMemberExit()
+    {
+        \Log::info('=== PROCESS MEMBER EXIT STARTED ===', [
+            'member_id' => $this->member->id,
+            'exit_amount' => $this->exitCalculation['exit_amount'] ?? null
+        ]);
+
+        try {
+            // Check if exit amount is zero
+            if (($this->exitCalculation['exit_amount'] ?? null) !== 0.0) {
+                \Log::warning('Cannot exit member - settlement amount not zero', [
+                    'member_id' => $this->member->id,
+                    'exit_amount' => $this->exitCalculation['exit_amount']
+                ]);
+
+                session()->flash('error', 'Cannot exit member. Settlement amount must be zero. Current amount: ' . number_format($this->exitCalculation['exit_amount'], 2));
+                return;
+            }
+
+            // Check if member has any outstanding obligations
+            if (($this->exitCalculation['total_loan_balance'] ?? 0) > 0) {
+                session()->flash('error', 'Cannot exit member. Outstanding loan balance: ' . number_format($this->exitCalculation['total_loan_balance'], 2));
+                return;
+            }
+
+            if (($this->exitCalculation['total_unpaid_bills'] ?? 0) > 0) {
+                session()->flash('error', 'Cannot exit member. Unpaid bills amount: ' . number_format($this->exitCalculation['total_unpaid_bills'], 2));
+                return;
+            }
+
+            DB::beginTransaction();
+
+            // Update member status to EXIT
+            $this->member->update([
+                'status' => 'EXIT',
+                'exit_date' => now(),
+                'exit_notes' => 'Member exited on ' . now()->format('Y-m-d H:i:s') . '. ' .
+                               'Exit calculation: Dividends=' . number_format($this->exitCalculation['total_dividends'], 2) .
+                               ', Interest=' . number_format($this->exitCalculation['total_interest'], 2) .
+                               ', Accounts Balance=' . number_format($this->exitCalculation['total_accounts_balance'], 2) .
+                               ', Loan Balance=' . number_format($this->exitCalculation['total_loan_balance'], 2) .
+                               ', Unpaid Bills=' . number_format($this->exitCalculation['total_unpaid_bills'], 2) .
+                               '. Final Settlement: ' . number_format($this->exitCalculation['exit_amount'], 2),
+                'updated_by' => auth()->id()
+            ]);
+
+            \Log::info('Member exited successfully', [
+                'member_id' => $this->member->id,
+                'client_number' => $this->member->client_number,
+                'exit_date' => now()
+            ]);
+
+            DB::commit();
+
+            session()->flash('message', 'Member ' . $this->member->client_number . ' has been successfully exited.');
+
+            // Refresh member data
+            $this->member->refresh();
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('=== ERROR PROCESSING MEMBER EXIT ===', [
+                'member_id' => $this->member->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            session()->flash('error', 'Error processing member exit: ' . $e->getMessage());
+        }
+    }
+
+    public function render()
+    {
+        return view('livewire.accounting.exit-member-action');
+    }
+
+    public function download(){
+        $member_exit_document=ClientsModel::where('id',session()->get('viewMemberId_details'))->value('member_exit_document');
+        $filePath = storage_path('app/public/' .$member_exit_document);
+        return response()->download($filePath);
+    }
+}

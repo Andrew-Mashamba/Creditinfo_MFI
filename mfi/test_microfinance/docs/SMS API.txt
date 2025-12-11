@@ -1,0 +1,246 @@
+NBC SMS Notification Engine API Document (v2.0.0) 1
+NBC SMS Notification Engine API Document 
+Version V2.0.0
+Owner Technology Development & Innovations Team
+Description 
+This is a document describing how one could integrate with NBC SMS
+Notification Engine, all APIs in this document are RESTful, and all requests and 
+responses to/from SMS Engine are in Json format.
+Purpose 
+This document acts as integration guide to NBC’s SMS Notification Engine. It 
+can be consumed by Developers and Software Analysts
+Consultations 
+All questions or comments regarding this document should be forwarded to
+InhouseDevelopments@nbc.co.tz
+Version History:
+Version Date Description of changes/updates 
+v1.0.0 August 23, 2022 Initial Draft
+v2.0.0 November 8, 2023 Adding new API and made few changes on the API v1
+Key Points to Note. 
+ 
+- We will share Base Endpoints (IP/Domain and Port)
+- All requests to “NBC SMS Notification Engine” will be through HTTPS
+- Authentication method to be used will be X-API-Key Authentication
+We will securely share KEY to one individual of your team.
+- IP whitelisting might be put in place.
+- All SMS will be sent with “NBC” as the sender; hence, the recipient of the SMS will imply 
+he/she has received the SMS from “National Bank of Commerce Limited”. Please be careful 
+with your test(s) and the type of SMS you send. All SMS will be securely logged for tracing and 
+analysis purposes.
+NBC SMS Notification Engine API Document (v2.0.0) 2
+1. Direct SMS API 
+This API enables client system to directly send SMS to the recipient’s / customer’s phone number.
+Hence, no SMS Template need to be set/configured on SMS Engine. Client system need to construct 
+the actual SMS to be sent. SMS engine will process the request basing on the Service Type and priority 
+of the SMS.
+Note: For bulk SMS, the maximum number of recipients is 250.
+Header Parameters 
+Below are header parameters to be set by the client/downstream system
+Header Parameter Sample Value
+Content-Type application/json
+Accept application/json
+X-API-Key 4f8c15198b965ec574e67c90250549bf4989c9fca64794f9d9f25c017cd47434
+HTTP Method POST
+Endpoint /nbc-sms-engine/api/v1/direct-sms
+Request Payload
+Single Recipient:
+{
+ "channelId": "101_SYSTEM",
+ "smsType": "MARKETING",
+ "notificationRefNo": "UNIQUE0123456789",
+ "recipientPhone": "255653XXXYYY",
+ "language": "English",
+ "recipientName": "Nyerere Julius",
+ "accountNumber": "01234567890",
+ "sms": "Hello Someone, 910605 is your security code for transaction you 
+just initiated using NBC Mobile App. It expires in 5 minutes. Do not share this 
+code with anyone"
+}
+Multiple Recipients:
+{
+ "channelId": "101_SYSTEM",
+ "smsType": "BULK",
+ "accountNumber": "01234567890",
+ "serviceName": "TESTING",
+ "recipientPhone": "",
+ "sms": "TESTING BULK DIRECT SMS",
+ "notificationRefNo": "CFH77897967",
+NBC SMS Notification Engine API Document (v2.0.0) 3
+ "recipientName": "TESTERS",
+ "language": "English",
+ "recipientsPhones": [
+ "255754XXXYYY",
+ "25576CCCDDD",
+ "25576EEEFFF",
+ "255653AAABBB"
+ ]
+}
+Success Response 
+Payload
+{
+ "status": 200,
+ "message": "Your request for sending Direct SMS has been successfully 
+received, its now being queued for processing...",
+ "serviceType": "Direct-SMS",
+ "smsEngineUuid": "nbc-4e30a2bf-05e6-4d48-b86f-5af96b3ff75e",
+ "timestamp": "2022-09-22T11:32:56.895406",
+ "body": {
+ "notificationRefNo": "NRF1663835571"
+ }
+}
+Failure Response 
+Payload
+{
+ "status": 401,
+ "message": "Unauthorized - Bad credentials",
+ "serviceType": "Authentication",
+ "smsEngineUuid": "43cca9e9-d4f3-4503-9b19-3c425b2e7076",
+ "timestamp": "2021-07-05T17:08:00.495529124",
+ "body": {
+ "error": "Missing credentials or the one provided are not valid"
+ }
+}
+Note: Please refer to below details
+Field Type Comments 
+channelId Alphanumeric (50) Will be shared
+smsType Alphanumeric (50)
+Will be discussed and agreed during SIT/UAT, this 
+depends on the number and type of SMS you are 
+going to send
+notificationRefNo Alphanumeric (50)
+Unique reference number that client system needs 
+to generate every time it sends request to SMS 
+Engine. 
+Should you require report in later stages, it will be 
+provided, and it will include this reference number 
+along with other details.
+NBC SMS Notification Engine API Document (v2.0.0) 4
+recipientPhone Numeric (12) Phone number of the customer / recipient of the 
+SMS. Starts with Country Dial Code (255)
+recipientsPhones Array of string phone 
+numbers Should have a maximum of 250 phone numbers
+language Varchar (7) Language used in the SMS, commonly English / 
+Swahili
+serviceName Varchar (1 - 50) Client service name
+recipientName Varchar (3 - 50) Name of the customer / recipient of the SMS
+accountNumber Numeric (12) Customer Account Number (if available at the time 
+of sending the SMS)
+sms Alphanumeric (10 - 255)
+Actual SMS to be sent to the recipient / customer.
+Please note, the character limit for a single SMS 
+message is technically 160 characters. However, 
+most modern phones and networks support 
+message concatenation: they split large messages 
+into individual SMS messages (called "segments") 
+and then re-create the large message at the 
+receiving end
+NBC shall be billed for every segment sent (i.e., 160 
+characters long SMS), so we do recommend all SMS 
+to be structured in a way they convey the intended 
+message however are not longer than 160 
+characters long.
+2. SMS API 
+This API allows the client system to send SMS messages to recipients' phone numbers. To initiate an 
+SMS, a template with optional parameters must be set up in the SMS Engine. The client system will 
+create an object containing the properties specified in the SMS template along with their 
+corresponding values. The SMS Engine will then process the request based on the service type and 
+SMS priority.
+Header Parameters 
+Below are header parameters to be set by the client/downstream system
+Header Parameter Sample Value
+Content-Type application/json
+Accept application/json
+X-API-Key 4f8c15198b965ec574e67c90250549bf4989c9fca64794f9d9f25c017cd47434
+NBC SMS Notification Engine API Document (v2.0.0) 5
+HTTP Method POST
+Endpoint /nbc-sms-engine/api/v1/sms
+Request Payload
+{
+ "channelId": "101_SYSTEM",
+ "language": "English",
+ "notificationRefNo": "UNIQUE_0123456789",
+ "recipientPhone": "255653666201",
+ "serviceName": "SERVICE_NAME",
+ "smsType": "OTP",
+ "templateRef": "324234234",
+ "smsContent": {
+ "phoneNo": "25575XXXYYY",
+ "name": "John Doe",
+ "amount": "1000",
+ "reference": "3985834758345SDH",
+ "timestamp": "2023-07-05T18:44:01"
+ }
+}
+Success Response 
+Payload
+{
+ "status": 200,
+ "message": "Your request for sending Direct SMS has been successfully 
+received, its now being queued for processing...",
+ "serviceType": "Direct-SMS",
+ "smsEngineUuid": "nbc-4e30a2bf-05e6-4d48-b86f-5af96b3ff75e",
+ "timestamp": "2022-09-22T11:32:56.895406",
+ "body": {
+ "notificationRefNo": "NRF1663835571"
+ }
+}
+Failure Response 
+Payload
+{
+ "status": 401,
+ "message": "Unauthorized - Bad credentials",
+ "serviceType": "Authentication",
+ "smsEngineUuid": "43cca9e9-d4f3-4503-9b19-3c425b2e7076",
+ "timestamp": "2022-09-22T10:41:08.495529124",
+ "body": {
+ "error": "Missing credentials or the one provided are not valid"
+ }
+}
+Note: Please refer to below details
+NBC SMS Notification Engine API Document (v2.0.0) 6
+Field Type Comments 
+channelId Alphanumeric (3 - 25) Will be shared
+smsType Alphanumeric (50)
+Will be discussed and agreed during SIT/UAT, this 
+depends on the number and type of SMS you are 
+going to send
+notificationRefNo Alphanumeric (3 - 60)
+Unique reference number that client system needs 
+to generate every time it sends request to SMS 
+Engine. 
+Should you require report in later stages, it will be 
+provided, and it will include this reference number 
+along with other details.
+recipientPhone Numeric (12) Phone number of the customer / recipient of the 
+SMS. Starts with Country Dial Code (255)
+recipientsPhones Array of string phone 
+numbers Should have a maximum of 250 phone numbers
+language Varchar (7) Language used in the SMS, commonly English / 
+Swahili
+serviceName Varchar (1 - 50) Client service name
+templateRef Varchar (1 - 50) Template reference number, to be shared by 
+DevOps Team
+smsContent Object Object containing properties provided in the SMS 
+Template with their corresponding values.
+RESPONSE CODES 
+Describes possible response codes and their meaning
+Code Description 
+200 Success
+4XX Failure, client needs to update the payload data and send again the requests
+5XX Failure, SMS Engine encountered exception when processing request, client 
+should contact In-House Development Team.
+Expected tasks to be closed before starting with integration and testing:
+No Our Tasks 
+1 Sharing API Documentation 
+2 Sharing API Base Endpoints (IP/Domain and Port)
+3 Sharing X-API-Key
+NBC SMS Notification Engine API Document (v2.0.0) 7
+4 Configure your system in SMS Engine
+5 Supporting you whenever you face any difficulties.
+No Your Tasks 
+1 Share Name and Email of the person to whom we shall send details indicated above
+2 Share name and brief description of the system(s) that is/are going to consume the API
+3 Share list of type of messages that you are going to send.
+(E.g., OTP, Notifications, Password Reset etc.)
+4 Network connectivity testing from your system server to the SMS Engine IP and Port 
+5 Share your SMS template and SMS type that will be created in the SMS engine
